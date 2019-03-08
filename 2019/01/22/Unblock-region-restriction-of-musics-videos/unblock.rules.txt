@@ -1,0 +1,15 @@
+!.netease.im
+! netease music
+nos.netease.com
+! Huawei Music
+dnkeeper.hicloud.com
+! QQ music: Look at webforms at wspeed.qq.com
+!182.254.116.117
+203.205.128.117
+203.205.211.78
+wnsmusic.qq.com
+wns.y.qq.com
+! QQ shipin
+vv.video.qq.com
+vv.play.aiseet.atianqi.com
+tv.aiseet.atianqi.com
