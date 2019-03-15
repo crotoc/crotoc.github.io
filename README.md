@@ -2,12 +2,12 @@
 
 部署状态 | 集成结果 | 参考值
 ---|---|---
-完成时间 | 2019-03-14 11:14:13 | yyyy-mm-dd hh:mm:ss
+完成时间 | 2019-03-16 04:32:36 | yyyy-mm-dd hh:mm:ss
 部署环境 | linux + stable | window \| linux + stable
 部署类型 | push | push \| pull_request \| api \| cron
 启用Sudo | true | false \| true
 仓库地址 | crotoc/BlogSource | owner_name/repo_name
-提交分支 | 0fb52ce468c7c5de8adc4b98b9bc923ef6e894f2 | hash 16位
-提交信息 | Missing v2ray dnsmasq file |
-Job ID   | 506094136 |
-Job NUM  | 29.1 |
+提交分支 | 64fe8e4839b95c32d259fa330c661e7d51c31b05 | hash 16位
+提交信息 | delete |
+Job ID   | 506963206 |
+Job NUM  | 31.1 |
