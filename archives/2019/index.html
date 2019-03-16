@@ -225,7 +225,7 @@
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time datetime="2019-03-16T14:44:45+08:00">
+    <time datetime="2019-03-16T15:02:03+08:00">
 	
 		    3月 16, 2019
     	
@@ -253,6 +253,71 @@
                     
                         <p>
                             <a href="/2019/03/16/hello-world/#post-footer" class="postShorten-excerpt_link link">
+                                评论和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title">
+                    
+                        <a class="link-unstyled" href="/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/">
+                            Bugs when using the tranquilpeak hexo theme
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time datetime="2019-03-16T01:48:20+08:00">
+	
+		    3月 16, 2019
+    	
+    </time>
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content">
+                    <p>今天想将blog的主题从next 换成tranquilpeak,结果发现了很多的问题,这里记录一下:</p>
+<ol>
+<li><p>因为我使用travis自动在线部署,所以主题里面的node_modules不是必须的.</p>
+</li>
+<li><p>这个主题的.gitignore文件中自动略去了assets文件夹,导致了网站看不到格式,只有文字.</p>
+</li>
+<li><p>需要将主题中的package.json里面的dependencies拷贝到主目录的package.json才能在travis端自动安装.</p>
+</li>
+<li><p>需要在主目录的_config.yml中设置language,不然出现的是德语.其中语言设置必须与主题中languages目录下的文件名对应.</p>
+</li>
+</ol>
+<h2 id="标准调试过程"><a href="#标准调试过程" class="headerlink" title="标准调试过程"></a>标准调试过程</h2><p>为了加快下一次的调试,经验如下:</p>
+<h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><p>本地安装包,找出依赖的问题:</p>
+<pre><code>npm install
+</code></pre><h3 id="第二步"><a href="#第二步" class="headerlink" title="第二步"></a>第二步</h3><p>生成本地public目录:</p>
+<pre><code>hexo clean
+hexo g
+hexo s
+</code></pre><p>用本地浏览器打开确定本地显示是否出错:</p>
+<pre><code>localhost:4000
+</code></pre><p>如果本地没错可以将这个本地版本git到remote端,使用网页链接查看是否有错.</p>
+<p>如果有错则核对两次commit之间的偏差,确定问题所在.</p>
+<p>在本次调试过程中,主要问题是assets文件夹被主题目录中的.gitignore忽略,这样网页只有文字没有样式.</p>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/#post-footer" class="postShorten-excerpt_link link">
                                 评论和共享
                             </a>
                         </p>
