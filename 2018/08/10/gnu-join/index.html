@@ -11,7 +11,7 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"How to join multiple files using GNU joinBasic usageCreate two files with TAB delimiter\nfile1:\na    1\nb   1\nd       1\ne       1\ng       1\nfile2:\na   2\nb   2\nc   2\ne   2\nf   2\nJoin them use join:\njoin -1 1 -2 1 file1 file2\nOutput:\na 1 2\nd 1 2\ne 1 2\nThe very useful options for GNU join-a1 - print unmatched lines in file1;join -1 1 -1 1 file1 file2 -a1\nOutput:\na 1 2\nb 1\nd 1 2\ne 1 2\ng 1\n-a2 - print unmatched lines in file2join -1 1 -1 1 file1 file2 -a2\nOutput:\na 1 2\nc 2\nd 1 2\ne 1 2\nf 2\n-a1 -a2 - print unmatched lines in both file1 and file2join  -1 1 -1 1 file1 file2 -a1 -a2\nOutput:\na 1 2\nb 1\nc 2\nd 1 2\ne 1 2\nf 2\ng 1\nBe careful that tab is not aligned well.\n-o - To align the output in table format, use the option to custome the outputjoin  -1 1 -1 1 file1 file2 -a1 -a2 -o 0,1.2,2.2\n0  means the joined column.1.2 means print the column 2 in file1;2.2 means print the column 2 in file2;\nOutput:\na 1 2\nb 1 \nc  2\nd 1 2\ne 1 2\nf  2\ng 1 \nIf file1 and files have more than 2 columns, modify the -o string\n-t - To use the TAB as output delimiterjoin  -1 1 -1 1 file1 file2 -a1 -a2 -o 0,1.2,2.2 -t$&apos;\\t&apos;\nOutput:\na       1       2\nb       1\nc               2\nd       1       2\ne       1       2\nf               2\ng       1\n–check-order -  join requires the input file sorted, if join with 1st column, please sort the input files using 1st columns before use join. And to make sure there is no problem, use this option to check.join  -1 1 -1 1 file1 file2 -a1 -a2 -o 0,1.2,2.2 -t$&apos;\\t&apos; --check-order\nOutput:\na       1       2\nb       1\nc               2\nd       1       2\ne       1       2\nf               2\ng       1\nCreate non-sorted file3:\na       3\nd       3\nc       3\ne       3\nf       3\njoin file1 and file3:\njoin  -1 1 -1 1 file1 file3 -a1 -a2 -o 0,1.2,2.2 -t$&apos;\\t&apos; --check-order\nOutput with error message:\na       1       3\nb       1\njoin: file3:3: is not sorted: c 3\n-e -  To make the output format more strict and use this option to fill missing columns. This helps greatly if you need to process the file in the downstreaming analysis.join  -1 1 -1 1 file1 file2 -a1 -a2 -o 0,1.2,2.2 -t$&apos;\\t&apos; --check-order -eNULL\nOutput:\na       1       2\nb       1       NULL\nc       NULL    2\nd       1       2\ne       1       2\nf       NULL    2\ng       1       NULL\nOutput is a very tidy table.\n","dateCreated":"2018-08-10T12:36:45+08:00","dateModified":"2019-03-16T14:11:36+08:00","datePublished":"2018-08-10T12:36:45+08:00","description":"","headline":"Gnu join - join two files by specified field","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2018/08/10/gnu-join/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"https://crotoc.github.io/2018/08/10/gnu-join/","keywords":"linux, GNU"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"How to join multiple files using GNU joinBasic usageCreate two files with TAB delimiter\nfile1:\na    1\nb   1\nd       1\ne       1\ng       1\nfile2:\na   2\nb   2\nc   2\ne   2\nf   2\nJoin them use join:\njoin -1 1 -2 1 file1 file2\nOutput:\na 1 2\nd 1 2\ne 1 2\nThe very useful options for GNU join-a1 - print unmatched lines in file1;join -1 1 -1 1 file1 file2 -a1\nOutput:\na 1 2\nb 1\nd 1 2\ne 1 2\ng 1\n-a2 - print unmatched lines in file2join -1 1 -1 1 file1 file2 -a2\nOutput:\na 1 2\nc 2\nd 1 2\ne 1 2\nf 2\n-a1 -a2 - print unmatched lines in both file1 and file2join  -1 1 -1 1 file1 file2 -a1 -a2\nOutput:\na 1 2\nb 1\nc 2\nd 1 2\ne 1 2\nf 2\ng 1\nBe careful that tab is not aligned well.\n-o - To align the output in table format, use the option to custome the outputjoin  -1 1 -1 1 file1 file2 -a1 -a2 -o 0,1.2,2.2\n0  means the joined column.1.2 means print the column 2 in file1;2.2 means print the column 2 in file2;\nOutput:\na 1 2\nb 1 \nc  2\nd 1 2\ne 1 2\nf  2\ng 1 \nIf file1 and files have more than 2 columns, modify the -o string\n-t - To use the TAB as output delimiterjoin  -1 1 -1 1 file1 file2 -a1 -a2 -o 0,1.2,2.2 -t$&apos;\\t&apos;\nOutput:\na       1       2\nb       1\nc               2\nd       1       2\ne       1       2\nf               2\ng       1\n–check-order -  join requires the input file sorted, if join with 1st column, please sort the input files using 1st columns before use join. And to make sure there is no problem, use this option to check.join  -1 1 -1 1 file1 file2 -a1 -a2 -o 0,1.2,2.2 -t$&apos;\\t&apos; --check-order\nOutput:\na       1       2\nb       1\nc               2\nd       1       2\ne       1       2\nf               2\ng       1\nCreate non-sorted file3:\na       3\nd       3\nc       3\ne       3\nf       3\njoin file1 and file3:\njoin  -1 1 -1 1 file1 file3 -a1 -a2 -o 0,1.2,2.2 -t$&apos;\\t&apos; --check-order\nOutput with error message:\na       1       3\nb       1\njoin: file3:3: is not sorted: c 3\n-e -  To make the output format more strict and use this option to fill missing columns. This helps greatly if you need to process the file in the downstreaming analysis.join  -1 1 -1 1 file1 file2 -a1 -a2 -o 0,1.2,2.2 -t$&apos;\\t&apos; --check-order -eNULL\nOutput:\na       1       2\nb       1       NULL\nc       NULL    2\nd       1       2\ne       1       2\nf       NULL    2\ng       1       NULL\nOutput is a very tidy table.\n","dateCreated":"2018-08-10T12:36:45-05:00","dateModified":"2019-02-15T19:58:57-06:00","datePublished":"2018-08-10T12:36:45-05:00","description":"","headline":"Gnu join - join two files by specified field","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2018/08/10/gnu-join/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"https://crotoc.github.io/2018/08/10/gnu-join/","keywords":"linux, GNU"}</script>
     <meta name="description" content="How to join multiple files using GNU joinBasic usageCreate two files with TAB delimiter file1: a    1 b   1 d       1 e       1 g       1 file2: a   2 b   2 c   2 e   2 f   2 Join them use join: join">
 <meta name="keywords" content="linux,GNU">
 <meta property="og:type" content="blog">
@@ -20,7 +20,7 @@
 <meta property="og:site_name" content="Chen Rui&#39;s Blog">
 <meta property="og:description" content="How to join multiple files using GNU joinBasic usageCreate two files with TAB delimiter file1: a    1 b   1 d       1 e       1 g       1 file2: a   2 b   2 c   2 e   2 f   2 Join them use join: join">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-03-16T06:11:36.702Z">
+<meta property="og:updated_time" content="2019-02-16T01:58:57.876Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Gnu join - join two files by specified field">
 <meta name="twitter:description" content="How to join multiple files using GNU joinBasic usageCreate two files with TAB delimiter file1: a    1 b   1 d       1 e       1 g       1 file2: a   2 b   2 c   2 e   2 f   2 Join them use join: join">
@@ -81,10 +81,10 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-categories" title="Kategorien">
+                        <a class="sidebar-button-link " href="/all-categories" title="Categorie">
                     
                         <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Kategorien</span>
+                        <span class="sidebar-button-desc">Categorie</span>
                     </a>
             </li>
             
@@ -99,28 +99,28 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-archives" title="Archiv">
+                        <a class="sidebar-button-link " href="/all-archives" title="Archivio">
                     
                         <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Archiv</span>
+                        <span class="sidebar-button-desc">Archivio</span>
                     </a>
             </li>
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link open-algolia-search" href="#search" title="Suche">
+                        <a class="sidebar-button-link open-algolia-search" href="#search" title="Ricerca">
                     
                         <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Suche</span>
+                        <span class="sidebar-button-desc">Ricerca</span>
                     </a>
             </li>
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="#about" title="Über">
+                        <a class="sidebar-button-link " href="#about" title="About">
                     
                         <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Über</span>
+                        <span class="sidebar-button-desc">About</span>
                     </a>
             </li>
             
@@ -184,10 +184,10 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/mailto" title="E-Mail">
+                        <a class="sidebar-button-link " href="/mailto" title="Mail">
                     
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">E-Mail</span>
+                        <span class="sidebar-button-desc">Mail</span>
                     </a>
             </li>
             
@@ -226,7 +226,7 @@
     
     
         <div class="post-meta">
-    <time datetime="2018-08-10T12:36:45+08:00">
+    <time datetime="2018-08-10T12:36:45-05:00">
 	
 		    10 Aug 2018
     	
@@ -342,7 +342,7 @@ g       1       NULL
     <div id="post-footer" class="post-footer main-content-wrap">
         
             <div class="post-footer-tags">
-                <span class="text-color-light text-small">GETAGGT IN</span><br>
+                <span class="text-color-light text-small">TAGGATO IN</span><br>
                 
     <a class="tag tag--primary tag--small t-link" href="/tags/GNU/">GNU</a> <a class="tag tag--primary tag--small t-link" href="/tags/linux/">linux</a>
 
@@ -355,18 +355,18 @@ g       1       NULL
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/11/rmarkdown-config/" data-tooltip="Setup rmarkdown on server without Rstudio" aria-label="FRÜHER: Setup rmarkdown on server without Rstudio">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/11/rmarkdown-config/" data-tooltip="Setup rmarkdown on server without Rstudio" aria-label="PRECEDENTE: Setup rmarkdown on server without Rstudio">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">FRÜHER</span>
+                    <span class="hide-xs hide-sm text-small icon-ml">PRECEDENTE</span>
                 </a>
             </li>
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/08/09/travis-test/" data-tooltip="travis_test" aria-label="NÄCHSTER: travis_test">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/08/09/travis-test/" data-tooltip="travis_test" aria-label="SUCCESSIVO: travis_test">
                 
-                    <span class="hide-xs hide-sm text-small icon-mr">NÄCHSTER</span>
+                    <span class="hide-xs hide-sm text-small icon-mr">SUCCESSIVO</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
             </li>
@@ -382,7 +382,7 @@ g       1       NULL
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/08/10/gnu-join/" title="Teilen auf Facebook">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/08/10/gnu-join/" title="Condividi su Facebook">
                     <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
@@ -390,7 +390,7 @@ g       1       NULL
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/08/10/gnu-join/" title="Teilen auf Twitter">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/08/10/gnu-join/" title="Condividi su Twitter">
                     <i class="fab fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -398,7 +398,7 @@ g       1       NULL
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/08/10/gnu-join/" title="Teilen auf Google Plus">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/08/10/gnu-join/" title="Condividi su Google Plus">
                     <i class="fab fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -441,18 +441,18 @@ g       1       NULL
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/11/rmarkdown-config/" data-tooltip="Setup rmarkdown on server without Rstudio" aria-label="FRÜHER: Setup rmarkdown on server without Rstudio">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/11/rmarkdown-config/" data-tooltip="Setup rmarkdown on server without Rstudio" aria-label="PRECEDENTE: Setup rmarkdown on server without Rstudio">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">FRÜHER</span>
+                    <span class="hide-xs hide-sm text-small icon-ml">PRECEDENTE</span>
                 </a>
             </li>
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/08/09/travis-test/" data-tooltip="travis_test" aria-label="NÄCHSTER: travis_test">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/08/09/travis-test/" data-tooltip="travis_test" aria-label="SUCCESSIVO: travis_test">
                 
-                    <span class="hide-xs hide-sm text-small icon-mr">NÄCHSTER</span>
+                    <span class="hide-xs hide-sm text-small icon-mr">SUCCESSIVO</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
             </li>
@@ -468,7 +468,7 @@ g       1       NULL
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/08/10/gnu-join/" title="Teilen auf Facebook">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/08/10/gnu-join/" title="Condividi su Facebook">
                     <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
@@ -476,7 +476,7 @@ g       1       NULL
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/08/10/gnu-join/" title="Teilen auf Twitter">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/08/10/gnu-join/" title="Condividi su Twitter">
                     <i class="fab fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -484,7 +484,7 @@ g       1       NULL
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/08/10/gnu-join/" title="Teilen auf Google Plus">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/08/10/gnu-join/" title="Condividi su Google Plus">
                     <i class="fab fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -513,7 +513,7 @@ g       1       NULL
                 
                 <li class="share-option">
                     <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/08/10/gnu-join/">
-                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Teilen auf Facebook</span>
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Condividi su Facebook</span>
                     </a>
                 </li>
             
@@ -521,7 +521,7 @@ g       1       NULL
                 
                 <li class="share-option">
                     <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/08/10/gnu-join/">
-                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Teilen auf Twitter</span>
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Condividi su Twitter</span>
                     </a>
                 </li>
             
@@ -529,7 +529,7 @@ g       1       NULL
                 
                 <li class="share-option">
                     <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/08/10/gnu-join/">
-                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Teilen auf Google Plus</span>
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Condividi su Google Plus</span>
                     </a>
                 </li>
             
