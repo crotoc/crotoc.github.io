@@ -11,7 +11,7 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"Modify the hotkey of Chinese-English language switching in Windows 10The problem is very annoying because the hotkey ctrl+space has conflicted with others in emacs or other program. My thought is changing it to another combination ctrl+F1.\n\nOpen regedit\nNavigate to HKEY_USER.DEFAULT\\Input Method\\Hot Keys\\00000010\\\nModify the Key Modifiers and Virtual Key.\nOnly disable the hotkey is change the first two digits of the two keys in 00.\nKey Modifiers: 00 c0 00 00.\nVirtual Key: 00 00 00 00\n\nFor Key modifiers, the rules of the number are like:\n__00__ c0 00 00 : The underlining two digits indicate one of modifier keys.\n\nCTRL: 02\nALT: 01\nSHIFT: 04\nDisable: 00\n\n00 __c0__ 00 00 : The underlining two digits indicate the left or right position on the keybord.\n\nLeft: 80\nRight: 40\nLeft or Right: 8+4=12=c0\n\nFor virtual key, the rules are like:\n__00__ 00 00 00 : The hex of ascii of a virtual key.\n Please see the reference: https://docs.microsoft.com/en-us/windows/desktop/inputdev/virtual-key-codes\n So if we want F1, the hex code is 70:\n__70__ 00 00 00 : The hex of ascii of F1.\n\nRestart your computer.\n\n\nFor my case, I just need to modify virtual key to 70 00 00 00\n","dateCreated":"2018-09-25T11:51:49+08:00","dateModified":"2019-03-16T12:49:32+08:00","datePublished":"2018-09-25T11:51:49+08:00","description":"","headline":"Modify the hotkey of Chinese-English language switching in Windows 10","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/","keywords":"Computer setup"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"Modify the hotkey of Chinese-English language switching in Windows 10The problem is very annoying because the hotkey ctrl+space has conflicted with others in emacs or other program. My thought is changing it to another combination ctrl+F1.\n\nOpen regedit\nNavigate to HKEY_USER.DEFAULT\\Input Method\\Hot Keys\\00000010\\\nModify the Key Modifiers and Virtual Key.\nOnly disable the hotkey is change the first two digits of the two keys in 00.\nKey Modifiers: 00 c0 00 00.\nVirtual Key: 00 00 00 00\n\nFor Key modifiers, the rules of the number are like:\n__00__ c0 00 00 : The underlining two digits indicate one of modifier keys.\n\nCTRL: 02\nALT: 01\nSHIFT: 04\nDisable: 00\n\n00 __c0__ 00 00 : The underlining two digits indicate the left or right position on the keybord.\n\nLeft: 80\nRight: 40\nLeft or Right: 8+4=12=c0\n\nFor virtual key, the rules are like:\n__00__ 00 00 00 : The hex of ascii of a virtual key.\n Please see the reference: https://docs.microsoft.com/en-us/windows/desktop/inputdev/virtual-key-codes\n So if we want F1, the hex code is 70:\n__70__ 00 00 00 : The hex of ascii of F1.\n\nRestart your computer.\n\n\nFor my case, I just need to modify virtual key to 70 00 00 00\n","dateCreated":"2018-09-25T11:51:49+08:00","dateModified":"2019-03-16T12:53:16+08:00","datePublished":"2018-09-25T11:51:49+08:00","description":"","headline":"Modify the hotkey of Chinese-English language switching in Windows 10","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/","keywords":"Computer setup"}</script>
     <meta name="description" content="Modify the hotkey of Chinese-English language switching in Windows 10The problem is very annoying because the hotkey ctrl+space has conflicted with others in emacs or other program. My thought is chan">
 <meta name="keywords" content="Computer setup">
 <meta property="og:type" content="blog">
@@ -20,7 +20,7 @@
 <meta property="og:site_name" content="Chen Rui&#39;s Blog">
 <meta property="og:description" content="Modify the hotkey of Chinese-English language switching in Windows 10The problem is very annoying because the hotkey ctrl+space has conflicted with others in emacs or other program. My thought is chan">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-03-16T04:49:32.289Z">
+<meta property="og:updated_time" content="2019-03-16T04:53:16.957Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Modify the hotkey of Chinese-English language switching in Windows 10">
 <meta name="twitter:description" content="Modify the hotkey of Chinese-English language switching in Windows 10The problem is very annoying because the hotkey ctrl+space has conflicted with others in emacs or other program. My thought is chan">
@@ -89,11 +89,11 @@
                         <a  class="sidebar-button-link "
                              href="/all-categories"
                             
-                            title="Kategorien"
+                            title="Categories"
                         >
                     
                         <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Kategorien</span>
+                        <span class="sidebar-button-desc">Categories</span>
                     </a>
             </li>
             
@@ -115,11 +115,11 @@
                         <a  class="sidebar-button-link "
                              href="/all-archives"
                             
-                            title="Archiv"
+                            title="Archives"
                         >
                     
                         <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Archiv</span>
+                        <span class="sidebar-button-desc">Archives</span>
                     </a>
             </li>
             
@@ -128,11 +128,11 @@
                         <a  class="sidebar-button-link open-algolia-search"
                              href="#search"
                             
-                            title="Suche"
+                            title="Search"
                         >
                     
                         <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Suche</span>
+                        <span class="sidebar-button-desc">Search</span>
                     </a>
             </li>
             
@@ -141,11 +141,11 @@
                         <a  class="sidebar-button-link "
                              href="#about"
                             
-                            title="Über"
+                            title="About"
                         >
                     
                         <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Über</span>
+                        <span class="sidebar-button-desc">About</span>
                     </a>
             </li>
             
@@ -191,10 +191,10 @@
             
                 <li class="sidebar-button">
                     
-                        <a  class="sidebar-button-link " href="https://plus.google.com/" target="_blank" rel="noopener" title="Google Plus">
+                        <a  class="sidebar-button-link " href="https://plus.google.com/" target="_blank" rel="noopener" title="Google +">
                     
                         <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google Plus</span>
+                        <span class="sidebar-button-desc">Google +</span>
                     </a>
             </li>
             
@@ -211,11 +211,11 @@
                     
                         <a  class="sidebar-button-link "
                              href="/mailto"
-                            title="E-Mail"
+                            title="Mail"
                         >
                     
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">E-Mail</span>
+                        <span class="sidebar-button-desc">Mail</span>
                     </a>
             </li>
             
@@ -260,7 +260,7 @@
         <div class="post-meta">
     <time datetime="2018-09-25T11:51:49+08:00">
 	
-		    25 Sep 2018
+		    Sep 25, 2018
     	
     </time>
     
@@ -313,7 +313,7 @@ Left or Right: 8+4=12=c0
     <div id="post-footer" class="post-footer main-content-wrap">
         
             <div class="post-footer-tags">
-                <span class="text-color-light text-small">GETAGGT IN</span><br/>
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
                 
     <a class="tag tag--primary tag--small t-link" href="/tags/Computer-setup/">Computer setup</a>
 
@@ -326,18 +326,18 @@ Left or Right: 8+4=12=c0
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/28/Install-customized-fonts-for-imagemagick/" data-tooltip="Install customized fonts for imagemagick" aria-label="FRÜHER: Install customized fonts for imagemagick">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/28/Install-customized-fonts-for-imagemagick/" data-tooltip="Install customized fonts for imagemagick" aria-label="PREVIOUS: Install customized fonts for imagemagick">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">FRÜHER</span>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
                 </a>
             </li>
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" data-tooltip="Unblock Youku on a openWRT Router" aria-label="NÄCHSTER: Unblock Youku on a openWRT Router">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" data-tooltip="Unblock Youku on a openWRT Router" aria-label="NEXT: Unblock Youku on a openWRT Router">
                 
-                    <span class="hide-xs hide-sm text-small icon-mr">NÄCHSTER</span>
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
             </li>
@@ -345,7 +345,7 @@ Left or Right: 8+4=12=c0
     </nav>
     <ul class="post-actions post-action-share">
         <li class="post-action hide-lg hide-md hide-sm">
-            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
                 <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
         </li>
@@ -353,7 +353,7 @@ Left or Right: 8+4=12=c0
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" title="Teilen auf Facebook">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" title="Share on Facebook">
                     <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
@@ -361,7 +361,7 @@ Left or Right: 8+4=12=c0
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" title="Teilen auf Twitter">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" title="Share on Twitter">
                     <i class="fab fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -369,7 +369,7 @@ Left or Right: 8+4=12=c0
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" title="Teilen auf Google Plus">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" title="Share on Google+">
                     <i class="fab fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -379,7 +379,7 @@ Left or Right: 8+4=12=c0
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
             
                 <i class="fa fa-list" aria-hidden="true"></i>
             </a>
@@ -412,18 +412,18 @@ Left or Right: 8+4=12=c0
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/28/Install-customized-fonts-for-imagemagick/" data-tooltip="Install customized fonts for imagemagick" aria-label="FRÜHER: Install customized fonts for imagemagick">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/28/Install-customized-fonts-for-imagemagick/" data-tooltip="Install customized fonts for imagemagick" aria-label="PREVIOUS: Install customized fonts for imagemagick">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">FRÜHER</span>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
                 </a>
             </li>
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" data-tooltip="Unblock Youku on a openWRT Router" aria-label="NÄCHSTER: Unblock Youku on a openWRT Router">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" data-tooltip="Unblock Youku on a openWRT Router" aria-label="NEXT: Unblock Youku on a openWRT Router">
                 
-                    <span class="hide-xs hide-sm text-small icon-mr">NÄCHSTER</span>
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
             </li>
@@ -431,7 +431,7 @@ Left or Right: 8+4=12=c0
     </nav>
     <ul class="post-actions post-action-share">
         <li class="post-action hide-lg hide-md hide-sm">
-            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
                 <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
         </li>
@@ -439,7 +439,7 @@ Left or Right: 8+4=12=c0
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" title="Teilen auf Facebook">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" title="Share on Facebook">
                     <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
@@ -447,7 +447,7 @@ Left or Right: 8+4=12=c0
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" title="Teilen auf Twitter">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" title="Share on Twitter">
                     <i class="fab fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -455,7 +455,7 @@ Left or Right: 8+4=12=c0
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" title="Teilen auf Google Plus">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" title="Share on Google+">
                     <i class="fab fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -465,7 +465,7 @@ Left or Right: 8+4=12=c0
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
             
                 <i class="fa fa-list" aria-hidden="true"></i>
             </a>
@@ -484,7 +484,7 @@ Left or Right: 8+4=12=c0
                 
                 <li class="share-option">
                     <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/">
-                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Teilen auf Facebook</span>
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
                     </a>
                 </li>
             
@@ -492,7 +492,7 @@ Left or Right: 8+4=12=c0
                 
                 <li class="share-option">
                     <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/">
-                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Teilen auf Twitter</span>
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
                     </a>
                 </li>
             
@@ -500,7 +500,7 @@ Left or Right: 8+4=12=c0
                 
                 <li class="share-option">
                     <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/">
-                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Teilen auf Google Plus</span>
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
                     </a>
                 </li>
             
