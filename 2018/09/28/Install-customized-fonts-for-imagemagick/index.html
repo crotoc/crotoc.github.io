@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="">
+<html lang="zh-CN">
     
 <head>
     <meta charset="UTF-8">
@@ -11,7 +11,7 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"Install customized fonts for imagemagick 7\nDownload the font, for example, Roboto \nwget https://fonts.google.com/download?family=Roboto\n\nDownload the processing script for fonts\nwget http://imagemagick.org/Usage/scripts/imagick_type_gen\nchmod +x imagick_type_gen\n\nAccording to the documents of imagemagick 7 (https://imagemagick.org/script/resources.php), ImageMagick is able to load raw TrueType and Postscript font files. It searches for the font configuration file, type.xml, in the following order, and loads them if found:\n\\$MAGICK_CONFIGURE_PATH\n\\$MAGICK_HOME/etc/ImageMagick/-7.0.8\n\\$MAGICK_HOME/share/ImageMagick-7.0.8\n\\$XDG_CACHE_HOME/ImageMagick\n\\$HOME/.config/ImageMagick\n&lt;client path&gt;/etc/ImageMagick\n\\$MAGICK_FONT_PATH$\n\n\nSo create a dir ~/.config/ImageMagick\nmkdir ~/.config/ImageMagick\n\nAccording the description section  in the script imageick_type_gen, create a xml for your fonts using the processing script:\nfind /dir/to/font/ -type f -name &apos;*.ttf&apos; | imagick_type_gen -f - &gt; ~/.ImageMagick/type-myfonts.xml\n\n\n\nInclude the xml in main xml file:\ncat &lt;&lt;\\EOF &gt;&gt;~/.magick/type.xml\n&lt;typemap&gt;\n&lt;include file=&quot;type-myfonts.xml&quot; /&gt;\n&lt;/typemap&gt;\nEOF\n\nCheck font using the command:\nconvert -list font\n\n\n","dateCreated":"2018-09-28T23:46:24-05:00","dateModified":"2019-02-15T19:58:57-06:00","datePublished":"2018-09-28T23:46:24-05:00","description":"","headline":"Install customized fonts for imagemagick","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/","keywords":"trick"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"Install customized fonts for imagemagick 7\nDownload the font, for example, Roboto \nwget https://fonts.google.com/download?family=Roboto\n\nDownload the processing script for fonts\nwget http://imagemagick.org/Usage/scripts/imagick_type_gen\nchmod +x imagick_type_gen\n\nAccording to the documents of imagemagick 7 (https://imagemagick.org/script/resources.php), ImageMagick is able to load raw TrueType and Postscript font files. It searches for the font configuration file, type.xml, in the following order, and loads them if found:\n\\$MAGICK_CONFIGURE_PATH\n\\$MAGICK_HOME/etc/ImageMagick/-7.0.8\n\\$MAGICK_HOME/share/ImageMagick-7.0.8\n\\$XDG_CACHE_HOME/ImageMagick\n\\$HOME/.config/ImageMagick\n&lt;client path&gt;/etc/ImageMagick\n\\$MAGICK_FONT_PATH$\n\n\nSo create a dir ~/.config/ImageMagick\nmkdir ~/.config/ImageMagick\n\nAccording the description section  in the script imageick_type_gen, create a xml for your fonts using the processing script:\nfind /dir/to/font/ -type f -name &apos;*.ttf&apos; | imagick_type_gen -f - &gt; ~/.ImageMagick/type-myfonts.xml\n\n\n\nInclude the xml in main xml file:\ncat &lt;&lt;\\EOF &gt;&gt;~/.magick/type.xml\n&lt;typemap&gt;\n&lt;include file=&quot;type-myfonts.xml&quot; /&gt;\n&lt;/typemap&gt;\nEOF\n\nCheck font using the command:\nconvert -list font\n\n\n","dateCreated":"2018-09-28T23:46:24+08:00","dateModified":"2019-03-16T14:38:30+08:00","datePublished":"2018-09-28T23:46:24+08:00","description":"","headline":"Install customized fonts for imagemagick","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/","keywords":"trick"}</script>
     <meta name="description" content="Install customized fonts for imagemagick 7 Download the font, for example, Roboto  wget https://fonts.google.com/download?family=Roboto  Download the processing script for fonts wget http://imagemagic">
 <meta name="keywords" content="trick">
 <meta property="og:type" content="blog">
@@ -19,8 +19,8 @@
 <meta property="og:url" content="https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/index.html">
 <meta property="og:site_name" content="Chen Rui&#39;s Blog">
 <meta property="og:description" content="Install customized fonts for imagemagick 7 Download the font, for example, Roboto  wget https://fonts.google.com/download?family=Roboto  Download the processing script for fonts wget http://imagemagic">
-<meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-02-16T01:58:57.841Z">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-16T06:38:30.212Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Install customized fonts for imagemagick">
 <meta name="twitter:description" content="Install customized fonts for imagemagick 7 Download the font, for example, Roboto  wget https://fonts.google.com/download?family=Roboto  Download the processing script for fonts wget http://imagemagic">
@@ -81,10 +81,10 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-categories" title="Categorie">
+                        <a class="sidebar-button-link " href="/all-categories" title="Kategorien">
                     
                         <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Categorie</span>
+                        <span class="sidebar-button-desc">Kategorien</span>
                     </a>
             </li>
             
@@ -99,28 +99,28 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-archives" title="Archivio">
+                        <a class="sidebar-button-link " href="/all-archives" title="Archiv">
                     
                         <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Archivio</span>
+                        <span class="sidebar-button-desc">Archiv</span>
                     </a>
             </li>
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link open-algolia-search" href="#search" title="Ricerca">
+                        <a class="sidebar-button-link open-algolia-search" href="#search" title="Suche">
                     
                         <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Ricerca</span>
+                        <span class="sidebar-button-desc">Suche</span>
                     </a>
             </li>
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="#about" title="About">
+                        <a class="sidebar-button-link " href="#about" title="Über">
                     
                         <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">About</span>
+                        <span class="sidebar-button-desc">Über</span>
                     </a>
             </li>
             
@@ -184,10 +184,10 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/mailto" title="Mail">
+                        <a class="sidebar-button-link " href="/mailto" title="E-Mail">
                     
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Mail</span>
+                        <span class="sidebar-button-desc">E-Mail</span>
                     </a>
             </li>
             
@@ -226,9 +226,9 @@
     
     
         <div class="post-meta">
-    <time datetime="2018-09-28T23:46:24-05:00">
+    <time datetime="2018-09-28T23:46:24+08:00">
 	
-		    28 Sep 2018
+		    28 9月 2018
     	
     </time>
     
@@ -285,7 +285,7 @@ EOF
     <div id="post-footer" class="post-footer main-content-wrap">
         
             <div class="post-footer-tags">
-                <span class="text-color-light text-small">TAGGATO IN</span><br>
+                <span class="text-color-light text-small">GETAGGT IN</span><br>
                 
     <a class="tag tag--primary tag--small t-link" href="/tags/trick/">trick</a>
 
@@ -298,18 +298,18 @@ EOF
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/01/22/terminal-in-windows-sub-linux-system/" data-tooltip="Windows 10下面最好的terminal (WSL)" aria-label="PRECEDENTE: Windows 10下面最好的terminal (WSL)">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/01/22/terminal-in-windows-sub-linux-system/" data-tooltip="Windows 10下面最好的terminal (WSL)" aria-label="FRÜHER: Windows 10下面最好的terminal (WSL)">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">PRECEDENTE</span>
+                    <span class="hide-xs hide-sm text-small icon-ml">FRÜHER</span>
                 </a>
             </li>
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" data-tooltip="Modify the hotkey of Chinese-English language switching in Windows 10" aria-label="SUCCESSIVO: Modify the hotkey of Chinese-English language switching in Windows 10">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" data-tooltip="Modify the hotkey of Chinese-English language switching in Windows 10" aria-label="NÄCHSTER: Modify the hotkey of Chinese-English language switching in Windows 10">
                 
-                    <span class="hide-xs hide-sm text-small icon-mr">SUCCESSIVO</span>
+                    <span class="hide-xs hide-sm text-small icon-mr">NÄCHSTER</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
             </li>
@@ -325,7 +325,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="Condividi su Facebook">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="Teilen auf Facebook">
                     <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
@@ -333,7 +333,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="Condividi su Twitter">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="Teilen auf Twitter">
                     <i class="fab fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -341,7 +341,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="Condividi su Google Plus">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="Teilen auf Google Plus">
                     <i class="fab fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -384,18 +384,18 @@ EOF
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/01/22/terminal-in-windows-sub-linux-system/" data-tooltip="Windows 10下面最好的terminal (WSL)" aria-label="PRECEDENTE: Windows 10下面最好的terminal (WSL)">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/01/22/terminal-in-windows-sub-linux-system/" data-tooltip="Windows 10下面最好的terminal (WSL)" aria-label="FRÜHER: Windows 10下面最好的terminal (WSL)">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">PRECEDENTE</span>
+                    <span class="hide-xs hide-sm text-small icon-ml">FRÜHER</span>
                 </a>
             </li>
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" data-tooltip="Modify the hotkey of Chinese-English language switching in Windows 10" aria-label="SUCCESSIVO: Modify the hotkey of Chinese-English language switching in Windows 10">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" data-tooltip="Modify the hotkey of Chinese-English language switching in Windows 10" aria-label="NÄCHSTER: Modify the hotkey of Chinese-English language switching in Windows 10">
                 
-                    <span class="hide-xs hide-sm text-small icon-mr">SUCCESSIVO</span>
+                    <span class="hide-xs hide-sm text-small icon-mr">NÄCHSTER</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
             </li>
@@ -411,7 +411,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="Condividi su Facebook">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="Teilen auf Facebook">
                     <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
@@ -419,7 +419,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="Condividi su Twitter">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="Teilen auf Twitter">
                     <i class="fab fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -427,7 +427,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="Condividi su Google Plus">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="Teilen auf Google Plus">
                     <i class="fab fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -456,7 +456,7 @@ EOF
                 
                 <li class="share-option">
                     <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
-                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Condividi su Facebook</span>
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Teilen auf Facebook</span>
                     </a>
                 </li>
             
@@ -464,7 +464,7 @@ EOF
                 
                 <li class="share-option">
                     <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
-                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Condividi su Twitter</span>
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Teilen auf Twitter</span>
                     </a>
                 </li>
             
@@ -472,7 +472,7 @@ EOF
                 
                 <li class="share-option">
                     <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
-                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Condividi su Google Plus</span>
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Teilen auf Google Plus</span>
                     </a>
                 </li>
             
