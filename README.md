@@ -2,12 +2,12 @@
 
 部署状态 | 集成结果 | 参考值
 ---|---|---
-完成时间 | 2019-03-16 12:36:26 | yyyy-mm-dd hh:mm:ss
+完成时间 | 2019-03-16 12:46:52 | yyyy-mm-dd hh:mm:ss
 部署环境 | linux + stable | window \| linux + stable
 部署类型 | push | push \| pull_request \| api \| cron
 启用Sudo | true | false \| true
 仓库地址 | crotoc/BlogSource | owner_name/repo_name
-提交分支 | 64fe8e4839b95c32d259fa330c661e7d51c31b05 | hash 16位
-提交信息 | delete |
-Job ID   | 507103054 |
-Job NUM  | 37.1 |
+提交分支 | 234bb9635671ce874accb91090b9f524a6f1b20e | hash 16位
+提交信息 | delete a theme |
+Job ID   | 507104611 |
+Job NUM  | 38.1 |
