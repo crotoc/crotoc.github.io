@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-cn">
     
 <head>
     <meta charset="UTF-8">
@@ -11,7 +11,7 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"How to unblock youku on your routerTo watched videos from China apps like youku, tencent, sogou, we have to unblock the restrictions put on these website.\nI applied this method to two models of routers: NETGEAR WNDR3700 ($20 on ebay) and R7800 ($160 on ebay) and they perform well enough.\nPrerequisites\nA router that can install openWRT.\nA list of urls needed to be unblocked.\nA shadowsocks proxy (let me know if you don’t have)\nPlenty of time\n\nInstallation of openWRTThe openWRT is a open-source system that can be installed on routers, which can bring many great new functions. It is actively developed and maintained.\nFor R7800, we need to flash openWRT through tftp.\n1) Download the firmware from https://openwrt.org/toh/hwdata/netgear/netgear_r7800. Remember the right file is with suffix of “.img”\nwget http://downloads.openwrt.org/releases/18.06.1/targets/ipq806x/generic/openwrt-18.06.1-ipq806x-netgear_r7800-squashfs-factory.img\n2) Install tftp on the computer(Ubuntu).\nsudo apt-get install tftp\n3) Let the router enter into recovery mode.\na. Power off the router\nb. Keep pressing the reset button using a pin and turn on the router.\nc. Release the reset button until the light blink white. The light of router will blink orange first and then after for a few seconds blink white. \n4) Connect the computer with router to one of the lan ports and mannually set the ip to 192.168.1.2. Because the router’s ip is 192.168.1.1, don’t use this ip for the computer.\nIP: 192.168.1.2\nMASK: 255.255.255.0\nGateway: 192.168.1.1\nDNS: 192.168.1.1 (Not important)\n5) Ping the router from the computer to make sure everthing is all right.\nping 192.168.1.1\n\n## 64 bytes from 192.168.1.1: icmp_seq=1 ttl=47 time=80.3 ms\n## 64 bytes from 192.168.1.1: icmp_seq=2 ttl=47 time=80.3 ms\n## 64 bytes from 192.168.1.1: icmp_seq=3 ttl=47 time=80.3 ms\n## 64 bytes from 192.168.1.1: icmp_seq=4 ttl=47 time=80.2 ms\n6) Connect to the router using tftp and upload the openWRT image.\ntftp 192.168.1.1\n\ntftp&gt; ?\nCommands may be abbreviated.  Commands are:\n\nconnect connect to remote tftp\nmode    set file transfer mode\nput     send file\nget     receive file\nquit    exit tftp\nverbose toggle verbose mode\ntrace   toggle packet tracing\nstatus  show current status\nbinary  set mode to octet\nascii   set mode to netascii\nrexmt   set per-packet retransmission timeout\ntimeout set total retransmission timeout\n?       print help information\n   Change to binary mode. This step is necessary. \ntftp&gt; binary\n   Upload the openWRT img file.\ntftp&gt; put openwrt-18.06.1-ipq806x-netgear_r7800-squashfs-factory.img\n   It will show the size uploaded.\n   Quit tftp.\ntftp&gt; quit\n7) If everything goes well, the blinking white light will turn off and the router will restart with openWRT.\nInstall shadowsocks packagesAfter restarting, the router is running openWRT and we can connect to the router using luci.\nInput 192.168.1.1 in a browser and it will ask you to set a password. After this we can connect to the router using ssh with the password.\nssh root@192.168.1.1\nTo install shdowsocks, we need use the package manager command. First refresh the package list by:\nopkg update\nThen find all the packages related to shawdowsocks.\nopkg find &quot;*shadowsocks*&quot;\nopkg install shadowsocks-client\n\n## Must\nopkg install shadowsocks-libev-config\n\n## Not necessary\nopkg install shadowsocks-libev-ss-local\n\n## Redirect requests to shadowsocks server)\nopkg install shadowsocks-libev-ss-redir \n\n## Build up rules to redirect)\nopkg install shadowsocks-libev-ss-rules \n\n## ss server, not necessary\nopkg install shadowsocks-libev-ss-server\n\n## For DNS requests, not necessary in this case\nopkg install shadowsocks-libev-ss-tunnel\n\n##To simple your life\nopkg install luci-app-shadowsocks\nThis method needs dnsmasq and ipset to build a ip filter.\nThe dnsmasq installed by the image does not support ipset, so we need to install dnsmasq-full\nopkg remove dnsmasq\nopkg install dnsmasq-full\nI believe ipset package is already installed with shadowsocks. We can validate it by:\nopkg install ipset\nConfigurations of shadowsocksI would like to configure shadowsocks using luci, which can save you a lot of time.\n\nAdd a ss proxy server.\nAdd a ss-redir service.\nThe key part is putting the url list to the place that is to be forward to ss proxy server.\nBecause the step 3 needs to add the url to the related ipset hash when starting the service, so it doesn’t allow any bad urls. Or the service can not start. To overcome this flaw, I modified the /usr/bin/ss-rules by adding a new ipset hash set named “_unblock” and build a new iptable rules to this set.\n\nIf you don’t want to revise the ss-rules, you can use the command bellow.\nconfiguratins of ipset and iptablesInitiate a new ipset\nipset -N _unblock hash:ip\nAdd the following iptable rules to iptable:\n## Create shadowsocks router rules\niptables -t nat -N shadowsocks\niptables -t mangle -N shadowsocks\n\niptables -t nat -A shadowsocks -d x.x.x.x -j RETURN \n# x.x.x.x为shadowsocks服务器地址\niptables -t nat -A shadowsocks -d 0.0.0.0/8 -j RETURN\niptables -t nat -A shadowsocks -d 10.0.0.0/8 -j RETURN\niptables -t nat -A shadowsocks -d 127.0.0.0/8 -j RETURN\niptables -t nat -A shadowsocks -d 169.254.0.0/16 -j RETURN\niptables -t nat -A shadowsocks -d 172.16.0.0/12 -j RETURN\niptables -t nat -A shadowsocks -d 192.168.0.0/16 -j RETURN\niptables -t nat -A shadowsocks -d 224.0.0.0/4 -j RETURN\niptables -t nat -A shadowsocks -d 240.0.0.0/4 -j RETURN\n\n## TCP\niptables -t nat -A shadowsocks -p tcp -m set --match-set _unblock_ dst -j REDIRECT --to-port 1080\n\n## UDP using TPROXY\niptables -t mangle -A shadowsocks -p udp -m set --match-set redir dst ! --dport 53 -j TPROXY --on-port 1080 --tproxy-mark 0x01/0x01\nip route add local default dev lo table 100\nip rule add fwmark 0x01/0x01 lookup 100\nip route list table 100\n\n\niptables -t nat -A PREROUTING -p tcp -j shadowsocks\niptables -t mangle -A PREROUTING -j shadowsocks\n\niptables -t nat -A OUTPUT -p tcp -j shadowsocks\niptables -t mangle -A OUTPUT -j shadowsocks\nConfiguration of dnsmasq-fullAdd a conf dir to be loaded by dnsmasq\necho &quot;conf-dir=/etc/dnsmasq.d&quot;&gt;&gt;/etc/dnsmasq.conf\nmkdir /etc/dnsmasq.d\ncd /etc/dnsmasq.d\ntouch redir_test.conf\nRestart dnsmasq after revising config file every time\n/etc/init.d/dnsmasq restart\nTestnetstat -nlp\n\n## listen to the port to see what kind of url \ntcpdump -i br-lan host xxxxx\n\n## Test ipset\nping xxxx\nipset list\nreferencehttp://blog.kompaz.win/2017/03/24/OpenWRT%20Shadowsocks+GFWList%20%E6%B5%81%E9%87%8F%E8%87%AA%E5%8A%A8%E5%88%86%E6%B5%81/\n","dateCreated":"2018-09-14T10:18:12+08:00","dateModified":"2019-03-16T14:38:30+08:00","datePublished":"2018-09-14T10:18:12+08:00","description":"","headline":"Unblock Youku on a openWRT Router","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/","keywords":"openWRT, linux, entertainment"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"How to unblock youku on your routerTo watched videos from China apps like youku, tencent, sogou, we have to unblock the restrictions put on these website.\nI applied this method to two models of routers: NETGEAR WNDR3700 ($20 on ebay) and R7800 ($160 on ebay) and they perform well enough.\nPrerequisites\nA router that can install openWRT.\nA list of urls needed to be unblocked.\nA shadowsocks proxy (let me know if you don’t have)\nPlenty of time\n\nInstallation of openWRTThe openWRT is a open-source system that can be installed on routers, which can bring many great new functions. It is actively developed and maintained.\nFor R7800, we need to flash openWRT through tftp.\n1) Download the firmware from https://openwrt.org/toh/hwdata/netgear/netgear_r7800. Remember the right file is with suffix of “.img”\nwget http://downloads.openwrt.org/releases/18.06.1/targets/ipq806x/generic/openwrt-18.06.1-ipq806x-netgear_r7800-squashfs-factory.img\n2) Install tftp on the computer(Ubuntu).\nsudo apt-get install tftp\n3) Let the router enter into recovery mode.\na. Power off the router\nb. Keep pressing the reset button using a pin and turn on the router.\nc. Release the reset button until the light blink white. The light of router will blink orange first and then after for a few seconds blink white. \n4) Connect the computer with router to one of the lan ports and mannually set the ip to 192.168.1.2. Because the router’s ip is 192.168.1.1, don’t use this ip for the computer.\nIP: 192.168.1.2\nMASK: 255.255.255.0\nGateway: 192.168.1.1\nDNS: 192.168.1.1 (Not important)\n5) Ping the router from the computer to make sure everthing is all right.\nping 192.168.1.1\n\n## 64 bytes from 192.168.1.1: icmp_seq=1 ttl=47 time=80.3 ms\n## 64 bytes from 192.168.1.1: icmp_seq=2 ttl=47 time=80.3 ms\n## 64 bytes from 192.168.1.1: icmp_seq=3 ttl=47 time=80.3 ms\n## 64 bytes from 192.168.1.1: icmp_seq=4 ttl=47 time=80.2 ms\n6) Connect to the router using tftp and upload the openWRT image.\ntftp 192.168.1.1\n\ntftp&gt; ?\nCommands may be abbreviated.  Commands are:\n\nconnect connect to remote tftp\nmode    set file transfer mode\nput     send file\nget     receive file\nquit    exit tftp\nverbose toggle verbose mode\ntrace   toggle packet tracing\nstatus  show current status\nbinary  set mode to octet\nascii   set mode to netascii\nrexmt   set per-packet retransmission timeout\ntimeout set total retransmission timeout\n?       print help information\n   Change to binary mode. This step is necessary. \ntftp&gt; binary\n   Upload the openWRT img file.\ntftp&gt; put openwrt-18.06.1-ipq806x-netgear_r7800-squashfs-factory.img\n   It will show the size uploaded.\n   Quit tftp.\ntftp&gt; quit\n7) If everything goes well, the blinking white light will turn off and the router will restart with openWRT.\nInstall shadowsocks packagesAfter restarting, the router is running openWRT and we can connect to the router using luci.\nInput 192.168.1.1 in a browser and it will ask you to set a password. After this we can connect to the router using ssh with the password.\nssh root@192.168.1.1\nTo install shdowsocks, we need use the package manager command. First refresh the package list by:\nopkg update\nThen find all the packages related to shawdowsocks.\nopkg find &quot;*shadowsocks*&quot;\nopkg install shadowsocks-client\n\n## Must\nopkg install shadowsocks-libev-config\n\n## Not necessary\nopkg install shadowsocks-libev-ss-local\n\n## Redirect requests to shadowsocks server)\nopkg install shadowsocks-libev-ss-redir \n\n## Build up rules to redirect)\nopkg install shadowsocks-libev-ss-rules \n\n## ss server, not necessary\nopkg install shadowsocks-libev-ss-server\n\n## For DNS requests, not necessary in this case\nopkg install shadowsocks-libev-ss-tunnel\n\n##To simple your life\nopkg install luci-app-shadowsocks\nThis method needs dnsmasq and ipset to build a ip filter.\nThe dnsmasq installed by the image does not support ipset, so we need to install dnsmasq-full\nopkg remove dnsmasq\nopkg install dnsmasq-full\nI believe ipset package is already installed with shadowsocks. We can validate it by:\nopkg install ipset\nConfigurations of shadowsocksI would like to configure shadowsocks using luci, which can save you a lot of time.\n\nAdd a ss proxy server.\nAdd a ss-redir service.\nThe key part is putting the url list to the place that is to be forward to ss proxy server.\nBecause the step 3 needs to add the url to the related ipset hash when starting the service, so it doesn’t allow any bad urls. Or the service can not start. To overcome this flaw, I modified the /usr/bin/ss-rules by adding a new ipset hash set named “_unblock” and build a new iptable rules to this set.\n\nIf you don’t want to revise the ss-rules, you can use the command bellow.\nconfiguratins of ipset and iptablesInitiate a new ipset\nipset -N _unblock hash:ip\nAdd the following iptable rules to iptable:\n## Create shadowsocks router rules\niptables -t nat -N shadowsocks\niptables -t mangle -N shadowsocks\n\niptables -t nat -A shadowsocks -d x.x.x.x -j RETURN \n# x.x.x.x为shadowsocks服务器地址\niptables -t nat -A shadowsocks -d 0.0.0.0/8 -j RETURN\niptables -t nat -A shadowsocks -d 10.0.0.0/8 -j RETURN\niptables -t nat -A shadowsocks -d 127.0.0.0/8 -j RETURN\niptables -t nat -A shadowsocks -d 169.254.0.0/16 -j RETURN\niptables -t nat -A shadowsocks -d 172.16.0.0/12 -j RETURN\niptables -t nat -A shadowsocks -d 192.168.0.0/16 -j RETURN\niptables -t nat -A shadowsocks -d 224.0.0.0/4 -j RETURN\niptables -t nat -A shadowsocks -d 240.0.0.0/4 -j RETURN\n\n## TCP\niptables -t nat -A shadowsocks -p tcp -m set --match-set _unblock_ dst -j REDIRECT --to-port 1080\n\n## UDP using TPROXY\niptables -t mangle -A shadowsocks -p udp -m set --match-set redir dst ! --dport 53 -j TPROXY --on-port 1080 --tproxy-mark 0x01/0x01\nip route add local default dev lo table 100\nip rule add fwmark 0x01/0x01 lookup 100\nip route list table 100\n\n\niptables -t nat -A PREROUTING -p tcp -j shadowsocks\niptables -t mangle -A PREROUTING -j shadowsocks\n\niptables -t nat -A OUTPUT -p tcp -j shadowsocks\niptables -t mangle -A OUTPUT -j shadowsocks\nConfiguration of dnsmasq-fullAdd a conf dir to be loaded by dnsmasq\necho &quot;conf-dir=/etc/dnsmasq.d&quot;&gt;&gt;/etc/dnsmasq.conf\nmkdir /etc/dnsmasq.d\ncd /etc/dnsmasq.d\ntouch redir_test.conf\nRestart dnsmasq after revising config file every time\n/etc/init.d/dnsmasq restart\nTestnetstat -nlp\n\n## listen to the port to see what kind of url \ntcpdump -i br-lan host xxxxx\n\n## Test ipset\nping xxxx\nipset list\nreferencehttp://blog.kompaz.win/2017/03/24/OpenWRT%20Shadowsocks+GFWList%20%E6%B5%81%E9%87%8F%E8%87%AA%E5%8A%A8%E5%88%86%E6%B5%81/\n","dateCreated":"2018-09-14T10:18:12+08:00","dateModified":"2019-03-16T14:44:45+08:00","datePublished":"2018-09-14T10:18:12+08:00","description":"","headline":"Unblock Youku on a openWRT Router","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/","keywords":"openWRT, linux, entertainment"}</script>
     <meta name="description" content="How to unblock youku on your routerTo watched videos from China apps like youku, tencent, sogou, we have to unblock the restrictions put on these website. I applied this method to two models of router">
 <meta name="keywords" content="openWRT,linux,entertainment">
 <meta property="og:type" content="blog">
@@ -19,8 +19,8 @@
 <meta property="og:url" content="https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/index.html">
 <meta property="og:site_name" content="Chen Rui&#39;s Blog">
 <meta property="og:description" content="How to unblock youku on your routerTo watched videos from China apps like youku, tencent, sogou, we have to unblock the restrictions put on these website. I applied this method to two models of router">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-03-16T06:38:30.212Z">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2019-03-16T06:44:45.103Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Unblock Youku on a openWRT Router">
 <meta name="twitter:description" content="How to unblock youku on your routerTo watched videos from China apps like youku, tencent, sogou, we have to unblock the restrictions put on these website. I applied this method to two models of router">
@@ -72,55 +72,55 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/ " title="Home">
+                        <a class="sidebar-button-link " href="/ " title="首页">
                     
                         <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Home</span>
+                        <span class="sidebar-button-desc">首页</span>
                     </a>
             </li>
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-categories" title="Kategorien">
+                        <a class="sidebar-button-link " href="/all-categories" title="分类">
                     
                         <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Kategorien</span>
+                        <span class="sidebar-button-desc">分类</span>
                     </a>
             </li>
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-tags" title="Tags">
+                        <a class="sidebar-button-link " href="/all-tags" title="标签">
                     
                         <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Tags</span>
+                        <span class="sidebar-button-desc">标签</span>
                     </a>
             </li>
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-archives" title="Archiv">
+                        <a class="sidebar-button-link " href="/all-archives" title="归档">
                     
                         <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Archiv</span>
+                        <span class="sidebar-button-desc">归档</span>
                     </a>
             </li>
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link open-algolia-search" href="#search" title="Suche">
+                        <a class="sidebar-button-link open-algolia-search" href="#search" title="搜索">
                     
                         <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Suche</span>
+                        <span class="sidebar-button-desc">搜索</span>
                     </a>
             </li>
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="#about" title="Über">
+                        <a class="sidebar-button-link " href="#about" title="关于">
                     
                         <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Über</span>
+                        <span class="sidebar-button-desc">关于</span>
                     </a>
             </li>
             
@@ -184,10 +184,10 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/mailto" title="E-Mail">
+                        <a class="sidebar-button-link " href="/mailto" title="邮箱">
                     
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">E-Mail</span>
+                        <span class="sidebar-button-desc">邮箱</span>
                     </a>
             </li>
             
@@ -228,7 +228,7 @@
         <div class="post-meta">
     <time datetime="2018-09-14T10:18:12+08:00">
 	
-		    14 9月 2018
+		    9月 14, 2018
     	
     </time>
     
@@ -397,7 +397,7 @@ ipset list
     <div id="post-footer" class="post-footer main-content-wrap">
         
             <div class="post-footer-tags">
-                <span class="text-color-light text-small">GETAGGT IN</span><br>
+                <span class="text-color-light text-small">标签</span><br>
                 
     <a class="tag tag--primary tag--small t-link" href="/tags/entertainment/">entertainment</a> <a class="tag tag--primary tag--small t-link" href="/tags/linux/">linux</a> <a class="tag tag--primary tag--small t-link" href="/tags/openWRT/">openWRT</a>
 
@@ -410,18 +410,18 @@ ipset list
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" data-tooltip="Modify the hotkey of Chinese-English language switching in Windows 10" aria-label="FRÜHER: Modify the hotkey of Chinese-English language switching in Windows 10">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" data-tooltip="Modify the hotkey of Chinese-English language switching in Windows 10" aria-label="上一篇: Modify the hotkey of Chinese-English language switching in Windows 10">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">FRÜHER</span>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
                 </a>
             </li>
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/11/rmarkdown-config/" data-tooltip="Setup rmarkdown on server without Rstudio" aria-label="NÄCHSTER: Setup rmarkdown on server without Rstudio">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/11/rmarkdown-config/" data-tooltip="Setup rmarkdown on server without Rstudio" aria-label="下一篇: Setup rmarkdown on server without Rstudio">
                 
-                    <span class="hide-xs hide-sm text-small icon-mr">NÄCHSTER</span>
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
             </li>
@@ -437,7 +437,7 @@ ipset list
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="Teilen auf Facebook">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="分享到 Facebook">
                     <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
@@ -445,7 +445,7 @@ ipset list
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="Teilen auf Twitter">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="分享到 Twitter">
                     <i class="fab fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -453,7 +453,7 @@ ipset list
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="Teilen auf Google Plus">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="分享到 Google+">
                     <i class="fab fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -496,18 +496,18 @@ ipset list
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" data-tooltip="Modify the hotkey of Chinese-English language switching in Windows 10" aria-label="FRÜHER: Modify the hotkey of Chinese-English language switching in Windows 10">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" data-tooltip="Modify the hotkey of Chinese-English language switching in Windows 10" aria-label="上一篇: Modify the hotkey of Chinese-English language switching in Windows 10">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">FRÜHER</span>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
                 </a>
             </li>
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/11/rmarkdown-config/" data-tooltip="Setup rmarkdown on server without Rstudio" aria-label="NÄCHSTER: Setup rmarkdown on server without Rstudio">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/11/rmarkdown-config/" data-tooltip="Setup rmarkdown on server without Rstudio" aria-label="下一篇: Setup rmarkdown on server without Rstudio">
                 
-                    <span class="hide-xs hide-sm text-small icon-mr">NÄCHSTER</span>
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
             </li>
@@ -523,7 +523,7 @@ ipset list
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="Teilen auf Facebook">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="分享到 Facebook">
                     <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
@@ -531,7 +531,7 @@ ipset list
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="Teilen auf Twitter">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="分享到 Twitter">
                     <i class="fab fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -539,7 +539,7 @@ ipset list
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="Teilen auf Google Plus">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="分享到 Google+">
                     <i class="fab fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -568,7 +568,7 @@ ipset list
                 
                 <li class="share-option">
                     <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
-                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Teilen auf Facebook</span>
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>分享到 Facebook</span>
                     </a>
                 </li>
             
@@ -576,7 +576,7 @@ ipset list
                 
                 <li class="share-option">
                     <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
-                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Teilen auf Twitter</span>
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
                     </a>
                 </li>
             
@@ -584,7 +584,7 @@ ipset list
                 
                 <li class="share-option">
                     <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
-                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Teilen auf Google Plus</span>
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>分享到 Google+</span>
                     </a>
                 </li>
             

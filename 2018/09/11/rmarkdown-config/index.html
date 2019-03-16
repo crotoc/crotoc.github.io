@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-cn">
     
 <head>
     <meta charset="UTF-8">
@@ -11,7 +11,7 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"How to Setup rmarkdown on server without RstudioInstall texliveBecause the server is centos6 and the glibc is too old to support texlive 2018, I downloaded texlive 2017 from a website.\nwget http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2017/texlive2017-20170524.iso\nMount the iso and then cp the files to a dir, cd to the dir and them install a minimal distribute using the command:\ncd ~/chenr6/download/texlive\n./install-tl --gui=text\nIf you want to install to a specific dir:\nexport TEXLIVE_INSTALL_PREFIX=/your/dir/\nInput capital S to select scheme and input lower case d to select basic scheme:\nSelect scheme:\n\na [ ] full scheme (everything)\nb [ ] medium scheme (small + more packages and languages)\nc [ ] small scheme (basic + xetex, metapost, a few languages)\nd [X] basic scheme (plain and latex)\ne [ ] minimal scheme (plain only)\nf [ ] ConTeXt scheme\ng [ ] GUST TeX Live scheme\nh [ ] infrastructure-only scheme (no TeX at all)\ni [ ] teTeX scheme (more than medium, but nowhere near full)\nj [ ] custom selection of collections\n\nActions: (disk space required: 157 MB)\n&lt;R&gt; return to main menu\n&lt;Q&gt; quit\n\nEnter letter to select scheme: d\nInput R to return\nInput O to ignore the installation of document:\nOptions customization:\n\n&lt;P&gt; use letter size instead of A4 by default: [ ]\n&lt;E&gt; execution of restricted list of programs: [X]\n&lt;F&gt; create format files:                      [X]\n&lt;D&gt; install font/macro doc tree:              [ ]\n&lt;S&gt; install font/macro source tree:           [ ]\n&lt;L&gt; create symlinks in standard directories:  [ ]\nbinaries to: \nmanpages to: \ninfo to: \n&lt;Y&gt; after installation, get package updates from CTAN: [X]\n\nActions: (disk space required: 157 MB)\n&lt;R&gt; return to main menu\n&lt;Q&gt; quit\n\nEnter command: \nInput R to return and Input I to begin the installation\nSetup texliveAfter installation, put the binary dir to your PATH:\nexport PATH=$PATH:/your/dir/to/bin/\nTo avoide to use the local repository, which is default, set a online repository:\ntlmgr option repository http://mirror.ctan.org/systems/texlive/tlnet\nInstall the missing packages by using the command:\ntlmgr list ecrm2074\n\n    Packages containing files matching crm2074&apos;:\n    ec:\n        texmf-dist/fonts/source/jknappen/ec/ecrm2074.mf\n        texmf-dist/fonts/tfm/jknappen/ec/ecrm2074.tfm\nThe package including ecrm2074 is ec, so use the command:\ntlmgr install ec\nIf you want to install the package to a specific dir:\nexport TEXMFHOME=/your/dir/\n## \nTest your installation by compile a pdf using:\npdflatex your.tex\n","dateCreated":"2018-09-11T14:03:45+08:00","dateModified":"2019-03-16T14:38:30+08:00","datePublished":"2018-09-11T14:03:45+08:00","description":"","headline":"Setup rmarkdown on server without Rstudio","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2018/09/11/rmarkdown-config/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"https://crotoc.github.io/2018/09/11/rmarkdown-config/","keywords":"linux, GNU"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"How to Setup rmarkdown on server without RstudioInstall texliveBecause the server is centos6 and the glibc is too old to support texlive 2018, I downloaded texlive 2017 from a website.\nwget http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2017/texlive2017-20170524.iso\nMount the iso and then cp the files to a dir, cd to the dir and them install a minimal distribute using the command:\ncd ~/chenr6/download/texlive\n./install-tl --gui=text\nIf you want to install to a specific dir:\nexport TEXLIVE_INSTALL_PREFIX=/your/dir/\nInput capital S to select scheme and input lower case d to select basic scheme:\nSelect scheme:\n\na [ ] full scheme (everything)\nb [ ] medium scheme (small + more packages and languages)\nc [ ] small scheme (basic + xetex, metapost, a few languages)\nd [X] basic scheme (plain and latex)\ne [ ] minimal scheme (plain only)\nf [ ] ConTeXt scheme\ng [ ] GUST TeX Live scheme\nh [ ] infrastructure-only scheme (no TeX at all)\ni [ ] teTeX scheme (more than medium, but nowhere near full)\nj [ ] custom selection of collections\n\nActions: (disk space required: 157 MB)\n&lt;R&gt; return to main menu\n&lt;Q&gt; quit\n\nEnter letter to select scheme: d\nInput R to return\nInput O to ignore the installation of document:\nOptions customization:\n\n&lt;P&gt; use letter size instead of A4 by default: [ ]\n&lt;E&gt; execution of restricted list of programs: [X]\n&lt;F&gt; create format files:                      [X]\n&lt;D&gt; install font/macro doc tree:              [ ]\n&lt;S&gt; install font/macro source tree:           [ ]\n&lt;L&gt; create symlinks in standard directories:  [ ]\nbinaries to: \nmanpages to: \ninfo to: \n&lt;Y&gt; after installation, get package updates from CTAN: [X]\n\nActions: (disk space required: 157 MB)\n&lt;R&gt; return to main menu\n&lt;Q&gt; quit\n\nEnter command: \nInput R to return and Input I to begin the installation\nSetup texliveAfter installation, put the binary dir to your PATH:\nexport PATH=$PATH:/your/dir/to/bin/\nTo avoide to use the local repository, which is default, set a online repository:\ntlmgr option repository http://mirror.ctan.org/systems/texlive/tlnet\nInstall the missing packages by using the command:\ntlmgr list ecrm2074\n\n    Packages containing files matching crm2074&apos;:\n    ec:\n        texmf-dist/fonts/source/jknappen/ec/ecrm2074.mf\n        texmf-dist/fonts/tfm/jknappen/ec/ecrm2074.tfm\nThe package including ecrm2074 is ec, so use the command:\ntlmgr install ec\nIf you want to install the package to a specific dir:\nexport TEXMFHOME=/your/dir/\n## \nTest your installation by compile a pdf using:\npdflatex your.tex\n","dateCreated":"2018-09-11T14:03:45+08:00","dateModified":"2019-03-16T14:44:45+08:00","datePublished":"2018-09-11T14:03:45+08:00","description":"","headline":"Setup rmarkdown on server without Rstudio","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2018/09/11/rmarkdown-config/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"https://crotoc.github.io/2018/09/11/rmarkdown-config/","keywords":"linux, GNU"}</script>
     <meta name="description" content="How to Setup rmarkdown on server without RstudioInstall texliveBecause the server is centos6 and the glibc is too old to support texlive 2018, I downloaded texlive 2017 from a website. wget http://ftp">
 <meta name="keywords" content="linux,GNU">
 <meta property="og:type" content="blog">
@@ -19,8 +19,8 @@
 <meta property="og:url" content="https://crotoc.github.io/2018/09/11/rmarkdown-config/index.html">
 <meta property="og:site_name" content="Chen Rui&#39;s Blog">
 <meta property="og:description" content="How to Setup rmarkdown on server without RstudioInstall texliveBecause the server is centos6 and the glibc is too old to support texlive 2018, I downloaded texlive 2017 from a website. wget http://ftp">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-03-16T06:38:30.212Z">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2019-03-16T06:44:45.103Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Setup rmarkdown on server without Rstudio">
 <meta name="twitter:description" content="How to Setup rmarkdown on server without RstudioInstall texliveBecause the server is centos6 and the glibc is too old to support texlive 2018, I downloaded texlive 2017 from a website. wget http://ftp">
@@ -72,55 +72,55 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/ " title="Home">
+                        <a class="sidebar-button-link " href="/ " title="首页">
                     
                         <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Home</span>
+                        <span class="sidebar-button-desc">首页</span>
                     </a>
             </li>
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-categories" title="Kategorien">
+                        <a class="sidebar-button-link " href="/all-categories" title="分类">
                     
                         <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Kategorien</span>
+                        <span class="sidebar-button-desc">分类</span>
                     </a>
             </li>
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-tags" title="Tags">
+                        <a class="sidebar-button-link " href="/all-tags" title="标签">
                     
                         <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Tags</span>
+                        <span class="sidebar-button-desc">标签</span>
                     </a>
             </li>
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-archives" title="Archiv">
+                        <a class="sidebar-button-link " href="/all-archives" title="归档">
                     
                         <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Archiv</span>
+                        <span class="sidebar-button-desc">归档</span>
                     </a>
             </li>
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link open-algolia-search" href="#search" title="Suche">
+                        <a class="sidebar-button-link open-algolia-search" href="#search" title="搜索">
                     
                         <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Suche</span>
+                        <span class="sidebar-button-desc">搜索</span>
                     </a>
             </li>
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="#about" title="Über">
+                        <a class="sidebar-button-link " href="#about" title="关于">
                     
                         <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Über</span>
+                        <span class="sidebar-button-desc">关于</span>
                     </a>
             </li>
             
@@ -184,10 +184,10 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/mailto" title="E-Mail">
+                        <a class="sidebar-button-link " href="/mailto" title="邮箱">
                     
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">E-Mail</span>
+                        <span class="sidebar-button-desc">邮箱</span>
                     </a>
             </li>
             
@@ -228,7 +228,7 @@
         <div class="post-meta">
     <time datetime="2018-09-11T14:03:45+08:00">
 	
-		    11 9月 2018
+		    9月 11, 2018
     	
     </time>
     
@@ -313,7 +313,7 @@ Enter command:
     <div id="post-footer" class="post-footer main-content-wrap">
         
             <div class="post-footer-tags">
-                <span class="text-color-light text-small">GETAGGT IN</span><br>
+                <span class="text-color-light text-small">标签</span><br>
                 
     <a class="tag tag--primary tag--small t-link" href="/tags/GNU/">GNU</a> <a class="tag tag--primary tag--small t-link" href="/tags/linux/">linux</a>
 
@@ -326,18 +326,18 @@ Enter command:
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" data-tooltip="Unblock Youku on a openWRT Router" aria-label="FRÜHER: Unblock Youku on a openWRT Router">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" data-tooltip="Unblock Youku on a openWRT Router" aria-label="上一篇: Unblock Youku on a openWRT Router">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">FRÜHER</span>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
                 </a>
             </li>
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/08/10/gnu-join/" data-tooltip="Gnu join - join two files by specified field" aria-label="NÄCHSTER: Gnu join - join two files by specified field">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/08/10/gnu-join/" data-tooltip="Gnu join - join two files by specified field" aria-label="下一篇: Gnu join - join two files by specified field">
                 
-                    <span class="hide-xs hide-sm text-small icon-mr">NÄCHSTER</span>
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
             </li>
@@ -353,7 +353,7 @@ Enter command:
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/11/rmarkdown-config/" title="Teilen auf Facebook">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/11/rmarkdown-config/" title="分享到 Facebook">
                     <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
@@ -361,7 +361,7 @@ Enter command:
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/11/rmarkdown-config/" title="Teilen auf Twitter">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/11/rmarkdown-config/" title="分享到 Twitter">
                     <i class="fab fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -369,7 +369,7 @@ Enter command:
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/11/rmarkdown-config/" title="Teilen auf Google Plus">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/11/rmarkdown-config/" title="分享到 Google+">
                     <i class="fab fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -412,18 +412,18 @@ Enter command:
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" data-tooltip="Unblock Youku on a openWRT Router" aria-label="FRÜHER: Unblock Youku on a openWRT Router">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" data-tooltip="Unblock Youku on a openWRT Router" aria-label="上一篇: Unblock Youku on a openWRT Router">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">FRÜHER</span>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
                 </a>
             </li>
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/08/10/gnu-join/" data-tooltip="Gnu join - join two files by specified field" aria-label="NÄCHSTER: Gnu join - join two files by specified field">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/08/10/gnu-join/" data-tooltip="Gnu join - join two files by specified field" aria-label="下一篇: Gnu join - join two files by specified field">
                 
-                    <span class="hide-xs hide-sm text-small icon-mr">NÄCHSTER</span>
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </a>
             </li>
@@ -439,7 +439,7 @@ Enter command:
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/11/rmarkdown-config/" title="Teilen auf Facebook">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/11/rmarkdown-config/" title="分享到 Facebook">
                     <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
@@ -447,7 +447,7 @@ Enter command:
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/11/rmarkdown-config/" title="Teilen auf Twitter">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/11/rmarkdown-config/" title="分享到 Twitter">
                     <i class="fab fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -455,7 +455,7 @@ Enter command:
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/11/rmarkdown-config/" title="Teilen auf Google Plus">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/11/rmarkdown-config/" title="分享到 Google+">
                     <i class="fab fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -484,7 +484,7 @@ Enter command:
                 
                 <li class="share-option">
                     <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/11/rmarkdown-config/">
-                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Teilen auf Facebook</span>
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>分享到 Facebook</span>
                     </a>
                 </li>
             
@@ -492,7 +492,7 @@ Enter command:
                 
                 <li class="share-option">
                     <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/11/rmarkdown-config/">
-                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Teilen auf Twitter</span>
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
                     </a>
                 </li>
             
@@ -500,7 +500,7 @@ Enter command:
                 
                 <li class="share-option">
                     <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/11/rmarkdown-config/">
-                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Teilen auf Google Plus</span>
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>分享到 Google+</span>
                     </a>
                 </li>
             
