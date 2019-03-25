@@ -11,7 +11,7 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"How to unblock youku on your routerTo watched videos from China apps like youku, tencent, sogou, we have to unblock the restrictions put on these website.\nI applied this method to two models of routers: NETGEAR WNDR3700 ($20 on ebay) and R7800 ($160 on ebay) and they perform well enough.\nPrerequisites\nA router that can install openWRT.\nA list of urls needed to be unblocked.\nA shadowsocks proxy (let me know if you don’t have)\nPlenty of time\n\nInstallation of openWRTThe openWRT is a open-source system that can be installed on routers, which can bring many great new functions. It is actively developed and maintained.\nFor R7800, we need to flash openWRT through tftp.\n1) Download the firmware from https://openwrt.org/toh/hwdata/netgear/netgear_r7800. Remember the right file is with suffix of “.img”\nwget http://downloads.openwrt.org/releases/18.06.1/targets/ipq806x/generic/openwrt-18.06.1-ipq806x-netgear_r7800-squashfs-factory.img\n2) Install tftp on the computer(Ubuntu).\nsudo apt-get install tftp\n3) Let the router enter into recovery mode.\na. Power off the router\nb. Keep pressing the reset button using a pin and turn on the router.\nc. Release the reset button until the light blink white. The light of router will blink orange first and then after for a few seconds blink white. \n4) Connect the computer with router to one of the lan ports and mannually set the ip to 192.168.1.2. Because the router’s ip is 192.168.1.1, don’t use this ip for the computer.\nIP: 192.168.1.2\nMASK: 255.255.255.0\nGateway: 192.168.1.1\nDNS: 192.168.1.1 (Not important)\n5) Ping the router from the computer to make sure everthing is all right.\nping 192.168.1.1\n\n## 64 bytes from 192.168.1.1: icmp_seq=1 ttl=47 time=80.3 ms\n## 64 bytes from 192.168.1.1: icmp_seq=2 ttl=47 time=80.3 ms\n## 64 bytes from 192.168.1.1: icmp_seq=3 ttl=47 time=80.3 ms\n## 64 bytes from 192.168.1.1: icmp_seq=4 ttl=47 time=80.2 ms\n6) Connect to the router using tftp and upload the openWRT image.\ntftp 192.168.1.1\n\ntftp&gt; ?\nCommands may be abbreviated.  Commands are:\n\nconnect connect to remote tftp\nmode    set file transfer mode\nput     send file\nget     receive file\nquit    exit tftp\nverbose toggle verbose mode\ntrace   toggle packet tracing\nstatus  show current status\nbinary  set mode to octet\nascii   set mode to netascii\nrexmt   set per-packet retransmission timeout\ntimeout set total retransmission timeout\n?       print help information\n   Change to binary mode. This step is necessary. \ntftp&gt; binary\n   Upload the openWRT img file.\ntftp&gt; put openwrt-18.06.1-ipq806x-netgear_r7800-squashfs-factory.img\n   It will show the size uploaded.\n   Quit tftp.\ntftp&gt; quit\n7) If everything goes well, the blinking white light will turn off and the router will restart with openWRT.\nInstall shadowsocks packagesAfter restarting, the router is running openWRT and we can connect to the router using luci.\nInput 192.168.1.1 in a browser and it will ask you to set a password. After this we can connect to the router using ssh with the password.\nssh root@192.168.1.1\nTo install shdowsocks, we need use the package manager command. First refresh the package list by:\nopkg update\nThen find all the packages related to shawdowsocks.\nopkg find &quot;*shadowsocks*&quot;\nopkg install shadowsocks-client\n\n## Must\nopkg install shadowsocks-libev-config\n\n## Not necessary\nopkg install shadowsocks-libev-ss-local\n\n## Redirect requests to shadowsocks server)\nopkg install shadowsocks-libev-ss-redir \n\n## Build up rules to redirect)\nopkg install shadowsocks-libev-ss-rules \n\n## ss server, not necessary\nopkg install shadowsocks-libev-ss-server\n\n## For DNS requests, not necessary in this case\nopkg install shadowsocks-libev-ss-tunnel\n\n##To simple your life\nopkg install luci-app-shadowsocks\nThis method needs dnsmasq and ipset to build a ip filter.\nThe dnsmasq installed by the image does not support ipset, so we need to install dnsmasq-full\nopkg remove dnsmasq\nopkg install dnsmasq-full\nI believe ipset package is already installed with shadowsocks. We can validate it by:\nopkg install ipset\nConfigurations of shadowsocksI would like to configure shadowsocks using luci, which can save you a lot of time.\n\nAdd a ss proxy server.\nAdd a ss-redir service.\nThe key part is putting the url list to the place that is to be forward to ss proxy server.\nBecause the step 3 needs to add the url to the related ipset hash when starting the service, so it doesn’t allow any bad urls. Or the service can not start. To overcome this flaw, I modified the /usr/bin/ss-rules by adding a new ipset hash set named “_unblock” and build a new iptable rules to this set.\n\nIf you don’t want to revise the ss-rules, you can use the command bellow.\nconfiguratins of ipset and iptablesInitiate a new ipset\nipset -N _unblock hash:ip\nAdd the following iptable rules to iptable:\n## Create shadowsocks router rules\niptables -t nat -N shadowsocks\niptables -t mangle -N shadowsocks\n\niptables -t nat -A shadowsocks -d x.x.x.x -j RETURN \n# x.x.x.x为shadowsocks服务器地址\niptables -t nat -A shadowsocks -d 0.0.0.0/8 -j RETURN\niptables -t nat -A shadowsocks -d 10.0.0.0/8 -j RETURN\niptables -t nat -A shadowsocks -d 127.0.0.0/8 -j RETURN\niptables -t nat -A shadowsocks -d 169.254.0.0/16 -j RETURN\niptables -t nat -A shadowsocks -d 172.16.0.0/12 -j RETURN\niptables -t nat -A shadowsocks -d 192.168.0.0/16 -j RETURN\niptables -t nat -A shadowsocks -d 224.0.0.0/4 -j RETURN\niptables -t nat -A shadowsocks -d 240.0.0.0/4 -j RETURN\n\n## TCP\niptables -t nat -A shadowsocks -p tcp -m set --match-set _unblock_ dst -j REDIRECT --to-port 1080\n\n## UDP using TPROXY\niptables -t mangle -A shadowsocks -p udp -m set --match-set redir dst ! --dport 53 -j TPROXY --on-port 1080 --tproxy-mark 0x01/0x01\nip route add local default dev lo table 100\nip rule add fwmark 0x01/0x01 lookup 100\nip route list table 100\n\n\niptables -t nat -A PREROUTING -p tcp -j shadowsocks\niptables -t mangle -A PREROUTING -j shadowsocks\n\niptables -t nat -A OUTPUT -p tcp -j shadowsocks\niptables -t mangle -A OUTPUT -j shadowsocks\nConfiguration of dnsmasq-fullAdd a conf dir to be loaded by dnsmasq\necho &quot;conf-dir=/etc/dnsmasq.d&quot;&gt;&gt;/etc/dnsmasq.conf\nmkdir /etc/dnsmasq.d\ncd /etc/dnsmasq.d\ntouch redir_test.conf\nRestart dnsmasq after revising config file every time\n/etc/init.d/dnsmasq restart\nTestnetstat -nlp\n\n## listen to the port to see what kind of url \ntcpdump -i br-lan host xxxxx\n\n## Test ipset\nping xxxx\nipset list\nreferencehttp://blog.kompaz.win/2017/03/24/OpenWRT%20Shadowsocks+GFWList%20%E6%B5%81%E9%87%8F%E8%87%AA%E5%8A%A8%E5%88%86%E6%B5%81/\n","dateCreated":"2018-09-14T10:18:12+08:00","dateModified":"2019-03-23T01:49:12+08:00","datePublished":"2018-09-14T10:18:12+08:00","description":"","headline":"Unblock Youku on a openWRT Router","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/","keywords":"openWRT, linux, entertainment"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"crnormal"},"articleBody":"How to unblock youku on your routerTo watched videos from China apps like youku, tencent, sogou, we have to unblock the restrictions put on these website.\nI applied this method to two models of routers: NETGEAR WNDR3700 ($20 on ebay) and R7800 ($160 on ebay) and they perform well enough.\nPrerequisites\nA router that can install openWRT.\nA list of urls needed to be unblocked.\nA shadowsocks proxy (let me know if you don’t have)\nPlenty of time\n\nInstallation of openWRTThe openWRT is a open-source system that can be installed on routers, which can bring many great new functions. It is actively developed and maintained.\nFor R7800, we need to flash openWRT through tftp.\n1) Download the firmware from https://openwrt.org/toh/hwdata/netgear/netgear_r7800. Remember the right file is with suffix of “.img”\nwget http://downloads.openwrt.org/releases/18.06.1/targets/ipq806x/generic/openwrt-18.06.1-ipq806x-netgear_r7800-squashfs-factory.img\n2) Install tftp on the computer(Ubuntu).\nsudo apt-get install tftp\n3) Let the router enter into recovery mode.\na. Power off the router\nb. Keep pressing the reset button using a pin and turn on the router.\nc. Release the reset button until the light blink white. The light of router will blink orange first and then after for a few seconds blink white. \n4) Connect the computer with router to one of the lan ports and mannually set the ip to 192.168.1.2. Because the router’s ip is 192.168.1.1, don’t use this ip for the computer.\nIP: 192.168.1.2\nMASK: 255.255.255.0\nGateway: 192.168.1.1\nDNS: 192.168.1.1 (Not important)\n5) Ping the router from the computer to make sure everthing is all right.\nping 192.168.1.1\n\n## 64 bytes from 192.168.1.1: icmp_seq=1 ttl=47 time=80.3 ms\n## 64 bytes from 192.168.1.1: icmp_seq=2 ttl=47 time=80.3 ms\n## 64 bytes from 192.168.1.1: icmp_seq=3 ttl=47 time=80.3 ms\n## 64 bytes from 192.168.1.1: icmp_seq=4 ttl=47 time=80.2 ms\n6) Connect to the router using tftp and upload the openWRT image.\ntftp 192.168.1.1\n\ntftp&gt; ?\nCommands may be abbreviated.  Commands are:\n\nconnect connect to remote tftp\nmode    set file transfer mode\nput     send file\nget     receive file\nquit    exit tftp\nverbose toggle verbose mode\ntrace   toggle packet tracing\nstatus  show current status\nbinary  set mode to octet\nascii   set mode to netascii\nrexmt   set per-packet retransmission timeout\ntimeout set total retransmission timeout\n?       print help information\n   Change to binary mode. This step is necessary. \ntftp&gt; binary\n   Upload the openWRT img file.\ntftp&gt; put openwrt-18.06.1-ipq806x-netgear_r7800-squashfs-factory.img\n   It will show the size uploaded.\n   Quit tftp.\ntftp&gt; quit\n7) If everything goes well, the blinking white light will turn off and the router will restart with openWRT.\nInstall shadowsocks packagesAfter restarting, the router is running openWRT and we can connect to the router using luci.\nInput 192.168.1.1 in a browser and it will ask you to set a password. After this we can connect to the router using ssh with the password.\nssh root@192.168.1.1\nTo install shdowsocks, we need use the package manager command. First refresh the package list by:\nopkg update\nThen find all the packages related to shawdowsocks.\nopkg find &quot;*shadowsocks*&quot;\nopkg install shadowsocks-client\n\n## Must\nopkg install shadowsocks-libev-config\n\n## Not necessary\nopkg install shadowsocks-libev-ss-local\n\n## Redirect requests to shadowsocks server)\nopkg install shadowsocks-libev-ss-redir \n\n## Build up rules to redirect)\nopkg install shadowsocks-libev-ss-rules \n\n## ss server, not necessary\nopkg install shadowsocks-libev-ss-server\n\n## For DNS requests, not necessary in this case\nopkg install shadowsocks-libev-ss-tunnel\n\n##To simple your life\nopkg install luci-app-shadowsocks\nThis method needs dnsmasq and ipset to build a ip filter.\nThe dnsmasq installed by the image does not support ipset, so we need to install dnsmasq-full\nopkg remove dnsmasq\nopkg install dnsmasq-full\nI believe ipset package is already installed with shadowsocks. We can validate it by:\nopkg install ipset\nConfigurations of shadowsocksI would like to configure shadowsocks using luci, which can save you a lot of time.\n\nAdd a ss proxy server.\nAdd a ss-redir service.\nThe key part is putting the url list to the place that is to be forward to ss proxy server.\nBecause the step 3 needs to add the url to the related ipset hash when starting the service, so it doesn’t allow any bad urls. Or the service can not start. To overcome this flaw, I modified the /usr/bin/ss-rules by adding a new ipset hash set named “_unblock” and build a new iptable rules to this set.\n\nIf you don’t want to revise the ss-rules, you can use the command bellow.\nconfiguratins of ipset and iptablesInitiate a new ipset\nipset -N _unblock hash:ip\nAdd the following iptable rules to iptable:\n## Create shadowsocks router rules\niptables -t nat -N shadowsocks\niptables -t mangle -N shadowsocks\n\niptables -t nat -A shadowsocks -d x.x.x.x -j RETURN \n# x.x.x.x为shadowsocks服务器地址\niptables -t nat -A shadowsocks -d 0.0.0.0/8 -j RETURN\niptables -t nat -A shadowsocks -d 10.0.0.0/8 -j RETURN\niptables -t nat -A shadowsocks -d 127.0.0.0/8 -j RETURN\niptables -t nat -A shadowsocks -d 169.254.0.0/16 -j RETURN\niptables -t nat -A shadowsocks -d 172.16.0.0/12 -j RETURN\niptables -t nat -A shadowsocks -d 192.168.0.0/16 -j RETURN\niptables -t nat -A shadowsocks -d 224.0.0.0/4 -j RETURN\niptables -t nat -A shadowsocks -d 240.0.0.0/4 -j RETURN\n\n## TCP\niptables -t nat -A shadowsocks -p tcp -m set --match-set _unblock_ dst -j REDIRECT --to-port 1080\n\n## UDP using TPROXY\niptables -t mangle -A shadowsocks -p udp -m set --match-set redir dst ! --dport 53 -j TPROXY --on-port 1080 --tproxy-mark 0x01/0x01\nip route add local default dev lo table 100\nip rule add fwmark 0x01/0x01 lookup 100\nip route list table 100\n\n\niptables -t nat -A PREROUTING -p tcp -j shadowsocks\niptables -t mangle -A PREROUTING -j shadowsocks\n\niptables -t nat -A OUTPUT -p tcp -j shadowsocks\niptables -t mangle -A OUTPUT -j shadowsocks\nConfiguration of dnsmasq-fullAdd a conf dir to be loaded by dnsmasq\necho &quot;conf-dir=/etc/dnsmasq.d&quot;&gt;&gt;/etc/dnsmasq.conf\nmkdir /etc/dnsmasq.d\ncd /etc/dnsmasq.d\ntouch redir_test.conf\nRestart dnsmasq after revising config file every time\n/etc/init.d/dnsmasq restart\nTestnetstat -nlp\n\n## listen to the port to see what kind of url \ntcpdump -i br-lan host xxxxx\n\n## Test ipset\nping xxxx\nipset list\nreferencehttp://blog.kompaz.win/2017/03/24/OpenWRT%20Shadowsocks+GFWList%20%E6%B5%81%E9%87%8F%E8%87%AA%E5%8A%A8%E5%88%86%E6%B5%81/\n","dateCreated":"2018-09-14T10:18:12+08:00","dateModified":"2019-03-26T05:56:42+08:00","datePublished":"2018-09-14T10:18:12+08:00","description":"","headline":"Unblock Youku on a openWRT Router","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"crnormal","logo":{"@type":"ImageObject","url":"crnormal"}},"url":"https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/","keywords":"openWRT, linux, entertainment"}</script>
     <meta name="description" content="How to unblock youku on your routerTo watched videos from China apps like youku, tencent, sogou, we have to unblock the restrictions put on these website. I applied this method to two models of router">
 <meta name="keywords" content="openWRT,linux,entertainment">
 <meta property="og:type" content="blog">
@@ -20,7 +20,7 @@
 <meta property="og:site_name" content="Chen Rui&#39;s Blog">
 <meta property="og:description" content="How to unblock youku on your routerTo watched videos from China apps like youku, tencent, sogou, we have to unblock the restrictions put on these website. I applied this method to two models of router">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2019-03-22T17:49:12.718Z">
+<meta property="og:updated_time" content="2019-03-25T21:56:42.225Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Unblock Youku on a openWRT Router">
 <meta name="twitter:description" content="How to unblock youku on your routerTo watched videos from China apps like youku, tencent, sogou, we have to unblock the restrictions put on these website. I applied this method to two models of router">
@@ -29,6 +29,8 @@
         
     
     
+        <meta property="og:image" content="https://crotoc.github.io/assets/images/crnormal"/>
+    
     
     
     
@@ -36,6 +38,15 @@
     <link rel="stylesheet" href="/assets/css/style-c4ozcsklz4kht2pebhp44xorvyverh23toayhn7i6ubrpyedak24hv1v0hyd.min.css">
     <!--STYLES END-->
     
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-136975492-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-136975492-1');
+    </script>
+
 
     
 </head>
@@ -45,6 +56,10 @@
             <!-- Define author's picture -->
 
 
+    
+        
+            
+        
     
 
 <header id="header" data-behavior="4">
@@ -57,6 +72,8 @@
             <a class="header-right-picture " href="#about">
         
         
+            <img class="header-picture" src="/assets/images/crnormal" alt="作者的图片">
+        
         </a>
     
 </header>
@@ -64,8 +81,23 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/crnormal" alt="作者的图片">
+                </a>
+                <h4 class="sidebar-profile-name"></h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>author.bio</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -130,7 +162,7 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="https://github.com/" target="_blank" rel="noopener" title="GitHub">
+                        <a class="sidebar-button-link " href="https://github.com/crotoc?tab=repositories" target="_blank" rel="noopener" title="GitHub">
                     
                         <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">GitHub</span>
@@ -139,68 +171,10 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="http://stackoverflow.com/users" target="_blank" rel="noopener" title="Stack Overflow">
-                    
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://twitter.com/" target="_blank" rel="noopener" title="Twitter">
-                    
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://facebook.com/" target="_blank" rel="noopener" title="Facebook">
-                    
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://plus.google.com/" target="_blank" rel="noopener" title="Google Plus">
-                    
-                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google Plus</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://www.linkedin.com/profile/" target="_blank" rel="noopener" title="LinkedIn">
-                    
-                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">LinkedIn</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="/mailto" title="邮箱">
+                        <a class="sidebar-button-link " href="mailto:crotoc@gmail.com" target="_blank" rel="noopener" title="邮箱">
                     
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">邮箱</span>
-                    </a>
-            </li>
-            
-        </ul>
-        
-            <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="/atom.xml" title="RSS">
-                    
-                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">RSS</span>
                     </a>
             </li>
             
@@ -458,7 +432,37 @@ ipset list
                 </a>
             </li>
         
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="分享到 Weibo">
+                    <i class="fab fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
         
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/&amp;title=Unblock Youku on a openWRT Router" title="分享到 QQ">
+                    <i class="fab fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="分享到 Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#gitment">
+                         <i class="fa fa-comment"></i>
+                    </a>
+                </li>
             
         
         <li class="post-action">
@@ -474,6 +478,8 @@ ipset list
 
         
         
+            
+                <div id="gitment"></div>
             
         
     </div>
@@ -544,7 +550,37 @@ ipset list
                 </a>
             </li>
         
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="分享到 Weibo">
+                    <i class="fab fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
         
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/&amp;title=Unblock Youku on a openWRT Router" title="分享到 QQ">
+                    <i class="fab fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="分享到 Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#gitment">
+                         <i class="fa fa-comment"></i>
+                    </a>
+                </li>
             
         
         <li class="post-action">
@@ -588,6 +624,30 @@ ipset list
                     </a>
                 </li>
             
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
+                        <i class="fab fa-weibo" aria-hidden="true"></i><span>分享到 Weibo</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/&amp;title=Unblock Youku on a openWRT Router">
+                        <i class="fab fa-qq" aria-hidden="true"></i><span>分享到 QQ</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
+                        <i class="fa fa-star" aria-hidden="true"></i><span>分享到 Qzone</span>
+                    </a>
+                </li>
+            
         </ul>
     </div>
 
@@ -597,11 +657,17 @@ ipset list
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
+        
+            <img id="about-card-picture" src="/assets/images/crnormal" alt="作者的图片">
         
             <h4 id="about-card-name"></h4>
         
@@ -617,6 +683,230 @@ ipset list
             </div>
         
         
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br>
+                Nashville, TN, U.S.
+            </div>
+        
+    </div>
+</div>
+
+        
+            <div id="algolia-search-modal" class="modal-container">
+    <div class="modal">
+        <div class="modal-header">
+            <span class="close-button"><i class="fa fa-times"></i></span>
+            <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+                <span class="searchby-algolia-text text-color-light text-small">by</span>
+                <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+            </a>
+            <i class="search-icon fa fa-search"></i>
+            <form id="algolia-search-form">
+                <input type="text" id="algolia-search-input" name="search" class="form-control input--large search-input" placeholder="Search ">
+            </form>
+        </div>
+        <div class="modal-body">
+            <div class="no-result text-color-light text-center">没有找到文章</div>
+            <div class="results">
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2018/08/09/travis-test/">
+                            <h3 class="media-heading">travis_test</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2018年8月9日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2018/08/10/gnu-join/">
+                            <h3 class="media-heading">Gnu join - join two files by specified field</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2018年8月10日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2018/09/11/rmarkdown-config/">
+                            <h3 class="media-heading">Setup rmarkdown on server without Rstudio</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2018年9月11日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
+                            <h3 class="media-heading">Unblock Youku on a openWRT Router</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2018年9月14日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/">
+                            <h3 class="media-heading">Modify the hotkey of Chinese-English language switching in Windows 10</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2018年9月25日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
+                            <h3 class="media-heading">Install customized fonts for imagemagick</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2018年9月28日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2019/01/22/Unblock-region-restriction-of-musics-videos/">
+                            <h3 class="media-heading">Unblock region restriction of musics/videos</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2019年1月22日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2019/01/22/terminal-in-windows-sub-linux-system/">
+                            <h3 class="media-heading">Windows 10下面最好的terminal (WSL)</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2019年1月22日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/">
+                            <h3 class="media-heading">Bugs when using the tranquilpeak hexo theme</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2019年3月16日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2019/03/22/How-to-install-v2ray-service-on-R7800/">
+                            <h3 class="media-heading">How to install v2ray service on R7800</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2019年3月22日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+            </div>
+        </div>
+        <div class="modal-footer">
+            <p class="results-count text-medium" data-message-zero="没有找到文章" data-message-one="找到 1 篇文章" data-message-other="找到 {n} 篇文章">
+                找到 11 篇文章
+            </p>
+        </div>
     </div>
 </div>
 
@@ -628,7 +918,43 @@ ipset list
 <!--SCRIPTS END-->
 
     
+        <script type="text/javascript">
+            (function() {
+                function render() {
+                    new Gitment({
+                        id: 'https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/',
+                        owner: 'crotoc',
+                        repo: 'crotoc.github.io',
+                        oauth: {
+                            client_id: '8949a42af7f682244101',
+                            client_secret: '65bb20f6caaa62c4f2bfd335684056ec2f936473',
+                        }
+                    }).render('gitment');
+                }
+                var gc = document.createElement('script');
+                gc.type = 'text/javascript';
+                gc.src = '//imsun.github.io/gitment/dist/gitment.browser.js';
+                gc.charset = 'UTF-8';
+                gc.onload = render;
+                gc.async = true;
+                document.querySelector('body').appendChild(gc);
+                var gcs = document.createElement('link');
+                gcs.href = '//imsun.github.io/gitment/style/default.css';
+                gcs.type = 'text/css';
+                gcs.rel = 'stylesheet';
+                gcs.media = 'screen,print';
+                document.querySelector('head').appendChild(gcs);
+            })();
+	    </script>
+    
 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment-with-locales.min.js"></script>
+    <script src="//cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+    <script>
+        var algoliaClient = algoliasearch('MI05O8RBDD', 'f4469462d3dc48c35cb5b571a9c43404');
+        var algoliaIndex = algoliaClient.initIndex('Blog');
+    </script>
 
 
     </body>

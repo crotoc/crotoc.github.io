@@ -6,19 +6,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Chen Rui&#39;s Blog">
-    <title>归档: 2018/8 - Chen Rui&#39;s Blog</title>
+    <title>all-tags - Chen Rui&#39;s Blog</title>
     <meta name="author" content="">
     
     
     
-    <script type="application/ld+json">{}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"Website","@id":"https://crotoc.github.io","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"crnormal"},"name":"Chen Rui's Blog","description":null,"url":"https://crotoc.github.io"}</script>
     <meta property="og:type" content="blog">
-<meta property="og:title" content="Chen Rui&#39;s Blog">
-<meta property="og:url" content="https://crotoc.github.io/archives/2018/08/index.html">
+<meta property="og:title" content="all-tags">
+<meta property="og:url" content="https://crotoc.github.io/all-tags/index.html">
 <meta property="og:site_name" content="Chen Rui&#39;s Blog">
 <meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2019-03-25T21:56:42.225Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Chen Rui&#39;s Blog">
+<meta name="twitter:title" content="all-tags">
     
     
         
@@ -183,199 +184,238 @@
                  class="
                         hasCoverMetaIn
                         ">
-                
-    <section class="postShorten-group main-content-wrap">
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title">
-                    
-                        <a class="link-unstyled" href="/2018/08/10/gnu-join/">
-                            Gnu join - join two files by specified field
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time datetime="2018-08-10T12:36:45+08:00">
-	
-		    8月 10, 2018
-    	
-    </time>
-    
-</div>
+                <div id="tags-archives" class="main-content-wrap">
+    <form id="filter-form" action="#">
+        <input name="tag" type="text" class="form-control input--xlarge" placeholder="搜索标签" autofocus="autofocus">
+    </form>
+    <h4 class="archive-result text-color-base text-xlarge" data-message-zero="没有找到标签" data-message-one="找到 1 个标签" data-message-other="找到 {n} 个标签"></h4>
 
-            </div>
-            
-                <div class="postShorten-content">
-                    <h1 id="How-to-join-multiple-files-using-GNU-join"><a href="#How-to-join-multiple-files-using-GNU-join" class="headerlink" title="How to join multiple files using GNU join"></a>How to join multiple files using GNU join</h1><h2 id="Basic-usage"><a href="#Basic-usage" class="headerlink" title="Basic usage"></a>Basic usage</h2><p>Create two files with <em>TAB</em> delimiter</p>
-<p>file1:</p>
-<pre><code>a    1
-b   1
-d       1
-e       1
-g       1
-</code></pre><p>file2:</p>
-<pre><code>a   2
-b   2
-c   2
-e   2
-f   2
-</code></pre><p>Join them use join:</p>
-<pre><code>join -1 1 -2 1 file1 file2
-</code></pre><p>Output:</p>
-<pre><code>a 1 2
-d 1 2
-e 1 2
-</code></pre><h2 id="The-very-useful-options-for-GNU-join"><a href="#The-very-useful-options-for-GNU-join" class="headerlink" title="The very useful options for GNU join"></a>The very useful options for GNU join</h2><h3 id="a1-print-unmatched-lines-in-file1"><a href="#a1-print-unmatched-lines-in-file1" class="headerlink" title="-a1 - print unmatched lines in file1;"></a>-a1 - print unmatched lines in file1;</h3><pre><code>join -1 1 -1 1 file1 file2 -a1
-</code></pre><p>Output:</p>
-<pre><code>a 1 2
-b 1
-d 1 2
-e 1 2
-g 1
-</code></pre><h3 id="a2-print-unmatched-lines-in-file2"><a href="#a2-print-unmatched-lines-in-file2" class="headerlink" title="-a2 - print unmatched lines in file2"></a>-a2 - print unmatched lines in file2</h3><pre><code>join -1 1 -1 1 file1 file2 -a2
-</code></pre><p>Output:</p>
-<pre><code>a 1 2
-c 2
-d 1 2
-e 1 2
-f 2
-</code></pre><h3 id="a1-a2-print-unmatched-lines-in-both-file1-and-file2"><a href="#a1-a2-print-unmatched-lines-in-both-file1-and-file2" class="headerlink" title="-a1 -a2 - print unmatched lines in both file1 and file2"></a>-a1 -a2 - print unmatched lines in both file1 and file2</h3><pre><code>join  -1 1 -1 1 file1 file2 -a1 -a2
-</code></pre><p>Output:</p>
-<pre><code>a 1 2
-b 1
-c 2
-d 1 2
-e 1 2
-f 2
-g 1
-</code></pre><p><em>Be careful that tab is not aligned well.</em></p>
-<h3 id="o-To-align-the-output-in-table-format-use-the-option-to-custome-the-output"><a href="#o-To-align-the-output-in-table-format-use-the-option-to-custome-the-output" class="headerlink" title="-o - To align the output in table format, use the option to custome the output"></a>-o - To align the output in table format, use the option to custome the output</h3><pre><code>join  -1 1 -1 1 file1 file2 -a1 -a2 -o 0,1.2,2.2
-</code></pre><p><em>0</em>  means the joined column.<br><em>1.2</em> means print the column 2 in file1;<br><em>2.2</em> means print the column 2 in file2;</p>
-<p>Output:</p>
-<pre><code>a 1 2
-b 1 
-c  2
-d 1 2
-e 1 2
-f  2
-g 1 
-</code></pre><p>If file1 and files have more than 2 columns, modify the -o string</p>
-<h3 id="t-To-use-the-TAB-as-output-delimiter"><a href="#t-To-use-the-TAB-as-output-delimiter" class="headerlink" title="-t - To use the TAB as output delimiter"></a>-t - To use the <em>TAB</em> as output delimiter</h3><pre><code>join  -1 1 -1 1 file1 file2 -a1 -a2 -o 0,1.2,2.2 -t$&apos;\t&apos;
-</code></pre><p>Output:</p>
-<pre><code>a       1       2
-b       1
-c               2
-d       1       2
-e       1       2
-f               2
-g       1
-</code></pre><h3 id="–check-order-join-requires-the-input-file-sorted-if-join-with-1st-column-please-sort-the-input-files-using-1st-columns-before-use-join-And-to-make-sure-there-is-no-problem-use-this-option-to-check"><a href="#–check-order-join-requires-the-input-file-sorted-if-join-with-1st-column-please-sort-the-input-files-using-1st-columns-before-use-join-And-to-make-sure-there-is-no-problem-use-this-option-to-check" class="headerlink" title="–check-order -  join requires the input file sorted, if join with 1st column, please sort the input files using 1st columns before use join. And to make sure there is no problem, use this option to check."></a>–check-order -  join requires the input file sorted, if join with 1st column, please sort the input files using 1st columns before use join. And to make sure there is no problem, use this option to check.</h3><pre><code>join  -1 1 -1 1 file1 file2 -a1 -a2 -o 0,1.2,2.2 -t$&apos;\t&apos; --check-order
-</code></pre><p>Output:</p>
-<pre><code>a       1       2
-b       1
-c               2
-d       1       2
-e       1       2
-f               2
-g       1
-</code></pre><p>Create non-sorted file3:</p>
-<pre><code>a       3
-d       3
-c       3
-e       3
-f       3
-</code></pre><p>join file1 and file3:</p>
-<pre><code>join  -1 1 -1 1 file1 file3 -a1 -a2 -o 0,1.2,2.2 -t$&apos;\t&apos; --check-order
-</code></pre><p>Output with error message:</p>
-<pre><code>a       1       3
-b       1
-join: file3:3: is not sorted: c 3
-</code></pre><h3 id="e-To-make-the-output-format-more-strict-and-use-this-option-to-fill-missing-columns-This-helps-greatly-if-you-need-to-process-the-file-in-the-downstreaming-analysis"><a href="#e-To-make-the-output-format-more-strict-and-use-this-option-to-fill-missing-columns-This-helps-greatly-if-you-need-to-process-the-file-in-the-downstreaming-analysis" class="headerlink" title="-e -  To make the output format more strict and use this option to fill missing columns. This helps greatly if you need to process the file in the downstreaming analysis."></a>-e -  To make the output format more strict and use this option to fill missing columns. This helps greatly if you need to process the file in the downstreaming analysis.</h3><pre><code>join  -1 1 -1 1 file1 file2 -a1 -a2 -o 0,1.2,2.2 -t$&apos;\t&apos; --check-order -eNULL
-</code></pre><p>Output:</p>
-<pre><code>a       1       2
-b       1       NULL
-c       NULL    2
-d       1       2
-e       1       2
-f       NULL    2
-g       1       NULL
-</code></pre><p>Output is a very tidy table.</p>
-
+        <section>
+        
+            <a class="tag tag--primary tag--small" href="#Computer setup-list" data-tag="computer setup">
+                Computer setup
+            </a>
+        
+            <a class="tag tag--primary tag--small" href="#GNU-list" data-tag="gnu">
+                GNU
+            </a>
+        
+            <a class="tag tag--primary tag--small" href="#entertainment-list" data-tag="entertainment">
+                entertainment
+            </a>
+        
+            <a class="tag tag--primary tag--small" href="#linux-list" data-tag="linux">
+                linux
+            </a>
+        
+            <a class="tag tag--primary tag--small" href="#openWRT-list" data-tag="openwrt">
+                openWRT
+            </a>
+        
+            <a class="tag tag--primary tag--small" href="#setup-list" data-tag="setup">
+                setup
+            </a>
+        
+            <a class="tag tag--primary tag--small" href="#trick-list" data-tag="trick">
+                trick
+            </a>
+        
+            <a class="tag tag--primary tag--small" href="#科学上网-list" data-tag="科学上网">
+                科学上网
+            </a>
+        
+    </section>
+    <section class="boxes">
+        
+            <div id="Computer setup-list" class="archive box" data-tag="computer setup">
+                <h4 class="archive-title">
+                    <a class="link-unstyled" href="/tags/Computer-setup">
+                        Computer setup (1)
+                    </a>
+                </h4>
+                <ul class="archive-posts">
                     
-                        
-
-                    
-                    
-                        <p>
-                            <a href="/2018/08/10/gnu-join/#post-footer" class="postShorten-excerpt_link link">
-                                评论和共享
+                        <li class="archive-post">
+                            <a class="archive-post-title" href="/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/">
+                                Modify the hotkey of Chinese-English language switching in Windows 10
                             </a>
-                        </p>
+                            <span class="archive-post-date">
+                                 - 9月 25, 2018
+                            </span>
+                        </li>
                     
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title">
-                    
-                        <a class="link-unstyled" href="/2018/08/09/travis-test/">
-                            travis_test
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time datetime="2018-08-09T15:56:14+08:00">
-	
-		    8月 09, 2018
-    	
-    </time>
-    
-</div>
-
+                </ul>
             </div>
-            
-                <div class="postShorten-content">
-                    <p>This artile is auto deployed by travis! Test!</p>
-
+        
+            <div id="GNU-list" class="archive box" data-tag="gnu">
+                <h4 class="archive-title">
+                    <a class="link-unstyled" href="/tags/GNU">
+                        GNU (2)
+                    </a>
+                </h4>
+                <ul class="archive-posts">
                     
-                        
-
-                    
-                    
-                        <p>
-                            <a href="/2018/08/09/travis-test/#post-footer" class="postShorten-excerpt_link link">
-                                评论和共享
+                        <li class="archive-post">
+                            <a class="archive-post-title" href="/2018/09/11/rmarkdown-config/">
+                                Setup rmarkdown on server without Rstudio
                             </a>
-                        </p>
+                            <span class="archive-post-date">
+                                 - 9月 11, 2018
+                            </span>
+                        </li>
                     
-                </div>
-            
-        </div>
+                        <li class="archive-post">
+                            <a class="archive-post-title" href="/2018/08/10/gnu-join/">
+                                Gnu join - join two files by specified field
+                            </a>
+                            <span class="archive-post-date">
+                                 - 8月 10, 2018
+                            </span>
+                        </li>
+                    
+                </ul>
+            </div>
         
-    </article>
-    
-    <div class="pagination-bar">
-    <ul class="pagination">
+            <div id="entertainment-list" class="archive box" data-tag="entertainment">
+                <h4 class="archive-title">
+                    <a class="link-unstyled" href="/tags/entertainment">
+                        entertainment (1)
+                    </a>
+                </h4>
+                <ul class="archive-posts">
+                    
+                        <li class="archive-post">
+                            <a class="archive-post-title" href="/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
+                                Unblock Youku on a openWRT Router
+                            </a>
+                            <span class="archive-post-date">
+                                 - 9月 14, 2018
+                            </span>
+                        </li>
+                    
+                </ul>
+            </div>
         
+            <div id="linux-list" class="archive box" data-tag="linux">
+                <h4 class="archive-title">
+                    <a class="link-unstyled" href="/tags/linux">
+                        linux (3)
+                    </a>
+                </h4>
+                <ul class="archive-posts">
+                    
+                        <li class="archive-post">
+                            <a class="archive-post-title" href="/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
+                                Unblock Youku on a openWRT Router
+                            </a>
+                            <span class="archive-post-date">
+                                 - 9月 14, 2018
+                            </span>
+                        </li>
+                    
+                        <li class="archive-post">
+                            <a class="archive-post-title" href="/2018/09/11/rmarkdown-config/">
+                                Setup rmarkdown on server without Rstudio
+                            </a>
+                            <span class="archive-post-date">
+                                 - 9月 11, 2018
+                            </span>
+                        </li>
+                    
+                        <li class="archive-post">
+                            <a class="archive-post-title" href="/2018/08/10/gnu-join/">
+                                Gnu join - join two files by specified field
+                            </a>
+                            <span class="archive-post-date">
+                                 - 8月 10, 2018
+                            </span>
+                        </li>
+                    
+                </ul>
+            </div>
         
-        <li class="pagination-number">第 1 页 共 1 页</li>
-    </ul>
+            <div id="openWRT-list" class="archive box" data-tag="openwrt">
+                <h4 class="archive-title">
+                    <a class="link-unstyled" href="/tags/openWRT">
+                        openWRT (1)
+                    </a>
+                </h4>
+                <ul class="archive-posts">
+                    
+                        <li class="archive-post">
+                            <a class="archive-post-title" href="/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
+                                Unblock Youku on a openWRT Router
+                            </a>
+                            <span class="archive-post-date">
+                                 - 9月 14, 2018
+                            </span>
+                        </li>
+                    
+                </ul>
+            </div>
+        
+            <div id="setup-list" class="archive box" data-tag="setup">
+                <h4 class="archive-title">
+                    <a class="link-unstyled" href="/tags/setup">
+                        setup (1)
+                    </a>
+                </h4>
+                <ul class="archive-posts">
+                    
+                        <li class="archive-post">
+                            <a class="archive-post-title" href="/2019/01/22/terminal-in-windows-sub-linux-system/">
+                                Windows 10下面最好的terminal (WSL)
+                            </a>
+                            <span class="archive-post-date">
+                                 - 1月 22, 2019
+                            </span>
+                        </li>
+                    
+                </ul>
+            </div>
+        
+            <div id="trick-list" class="archive box" data-tag="trick">
+                <h4 class="archive-title">
+                    <a class="link-unstyled" href="/tags/trick">
+                        trick (1)
+                    </a>
+                </h4>
+                <ul class="archive-posts">
+                    
+                        <li class="archive-post">
+                            <a class="archive-post-title" href="/2018/09/28/Install-customized-fonts-for-imagemagick/">
+                                Install customized fonts for imagemagick
+                            </a>
+                            <span class="archive-post-date">
+                                 - 9月 28, 2018
+                            </span>
+                        </li>
+                    
+                </ul>
+            </div>
+        
+            <div id="科学上网-list" class="archive box" data-tag="科学上网">
+                <h4 class="archive-title">
+                    <a class="link-unstyled" href="/tags/科学上网">
+                        科学上网 (1)
+                    </a>
+                </h4>
+                <ul class="archive-posts">
+                    
+                        <li class="archive-post">
+                            <a class="archive-post-title" href="/2019/03/22/How-to-install-v2ray-service-on-R7800/">
+                                How to install v2ray service on R7800
+                            </a>
+                            <span class="archive-post-date">
+                                 - 3月 22, 2019
+                            </span>
+                        </li>
+                    
+                </ul>
+            </div>
+        
+    </section>
 </div>
-
-</section>
-
-
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
