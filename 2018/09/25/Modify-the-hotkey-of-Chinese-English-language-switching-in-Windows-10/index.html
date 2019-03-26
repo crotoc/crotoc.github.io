@@ -13,7 +13,7 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"},"articleBody":"\n[//]: # \nModify the hotkey of Chinese-English language switching in Windows 10\nThe problem is very annoying because the hotkey ctrl+space has conflicted with others in emacs or other program. My thought is changing it to another combination ctrl+F1.\n\nOpen regedit\nNavigate to HKEY_USER.DEFAULT\\Input Method\\Hot Keys\\00000010\\\nModify the Key Modifiers and Virtual Key.\nOnly disable the hotkey is change the first two digits of the two keys in 00.\nKey Modifiers: 00 c0 00 00.\nVirtual Key: 00 00 00 00\n\nFor Key modifiers, the rules of the number are like:\n__00__ c0 00 00 : The underlining two digits indicate one of modifier keys.\n\nCTRL: 02\nALT: 01\nSHIFT: 04\nDisable: 00\n\n00 __c0__ 00 00 : The underlining two digits indicate the left or right position on the keybord.\n\nLeft: 80\nRight: 40\nLeft or Right: 8+4=12=c0\n\nFor virtual key, the rules are like:\n__00__ 00 00 00 : The hex of ascii of a virtual key.\n Please see the reference: https://docs.microsoft.com/en-us/windows/desktop/inputdev/virtual-key-codes\n So if we want F1, the hex code is 70:\n__70__ 00 00 00 : The hex of ascii of F1.\n\nRestart your computer.\n\n\nFor my case, I just need to modify virtual key to 70 00 00 00","dateCreated":"2018-09-25T11:51:49+08:00","dateModified":"2019-03-26T23:24:31+08:00","datePublished":"2018-09-25T11:51:49+08:00","description":"Modify the hotkey of Chinese-English language switching in Windows 10","headline":"Modify the hotkey of Chinese-English language switching in Windows 10","image":["https://static.boredpanda.com/blog/wp-content/uploads/2015/11/reflection-landscape-photography-jaewoon-u-fb.jpg","https://static.boredpanda.com/blog/wp-content/uploads/2015/11/reflection-landscape-photography-jaewoon-u-fb.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg","logo":{"@type":"ImageObject","url":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"}},"url":"https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/","keywords":"hotkey","thumbnailUrl":"https://static.boredpanda.com/blog/wp-content/uploads/2015/11/reflection-landscape-photography-jaewoon-u-fb.jpg"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"},"articleBody":"\n[//]: # \nModify the hotkey of Chinese-English language switching in Windows 10\nThe problem is very annoying because the hotkey ctrl+space has conflicted with others in emacs or other program. My thought is changing it to another combination ctrl+F1.\n\nOpen regedit\nNavigate to HKEY_USER.DEFAULT\\Input Method\\Hot Keys\\00000010\\\nModify the Key Modifiers and Virtual Key.\nOnly disable the hotkey is change the first two digits of the two keys in 00.\nKey Modifiers: 00 c0 00 00.\nVirtual Key: 00 00 00 00\n\nFor Key modifiers, the rules of the number are like:\n__00__ c0 00 00 : The underlining two digits indicate one of modifier keys.\n\nCTRL: 02\nALT: 01\nSHIFT: 04\nDisable: 00\n\n00 __c0__ 00 00 : The underlining two digits indicate the left or right position on the keybord.\n\nLeft: 80\nRight: 40\nLeft or Right: 8+4=12=c0\n\nFor virtual key, the rules are like:\n__00__ 00 00 00 : The hex of ascii of a virtual key.\n Please see the reference: https://docs.microsoft.com/en-us/windows/desktop/inputdev/virtual-key-codes\n So if we want F1, the hex code is 70:\n__70__ 00 00 00 : The hex of ascii of F1.\n\nRestart your computer.\n\n\nFor my case, I just need to modify virtual key to 70 00 00 00","dateCreated":"2018-09-25T11:51:49+08:00","dateModified":"2019-03-26T23:30:23+08:00","datePublished":"2018-09-25T11:51:49+08:00","description":"Modify the hotkey of Chinese-English language switching in Windows 10","headline":"Modify the hotkey of Chinese-English language switching in Windows 10","image":["https://static.boredpanda.com/blog/wp-content/uploads/2015/11/reflection-landscape-photography-jaewoon-u-fb.jpg","https://static.boredpanda.com/blog/wp-content/uploads/2015/11/reflection-landscape-photography-jaewoon-u-fb.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg","logo":{"@type":"ImageObject","url":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"}},"url":"https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/","keywords":"hotkey","thumbnailUrl":"https://static.boredpanda.com/blog/wp-content/uploads/2015/11/reflection-landscape-photography-jaewoon-u-fb.jpg"}</script>
     <meta name="description" content="Modify the hotkey of Chinese-English language switching in Windows 10">
 <meta name="keywords" content="hotkey">
 <meta property="og:type" content="blog">
@@ -22,7 +22,7 @@
 <meta property="og:site_name" content="Chen Rui&#39;s Blog">
 <meta property="og:description" content="Modify the hotkey of Chinese-English language switching in Windows 10">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2019-03-26T15:24:31.842Z">
+<meta property="og:updated_time" content="2019-03-26T15:30:23.159Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Modify the hotkey of Chinese-English language switching in Windows 10">
 <meta name="twitter:description" content="Modify the hotkey of Chinese-English language switching in Windows 10">
@@ -302,7 +302,7 @@ Left or Right: 8+4=12=c0
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/11/rmarkdown-config/" data-tooltip="Setup rmarkdown on server without Rstudio" aria-label="下一篇: Setup rmarkdown on server without Rstudio">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" data-tooltip="Unblock Youku on a openWRT Router" aria-label="下一篇: Unblock Youku on a openWRT Router">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -420,7 +420,7 @@ Left or Right: 8+4=12=c0
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/11/rmarkdown-config/" data-tooltip="Setup rmarkdown on server without Rstudio" aria-label="下一篇: Setup rmarkdown on server without Rstudio">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" data-tooltip="Unblock Youku on a openWRT Router" aria-label="下一篇: Unblock Youku on a openWRT Router">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -672,6 +672,31 @@ Left or Right: 8+4=12=c0
                 <div class="media">
                     
                     <div class="media-left">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
+                            <img class="media-image" src="https://www.nationalgeographic.com/content/dam/photography/PROOF/2017/April/epic-landscapes/24-9007740_uploadsmember798135yourshot-798135-9007740jpg_ci6qt7qzhqldf4ex35to2j2as7p3eflutfvvbpyjwjhzlmh4iziq_3066x1725.jpg" width="90" height="90">
+                        </a>
+                    </div>
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
+                            <h3 class="media-heading">Unblock Youku on a openWRT Router</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2018年9月14日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>Unblock Youku on a openWRT Router<br></p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/">
                             <img class="media-image" src="https://static.boredpanda.com/blog/wp-content/uploads/2015/11/reflection-landscape-photography-jaewoon-u-fb.jpg" width="90" height="90">
                         </a>
@@ -823,7 +848,7 @@ Left or Right: 8+4=12=c0
         </div>
         <div class="modal-footer">
             <p class="results-count text-medium" data-message-zero="没有找到文章" data-message-one="找到 1 篇文章" data-message-other="找到 {n} 篇文章">
-                找到 8 篇文章
+                找到 9 篇文章
             </p>
         </div>
     </div>

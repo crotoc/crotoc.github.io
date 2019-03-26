@@ -6,26 +6,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Chen Rui&#39;s Blog">
-    <title>Install customized fonts for imagemagick - Chen Rui&#39;s Blog</title>
+    <title>Unblock Youku on a openWRT Router - Chen Rui&#39;s Blog</title>
     <meta name="author" content="">
     
-        <meta name="keywords" content="imagemagick">
+        <meta name="keywords" content="unblock youku">
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"},"articleBody":"\n[//]: # \nInstall customized fonts for imagemagick\n\nDownload the font, for example, Roboto \nwget https://fonts.google.com/download?family=Roboto\n\nDownload the processing script for fonts\nwget http://imagemagick.org/Usage/scripts/imagick_type_gen\nchmod +x imagick_type_gen\n\nAccording to the documents of imagemagick 7 (https://imagemagick.org/script/resources.php), ImageMagick is able to load raw TrueType and Postscript font files. It searches for the font configuration file, type.xml, in the following order, and loads them if found:\n\\$MAGICK_CONFIGURE_PATH\n\\$MAGICK_HOME/etc/ImageMagick/-7.0.8\n\\$MAGICK_HOME/share/ImageMagick-7.0.8\n\\$XDG_CACHE_HOME/ImageMagick\n\\$HOME/.config/ImageMagick\n&lt;client path&gt;/etc/ImageMagick\n\\$MAGICK_FONT_PATH$\n\n\nSo create a dir ~/.config/ImageMagick\nmkdir ~/.config/ImageMagick\n\nAccording the description section  in the script imageick_type_gen, create a xml for your fonts using the processing script:\nfind /dir/to/font/ -type f -name &apos;*.ttf&apos; | imagick_type_gen -f - &gt; ~/.ImageMagick/type-myfonts.xml\n\n\n\nInclude the xml in main xml file:\ncat &lt;&lt;\\EOF &gt;&gt;~/.magick/type.xml\n&lt;typemap&gt;\n&lt;include file=&quot;type-myfonts.xml&quot; /&gt;\n&lt;/typemap&gt;\nEOF\n\nCheck font using the command:\nconvert -list font\n\n","dateCreated":"2018-09-28T23:46:24+08:00","dateModified":"2019-03-26T23:30:23+08:00","datePublished":"2018-09-28T23:46:24+08:00","description":"Install customized fonts for imagemagick","headline":"Install customized fonts for imagemagick","image":["https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&cs=tinysrgb&dpr=1&w=500","https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&cs=tinysrgb&dpr=1&w=500"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg","logo":{"@type":"ImageObject","url":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"}},"url":"https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/","keywords":"图片处理","thumbnailUrl":"https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&cs=tinysrgb&dpr=1&w=500"}</script>
-    <meta name="description" content="Install customized fonts for imagemagick">
-<meta name="keywords" content="imagemagick">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"},"articleBody":"\n[//]: # \nUnblock Youku on a openWRT Router\nTo watched videos from China apps like youku, tencent, sogou, we have to unblock the restrictions put on these website.\nI applied this method to two models of routers: NETGEAR WNDR3700 ($20 on ebay) and R7800 ($160 on ebay) and they perform well enough.\nPrerequisites\nA router that can install openWRT.\nA list of urls needed to be unblocked.\nA shadowsocks proxy (let me know if you don’t have)\nPlenty of time\n\nInstallation of openWRTThe openWRT is a open-source system that can be installed on routers, which can bring many great new functions. It is actively developed and maintained.\nFor R7800, we need to flash openWRT through tftp.\n1) Download the firmware from https://openwrt.org/toh/hwdata/netgear/netgear_r7800. Remember the right file is with suffix of “.img”\nwget http://downloads.openwrt.org/releases/18.06.1/targets/ipq806x/generic/openwrt-18.06.1-ipq806x-netgear_r7800-squashfs-factory.img\n2) Install tftp on the computer(Ubuntu).\nsudo apt-get install tftp\n3) Let the router enter into recovery mode.\na. Power off the router\nb. Keep pressing the reset button using a pin and turn on the router.\nc. Release the reset button until the light blink white. The light of router will blink orange first and then after for a few seconds blink white. \n4) Connect the computer with router to one of the lan ports and mannually set the ip to 192.168.1.2. Because the router’s ip is 192.168.1.1, don’t use this ip for the computer.\nIP: 192.168.1.2\nMASK: 255.255.255.0\nGateway: 192.168.1.1\nDNS: 192.168.1.1 (Not important)\n5) Ping the router from the computer to make sure everthing is all right.\nping 192.168.1.1\n\n## 64 bytes from 192.168.1.1: icmp_seq=1 ttl=47 time=80.3 ms\n## 64 bytes from 192.168.1.1: icmp_seq=2 ttl=47 time=80.3 ms\n## 64 bytes from 192.168.1.1: icmp_seq=3 ttl=47 time=80.3 ms\n## 64 bytes from 192.168.1.1: icmp_seq=4 ttl=47 time=80.2 ms\n6) Connect to the router using tftp and upload the openWRT image.\ntftp 192.168.1.1\n\ntftp&gt; ?\nCommands may be abbreviated.  Commands are:\n\nconnect connect to remote tftp\nmode    set file transfer mode\nput     send file\nget     receive file\nquit    exit tftp\nverbose toggle verbose mode\ntrace   toggle packet tracing\nstatus  show current status\nbinary  set mode to octet\nascii   set mode to netascii\nrexmt   set per-packet retransmission timeout\ntimeout set total retransmission timeout\n?       print help information\n   Change to binary mode. This step is necessary. \ntftp&gt; binary\n   Upload the openWRT img file.\ntftp&gt; put openwrt-18.06.1-ipq806x-netgear_r7800-squashfs-factory.img\n   It will show the size uploaded.\n   Quit tftp.\ntftp&gt; quit\n7) If everything goes well, the blinking white light will turn off and the router will restart with openWRT.\nInstall shadowsocks packagesAfter restarting, the router is running openWRT and we can connect to the router using luci.\nInput 192.168.1.1 in a browser and it will ask you to set a password. After this we can connect to the router using ssh with the password.\nssh root@192.168.1.1\nTo install shdowsocks, we need use the package manager command. First refresh the package list by:\nopkg update\nThen find all the packages related to shawdowsocks.\nopkg find &quot;*shadowsocks*&quot;\nopkg install shadowsocks-client\n\n## Must\nopkg install shadowsocks-libev-config\n\n## Not necessary\nopkg install shadowsocks-libev-ss-local\n\n## Redirect requests to shadowsocks server)\nopkg install shadowsocks-libev-ss-redir \n\n## Build up rules to redirect)\nopkg install shadowsocks-libev-ss-rules \n\n## ss server, not necessary\nopkg install shadowsocks-libev-ss-server\n\n## For DNS requests, not necessary in this case\nopkg install shadowsocks-libev-ss-tunnel\n\n##To simple your life\nopkg install luci-app-shadowsocks\nThis method needs dnsmasq and ipset to build a ip filter.\nThe dnsmasq installed by the image does not support ipset, so we need to install dnsmasq-full\nopkg remove dnsmasq\nopkg install dnsmasq-full\nI believe ipset package is already installed with shadowsocks. We can validate it by:\nopkg install ipset\nConfigurations of shadowsocksI would like to configure shadowsocks using luci, which can save you a lot of time.\n\nAdd a ss proxy server.\nAdd a ss-redir service.\nThe key part is putting the url list to the place that is to be forward to ss proxy server.\nBecause the step 3 needs to add the url to the related ipset hash when starting the service, so it doesn’t allow any bad urls. Or the service can not start. To overcome this flaw, I modified the /usr/bin/ss-rules by adding a new ipset hash set named “_unblock” and build a new iptable rules to this set.\n\nIf you don’t want to revise the ss-rules, you can use the command bellow.\nconfiguratins of ipset and iptablesInitiate a new ipset\nipset -N _unblock hash:ip\nAdd the following iptable rules to iptable:\n## Create shadowsocks router rules\niptables -t nat -N shadowsocks\niptables -t mangle -N shadowsocks\n\niptables -t nat -A shadowsocks -d x.x.x.x -j RETURN \n# x.x.x.x为shadowsocks服务器地址\niptables -t nat -A shadowsocks -d 0.0.0.0/8 -j RETURN\niptables -t nat -A shadowsocks -d 10.0.0.0/8 -j RETURN\niptables -t nat -A shadowsocks -d 127.0.0.0/8 -j RETURN\niptables -t nat -A shadowsocks -d 169.254.0.0/16 -j RETURN\niptables -t nat -A shadowsocks -d 172.16.0.0/12 -j RETURN\niptables -t nat -A shadowsocks -d 192.168.0.0/16 -j RETURN\niptables -t nat -A shadowsocks -d 224.0.0.0/4 -j RETURN\niptables -t nat -A shadowsocks -d 240.0.0.0/4 -j RETURN\n\n## TCP\niptables -t nat -A shadowsocks -p tcp -m set --match-set _unblock_ dst -j REDIRECT --to-port 1080\n\n## UDP using TPROXY\niptables -t mangle -A shadowsocks -p udp -m set --match-set redir dst ! --dport 53 -j TPROXY --on-port 1080 --tproxy-mark 0x01/0x01\nip route add local default dev lo table 100\nip rule add fwmark 0x01/0x01 lookup 100\nip route list table 100\n\n\niptables -t nat -A PREROUTING -p tcp -j shadowsocks\niptables -t mangle -A PREROUTING -j shadowsocks\n\niptables -t nat -A OUTPUT -p tcp -j shadowsocks\niptables -t mangle -A OUTPUT -j shadowsocks\nConfiguration of dnsmasq-fullAdd a conf dir to be loaded by dnsmasq\necho &quot;conf-dir=/etc/dnsmasq.d&quot;&gt;&gt;/etc/dnsmasq.conf\nmkdir /etc/dnsmasq.d\ncd /etc/dnsmasq.d\ntouch redir_test.conf\nRestart dnsmasq after revising config file every time\n/etc/init.d/dnsmasq restart\nTestnetstat -nlp\n\n## listen to the port to see what kind of url \ntcpdump -i br-lan host xxxxx\n\n## Test ipset\nping xxxx\nipset list\nreferencehttp://blog.kompaz.win/2017/03/24/OpenWRT%20Shadowsocks+GFWList%20%E6%B5%81%E9%87%8F%E8%87%AA%E5%8A%A8%E5%88%86%E6%B5%81/","dateCreated":"2018-09-14T10:18:12+08:00","dateModified":"2019-03-26T23:30:23+08:00","datePublished":"2018-09-14T10:18:12+08:00","description":"Unblock Youku on a openWRT Router","headline":"Unblock Youku on a openWRT Router","image":["https://www.nationalgeographic.com/content/dam/photography/PROOF/2017/April/epic-landscapes/24-9007740_uploadsmember798135yourshot-798135-9007740jpg_ci6qt7qzhqldf4ex35to2j2as7p3eflutfvvbpyjwjhzlmh4iziq_3066x1725.jpg","https://www.nationalgeographic.com/content/dam/photography/PROOF/2017/April/epic-landscapes/24-9007740_uploadsmember798135yourshot-798135-9007740jpg_ci6qt7qzhqldf4ex35to2j2as7p3eflutfvvbpyjwjhzlmh4iziq_3066x1725.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg","logo":{"@type":"ImageObject","url":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"}},"url":"https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/","keywords":"科学上网, openWRT","thumbnailUrl":"https://www.nationalgeographic.com/content/dam/photography/PROOF/2017/April/epic-landscapes/24-9007740_uploadsmember798135yourshot-798135-9007740jpg_ci6qt7qzhqldf4ex35to2j2as7p3eflutfvvbpyjwjhzlmh4iziq_3066x1725.jpg"}</script>
+    <meta name="description" content="Unblock Youku on a openWRT Router">
+<meta name="keywords" content="unblock youku">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="Install customized fonts for imagemagick">
-<meta property="og:url" content="https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/index.html">
+<meta property="og:title" content="Unblock Youku on a openWRT Router">
+<meta property="og:url" content="https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/index.html">
 <meta property="og:site_name" content="Chen Rui&#39;s Blog">
-<meta property="og:description" content="Install customized fonts for imagemagick">
+<meta property="og:description" content="Unblock Youku on a openWRT Router">
 <meta property="og:locale" content="zh-cn">
 <meta property="og:updated_time" content="2019-03-26T15:30:23.159Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Install customized fonts for imagemagick">
-<meta name="twitter:description" content="Install customized fonts for imagemagick">
+<meta name="twitter:title" content="Unblock Youku on a openWRT Router">
+<meta name="twitter:description" content="Unblock Youku on a openWRT Router">
 <meta name="twitter:creator" content="@crnormal">
     
     
@@ -35,12 +35,12 @@
         <meta property="og:image" content="https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"/>
     
     
-        <meta property="og:image" content="https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=500"/>
-        <meta class="swiftype" name="image" data-type="enum" content="https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=500" />
+        <meta property="og:image" content="https://www.nationalgeographic.com/content/dam/photography/PROOF/2017/April/epic-landscapes/24-9007740_uploadsmember798135yourshot-798135-9007740jpg_ci6qt7qzhqldf4ex35to2j2as7p3eflutfvvbpyjwjhzlmh4iziq_3066x1725.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://www.nationalgeographic.com/content/dam/photography/PROOF/2017/April/epic-landscapes/24-9007740_uploadsmember798135yourshot-798135-9007740jpg_ci6qt7qzhqldf4ex35to2j2as7p3eflutfvvbpyjwjhzlmh4iziq_3066x1725.jpg" />
     
     
-        <meta property="og:image" content="https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=500"/>
-        <meta class="swiftype" name="image" data-type="enum" content="https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=500" />
+        <meta property="og:image" content="https://www.nationalgeographic.com/content/dam/photography/PROOF/2017/April/epic-landscapes/24-9007740_uploadsmember798135yourshot-798135-9007740jpg_ci6qt7qzhqldf4ex35to2j2as7p3eflutfvvbpyjwjhzlmh4iziq_3066x1725.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://www.nationalgeographic.com/content/dam/photography/PROOF/2017/April/epic-landscapes/24-9007740_uploadsmember798135yourshot-798135-9007740jpg_ci6qt7qzhqldf4ex35to2j2as7p3eflutfvvbpyjwjhzlmh4iziq_3066x1725.jpg" />
     
     
     <!--STYLES-->
@@ -195,25 +195,25 @@
             
         <div class="post-header-cover
                     text-center
-                    post-header-cover--full" style="background-image:url('https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=500');" data-behavior="4">
+                    post-header-cover--full" style="background-image:url('https://www.nationalgeographic.com/content/dam/photography/PROOF/2017/April/epic-landscapes/24-9007740_uploadsmember798135yourshot-798135-9007740jpg_ci6qt7qzhqldf4ex35to2j2as7p3eflutfvvbpyjwjhzlmh4iziq_3066x1725.jpg');" data-behavior="4">
             
                 <div class="post-header main-content-wrap text-center">
     
         <h1 class="post-title">
-            Install customized fonts for imagemagick
+            Unblock Youku on a openWRT Router
         </h1>
     
     
         <div class="post-meta">
-    <time datetime="2018-09-28T23:46:24+08:00">
+    <time datetime="2018-09-14T10:18:12+08:00">
 	
-		    9月 28, 2018
+		    9月 14, 2018
     	
     </time>
     
         <span>发布在 </span>
         
-    <a class="category-link" href="/categories/小技巧/">小技巧</a>
+    <a class="category-link" href="/categories/网络技术/">网络技术</a>
 
 
     
@@ -239,44 +239,156 @@
         <div class="main-content-wrap">
             <!-- excerpt --><p></p>
 <p>[//]: # <a id="more"></a></p>
-<h1 id="Install-customized-fonts-for-imagemagick"><a href="#Install-customized-fonts-for-imagemagick" class="headerlink" title="Install customized fonts for imagemagick"></a>Install customized fonts for imagemagick</h1><h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Install-customized-fonts-for-imagemagick"><span class="toc-text">Install customized fonts for imagemagick</span></a></li></ol>
+<h1 id="Unblock-Youku-on-a-openWRT-Router"><a href="#Unblock-Youku-on-a-openWRT-Router" class="headerlink" title="Unblock Youku on a openWRT Router"></a>Unblock Youku on a openWRT Router</h1><h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Unblock-Youku-on-a-openWRT-Router"><span class="toc-text">Unblock Youku on a openWRT Router</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Prerequisites"><span class="toc-text">Prerequisites</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Installation-of-openWRT"><span class="toc-text">Installation of openWRT</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Install-shadowsocks-packages"><span class="toc-text">Install shadowsocks packages</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Configurations-of-shadowsocks"><span class="toc-text">Configurations of shadowsocks</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#configuratins-of-ipset-and-iptables"><span class="toc-text">configuratins of ipset and iptables</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Configuration-of-dnsmasq-full"><span class="toc-text">Configuration of dnsmasq-full</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Test"><span class="toc-text">Test</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-text">reference</span></a></li></ol></li></ol>
+<p>To watched videos from China apps like youku, tencent, sogou, we have to unblock the restrictions put on these website.</p>
+<p>I applied this method to two models of routers: NETGEAR WNDR3700 ($20 on ebay) and R7800 ($160 on ebay) and they perform well enough.</p>
+<h2 id="Prerequisites"><a href="#Prerequisites" class="headerlink" title="Prerequisites"></a>Prerequisites</h2><ol>
+<li>A router that can install openWRT.</li>
+<li>A list of urls needed to be unblocked.</li>
+<li>A shadowsocks proxy (let me know if you don’t have)</li>
+<li>Plenty of time</li>
+</ol>
+<h2 id="Installation-of-openWRT"><a href="#Installation-of-openWRT" class="headerlink" title="Installation of openWRT"></a>Installation of openWRT</h2><p>The openWRT is a open-source system that can be installed on routers, which can bring many great new functions. It is actively developed and maintained.</p>
+<p>For R7800, we need to flash openWRT through tftp.</p>
+<p>1) Download the firmware from <a href="https://openwrt.org/toh/hwdata/netgear/netgear_r7800" target="_blank" rel="noopener">https://openwrt.org/toh/hwdata/netgear/netgear_r7800</a>. Remember the right file is with suffix of “.img”</p>
+<pre><code>wget http://downloads.openwrt.org/releases/18.06.1/targets/ipq806x/generic/openwrt-18.06.1-ipq806x-netgear_r7800-squashfs-factory.img
+</code></pre><p>2) Install tftp on the computer(Ubuntu).</p>
+<pre><code>sudo apt-get install tftp
+</code></pre><p>3) Let the router enter into recovery mode.</p>
+<pre><code>a. Power off the router
+b. Keep pressing the reset button using a pin and turn on the router.
+c. Release the reset button until the light blink white. The light of router will blink orange first and then after for a few seconds blink white. 
+</code></pre><p>4) Connect the computer with router to one of the lan ports and mannually set the ip to 192.168.1.2. Because the router’s ip is 192.168.1.1, don’t use this ip for the computer.</p>
+<pre><code>IP: 192.168.1.2
+MASK: 255.255.255.0
+Gateway: 192.168.1.1
+DNS: 192.168.1.1 (Not important)
+</code></pre><p>5) Ping the router from the computer to make sure everthing is all right.</p>
+<pre><code>ping 192.168.1.1
+
+## 64 bytes from 192.168.1.1: icmp_seq=1 ttl=47 time=80.3 ms
+## 64 bytes from 192.168.1.1: icmp_seq=2 ttl=47 time=80.3 ms
+## 64 bytes from 192.168.1.1: icmp_seq=3 ttl=47 time=80.3 ms
+## 64 bytes from 192.168.1.1: icmp_seq=4 ttl=47 time=80.2 ms
+</code></pre><p>6) Connect to the router using tftp and upload the openWRT image.</p>
+<pre><code>tftp 192.168.1.1
+
+tftp&gt; ?
+Commands may be abbreviated.  Commands are:
+
+connect connect to remote tftp
+mode    set file transfer mode
+put     send file
+get     receive file
+quit    exit tftp
+verbose toggle verbose mode
+trace   toggle packet tracing
+status  show current status
+binary  set mode to octet
+ascii   set mode to netascii
+rexmt   set per-packet retransmission timeout
+timeout set total retransmission timeout
+?       print help information
+</code></pre><p>   Change to binary mode. This step is necessary. </p>
+<pre><code>tftp&gt; binary
+</code></pre><p>   Upload the openWRT img file.</p>
+<pre><code>tftp&gt; put openwrt-18.06.1-ipq806x-netgear_r7800-squashfs-factory.img
+</code></pre><p>   It will show the size uploaded.</p>
+<p>   Quit tftp.</p>
+<pre><code>tftp&gt; quit
+</code></pre><p>7) If everything goes well, the blinking white light will turn off and the router will restart with openWRT.</p>
+<h2 id="Install-shadowsocks-packages"><a href="#Install-shadowsocks-packages" class="headerlink" title="Install shadowsocks packages"></a>Install shadowsocks packages</h2><p>After restarting, the router is running openWRT and we can connect to the router using luci.</p>
+<p>Input 192.168.1.1 in a browser and it will ask you to set a password. After this we can connect to the router using ssh with the password.</p>
+<pre><code>ssh root@192.168.1.1
+</code></pre><p>To install shdowsocks, we need use the package manager command. First refresh the package list by:</p>
+<pre><code>opkg update
+</code></pre><p>Then find all the packages related to shawdowsocks.</p>
+<pre><code>opkg find &quot;*shadowsocks*&quot;
+opkg install shadowsocks-client
+
+## Must
+opkg install shadowsocks-libev-config
+
+## Not necessary
+opkg install shadowsocks-libev-ss-local
+
+## Redirect requests to shadowsocks server)
+opkg install shadowsocks-libev-ss-redir 
+
+## Build up rules to redirect)
+opkg install shadowsocks-libev-ss-rules 
+
+## ss server, not necessary
+opkg install shadowsocks-libev-ss-server
+
+## For DNS requests, not necessary in this case
+opkg install shadowsocks-libev-ss-tunnel
+
+##To simple your life
+opkg install luci-app-shadowsocks
+</code></pre><p>This method needs dnsmasq and ipset to build a ip filter.</p>
+<p>The dnsmasq installed by the image does not support ipset, so we need to install dnsmasq-full</p>
+<pre><code>opkg remove dnsmasq
+opkg install dnsmasq-full
+</code></pre><p>I believe ipset package is already installed with shadowsocks. We can validate it by:</p>
+<pre><code>opkg install ipset
+</code></pre><h2 id="Configurations-of-shadowsocks"><a href="#Configurations-of-shadowsocks" class="headerlink" title="Configurations of shadowsocks"></a>Configurations of shadowsocks</h2><p>I would like to configure shadowsocks using luci, which can save you a lot of time.</p>
 <ol>
-<li><p>Download the font, for example, Roboto </p>
-<pre><code>wget https://fonts.google.com/download?family=Roboto
-</code></pre></li>
-<li><p>Download the processing script for fonts</p>
-<pre><code>wget http://imagemagick.org/Usage/scripts/imagick_type_gen
-chmod +x imagick_type_gen
-</code></pre></li>
-<li><p>According to the documents of imagemagick 7 (<a href="https://imagemagick.org/script/resources.php)" target="_blank" rel="noopener">https://imagemagick.org/script/resources.php)</a>, ImageMagick is able to load raw TrueType and Postscript font files. It searches for the font configuration file, type.xml, in the following order, and loads them if found:</p>
-<pre><code>\$MAGICK_CONFIGURE_PATH
-\$MAGICK_HOME/etc/ImageMagick/-7.0.8
-\$MAGICK_HOME/share/ImageMagick-7.0.8
-\$XDG_CACHE_HOME/ImageMagick
-\$HOME/.config/ImageMagick
-&lt;client path&gt;/etc/ImageMagick
-\$MAGICK_FONT_PATH$
-</code></pre></li>
+<li>Add a ss proxy server.</li>
+<li>Add a ss-redir service.</li>
+<li>The key part is putting the url list to the place that is to be forward to ss proxy server.</li>
+<li>Because the step 3 needs to add the url to the related ipset hash when starting the service, so it doesn’t allow any bad urls. Or the service can not start. To overcome this flaw, I modified the /usr/bin/ss-rules by adding a new ipset hash set named “_unblock” and build a new iptable rules to this set.</li>
 </ol>
-<p>So create a dir ~/.config/ImageMagick</p>
-<pre><code>mkdir ~/.config/ImageMagick
-</code></pre><ol start="4">
-<li><p>According the description section  in the script imageick_type_gen, create a xml for your fonts using the processing script:</p>
-<pre><code>find /dir/to/font/ -type f -name &apos;*.ttf&apos; | imagick_type_gen -f - &gt; ~/.ImageMagick/type-myfonts.xml
-</code></pre></li>
-</ol>
-<ol start="5">
-<li><p>Include the xml in main xml file:</p>
-<pre><code>cat &lt;&lt;\EOF &gt;&gt;~/.magick/type.xml
-&lt;typemap&gt;
-&lt;include file=&quot;type-myfonts.xml&quot; /&gt;
-&lt;/typemap&gt;
-EOF
-</code></pre></li>
-<li><p>Check font using the command:</p>
-<pre><code>convert -list font
-</code></pre></li>
-</ol>
+<p>If you don’t want to revise the ss-rules, you can use the command bellow.</p>
+<h2 id="configuratins-of-ipset-and-iptables"><a href="#configuratins-of-ipset-and-iptables" class="headerlink" title="configuratins of ipset and iptables"></a>configuratins of ipset and iptables</h2><p>Initiate a new ipset</p>
+<pre><code>ipset -N _unblock hash:ip
+</code></pre><p>Add the following iptable rules to iptable:</p>
+<pre><code>## Create shadowsocks router rules
+iptables -t nat -N shadowsocks
+iptables -t mangle -N shadowsocks
+
+iptables -t nat -A shadowsocks -d x.x.x.x -j RETURN 
+# x.x.x.x为shadowsocks服务器地址
+iptables -t nat -A shadowsocks -d 0.0.0.0/8 -j RETURN
+iptables -t nat -A shadowsocks -d 10.0.0.0/8 -j RETURN
+iptables -t nat -A shadowsocks -d 127.0.0.0/8 -j RETURN
+iptables -t nat -A shadowsocks -d 169.254.0.0/16 -j RETURN
+iptables -t nat -A shadowsocks -d 172.16.0.0/12 -j RETURN
+iptables -t nat -A shadowsocks -d 192.168.0.0/16 -j RETURN
+iptables -t nat -A shadowsocks -d 224.0.0.0/4 -j RETURN
+iptables -t nat -A shadowsocks -d 240.0.0.0/4 -j RETURN
+
+## TCP
+iptables -t nat -A shadowsocks -p tcp -m set --match-set _unblock_ dst -j REDIRECT --to-port 1080
+
+## UDP using TPROXY
+iptables -t mangle -A shadowsocks -p udp -m set --match-set redir dst ! --dport 53 -j TPROXY --on-port 1080 --tproxy-mark 0x01/0x01
+ip route add local default dev lo table 100
+ip rule add fwmark 0x01/0x01 lookup 100
+ip route list table 100
+
+
+iptables -t nat -A PREROUTING -p tcp -j shadowsocks
+iptables -t mangle -A PREROUTING -j shadowsocks
+
+iptables -t nat -A OUTPUT -p tcp -j shadowsocks
+iptables -t mangle -A OUTPUT -j shadowsocks
+</code></pre><h2 id="Configuration-of-dnsmasq-full"><a href="#Configuration-of-dnsmasq-full" class="headerlink" title="Configuration of dnsmasq-full"></a>Configuration of dnsmasq-full</h2><p>Add a conf dir to be loaded by dnsmasq</p>
+<pre><code>echo &quot;conf-dir=/etc/dnsmasq.d&quot;&gt;&gt;/etc/dnsmasq.conf
+mkdir /etc/dnsmasq.d
+cd /etc/dnsmasq.d
+touch redir_test.conf
+</code></pre><p>Restart dnsmasq after revising config file every time</p>
+<pre><code>/etc/init.d/dnsmasq restart
+</code></pre><h2 id="Test"><a href="#Test" class="headerlink" title="Test"></a>Test</h2><pre><code>netstat -nlp
+
+## listen to the port to see what kind of url 
+tcpdump -i br-lan host xxxxx
+
+## Test ipset
+ping xxxx
+ipset list
+</code></pre><h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><p><a href="http://blog.kompaz.win/2017/03/24/OpenWRT%20Shadowsocks+GFWList%20%E6%B5%81%E9%87%8F%E8%87%AA%E5%8A%A8%E5%88%86%E6%B5%81/" target="_blank" rel="noopener">http://blog.kompaz.win/2017/03/24/OpenWRT%20Shadowsocks+GFWList%20%E6%B5%81%E9%87%8F%E8%87%AA%E5%8A%A8%E5%88%86%E6%B5%81/</a></p>
             
 
         </div>
@@ -286,7 +398,7 @@ EOF
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">标签</span><br>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/图片处理/">图片处理</a>
+    <a class="tag tag--primary tag--small t-link" href="/tags/openWRT/">openWRT</a> <a class="tag tag--primary tag--small t-link" href="/tags/科学上网/">科学上网</a>
 
             </div>
         
@@ -297,7 +409,7 @@ EOF
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/01/22/terminal-in-windows-sub-linux-system/" data-tooltip="Windows 10下面最好的terminal (WSL)" aria-label="上一篇: Windows 10下面最好的terminal (WSL)">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" data-tooltip="Modify the hotkey of Chinese-English language switching in Windows 10" aria-label="上一篇: Modify the hotkey of Chinese-English language switching in Windows 10">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -306,7 +418,7 @@ EOF
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" data-tooltip="Modify the hotkey of Chinese-English language switching in Windows 10" aria-label="下一篇: Modify the hotkey of Chinese-English language switching in Windows 10">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/11/rmarkdown-config/" data-tooltip="Setup rmarkdown on server without Rstudio" aria-label="下一篇: Setup rmarkdown on server without Rstudio">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -324,7 +436,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Facebook">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="分享到 Facebook">
                     <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
@@ -332,7 +444,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Twitter">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="分享到 Twitter">
                     <i class="fab fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -340,7 +452,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Google+">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="分享到 Google+">
                     <i class="fab fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -348,7 +460,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Weibo">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="分享到 Weibo">
                     <i class="fab fa-weibo" aria-hidden="true"></i>
                 </a>
             </li>
@@ -356,7 +468,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/&amp;title=Install customized fonts for imagemagick" title="分享到 QQ">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/&amp;title=Unblock Youku on a openWRT Router" title="分享到 QQ">
                     <i class="fab fa-qq" aria-hidden="true"></i>
                 </a>
             </li>
@@ -364,7 +476,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Qzone">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="分享到 Qzone">
                     <i class="fa fa-star" aria-hidden="true"></i>
                 </a>
             </li>
@@ -415,7 +527,7 @@ EOF
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/01/22/terminal-in-windows-sub-linux-system/" data-tooltip="Windows 10下面最好的terminal (WSL)" aria-label="上一篇: Windows 10下面最好的terminal (WSL)">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" data-tooltip="Modify the hotkey of Chinese-English language switching in Windows 10" aria-label="上一篇: Modify the hotkey of Chinese-English language switching in Windows 10">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -424,7 +536,7 @@ EOF
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" data-tooltip="Modify the hotkey of Chinese-English language switching in Windows 10" aria-label="下一篇: Modify the hotkey of Chinese-English language switching in Windows 10">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/11/rmarkdown-config/" data-tooltip="Setup rmarkdown on server without Rstudio" aria-label="下一篇: Setup rmarkdown on server without Rstudio">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -442,7 +554,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Facebook">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="分享到 Facebook">
                     <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
@@ -450,7 +562,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Twitter">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="分享到 Twitter">
                     <i class="fab fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -458,7 +570,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Google+">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="分享到 Google+">
                     <i class="fab fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -466,7 +578,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Weibo">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="分享到 Weibo">
                     <i class="fab fa-weibo" aria-hidden="true"></i>
                 </a>
             </li>
@@ -474,7 +586,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/&amp;title=Install customized fonts for imagemagick" title="分享到 QQ">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/&amp;title=Unblock Youku on a openWRT Router" title="分享到 QQ">
                     <i class="fab fa-qq" aria-hidden="true"></i>
                 </a>
             </li>
@@ -482,7 +594,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Qzone">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/" title="分享到 Qzone">
                     <i class="fa fa-star" aria-hidden="true"></i>
                 </a>
             </li>
@@ -516,7 +628,7 @@ EOF
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
+                    <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
                         <i class="fab fa-facebook" aria-hidden="true"></i><span>分享到 Facebook</span>
                     </a>
                 </li>
@@ -524,7 +636,7 @@ EOF
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
+                    <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
                         <i class="fab fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
                     </a>
                 </li>
@@ -532,7 +644,7 @@ EOF
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
+                    <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
                         <i class="fab fa-google-plus" aria-hidden="true"></i><span>分享到 Google+</span>
                     </a>
                 </li>
@@ -540,7 +652,7 @@ EOF
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
+                    <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
                         <i class="fab fa-weibo" aria-hidden="true"></i><span>分享到 Weibo</span>
                     </a>
                 </li>
@@ -548,7 +660,7 @@ EOF
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/&amp;title=Install customized fonts for imagemagick">
+                    <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/&amp;title=Unblock Youku on a openWRT Router">
                         <i class="fab fa-qq" aria-hidden="true"></i><span>分享到 QQ</span>
                     </a>
                 </li>
@@ -556,7 +668,7 @@ EOF
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
+                    <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
                         <i class="fa fa-star" aria-hidden="true"></i><span>分享到 Qzone</span>
                     </a>
                 </li>
@@ -870,7 +982,7 @@ EOF
             (function() {
                 function render() {
                     new Gitment({
-                        id: 'Fri Sep 28 2018 23:46:24 GMT+0800',
+                        id: 'Fri Sep 14 2018 10:18:12 GMT+0800',
                         owner: 'crotoc',
                         repo: 'crotoc.github.io',
                         oauth: {
