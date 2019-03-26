@@ -6,24 +6,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Chen Rui&#39;s Blog">
-    <title>Install customized fonts for imagemagick - Chen Rui&#39;s Blog</title>
+    <title>Bugs when using the tranquilpeak hexo theme - Chen Rui&#39;s Blog</title>
     <meta name="author" content="">
     
+        <meta name="keywords" content="博客,主题">
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"},"articleBody":"Install customized fonts for imagemagick 7\nDownload the font, for example, Roboto \nwget https://fonts.google.com/download?family=Roboto\n\nDownload the processing script for fonts\nwget http://imagemagick.org/Usage/scripts/imagick_type_gen\nchmod +x imagick_type_gen\n\nAccording to the documents of imagemagick 7 (https://imagemagick.org/script/resources.php), ImageMagick is able to load raw TrueType and Postscript font files. It searches for the font configuration file, type.xml, in the following order, and loads them if found:\n\\$MAGICK_CONFIGURE_PATH\n\\$MAGICK_HOME/etc/ImageMagick/-7.0.8\n\\$MAGICK_HOME/share/ImageMagick-7.0.8\n\\$XDG_CACHE_HOME/ImageMagick\n\\$HOME/.config/ImageMagick\n&lt;client path&gt;/etc/ImageMagick\n\\$MAGICK_FONT_PATH$\n\n\nSo create a dir ~/.config/ImageMagick\nmkdir ~/.config/ImageMagick\n\nAccording the description section  in the script imageick_type_gen, create a xml for your fonts using the processing script:\nfind /dir/to/font/ -type f -name &apos;*.ttf&apos; | imagick_type_gen -f - &gt; ~/.ImageMagick/type-myfonts.xml\n\n\n\nInclude the xml in main xml file:\ncat &lt;&lt;\\EOF &gt;&gt;~/.magick/type.xml\n&lt;typemap&gt;\n&lt;include file=&quot;type-myfonts.xml&quot; /&gt;\n&lt;/typemap&gt;\nEOF\n\nCheck font using the command:\nconvert -list font\n\n\n","dateCreated":"2018-09-28T23:46:24+08:00","dateModified":"2019-03-26T13:08:22+08:00","datePublished":"2018-09-28T23:46:24+08:00","description":"","headline":"Install customized fonts for imagemagick","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg","logo":{"@type":"ImageObject","url":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"}},"url":"https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/","keywords":"trick"}</script>
-    <meta name="description" content="Install customized fonts for imagemagick 7 Download the font, for example, Roboto  wget https://fonts.google.com/download?family=Roboto  Download the processing script for fonts wget http://imagemagic">
-<meta name="keywords" content="trick">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"},"articleBody":"\n今天想将blog的主题从next 换成tranquilpeak,结果发现了很多的问题,这里记录一下:\n\n因为我使用travis自动在线部署,所以主题里面的node_modules不是必须的.\n\n这个主题的.gitignore文件中自动略去了assets文件夹,导致了网站看不到格式,只有文字.\n\n需要将主题中的package.json里面的dependencies拷贝到主目录的package.json才能在travis端自动安装.\n\n需要在主目录的_config.yml中设置language,不然出现的是德语.其中语言设置必须与主题中languages目录下的文件名对应.\n\n\n标准调试过程为了加快下一次的调试,经验如下:\n第一步本地安装包,找出依赖的问题:\nnpm install\n第二步生成本地public目录:\nhexo clean\nhexo g\nhexo s\n用本地浏览器打开确定本地显示是否出错:\nlocalhost:4000\n如果本地没错可以将这个本地版本git到remote端,使用网页链接查看是否有错.\n如果有错则核对两次commit之间的偏差,确定问题所在.\n在本次调试过程中,主要问题是assets文件夹被主题目录中的.gitignore忽略,这样网页只有文字没有样式.","dateCreated":"2019-03-16T01:48:20+08:00","dateModified":"2019-03-26T13:08:22+08:00","datePublished":"2019-03-16T01:48:20+08:00","description":"Bugs when using the tranquilpeak hexo theme","headline":"Bugs when using the tranquilpeak hexo theme","image":["https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg","https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg","logo":{"@type":"ImageObject","url":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"}},"url":"https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/","keywords":"博客","thumbnailUrl":"https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg"}</script>
+    <meta name="description" content="Bugs when using the tranquilpeak hexo theme">
+<meta name="keywords" content="博客,主题">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="Install customized fonts for imagemagick">
-<meta property="og:url" content="https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/index.html">
+<meta property="og:title" content="Bugs when using the tranquilpeak hexo theme">
+<meta property="og:url" content="https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/index.html">
 <meta property="og:site_name" content="Chen Rui&#39;s Blog">
-<meta property="og:description" content="Install customized fonts for imagemagick 7 Download the font, for example, Roboto  wget https://fonts.google.com/download?family=Roboto  Download the processing script for fonts wget http://imagemagic">
+<meta property="og:description" content="Bugs when using the tranquilpeak hexo theme">
 <meta property="og:locale" content="zh-cn">
 <meta property="og:updated_time" content="2019-03-26T05:08:22.088Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Install customized fonts for imagemagick">
-<meta name="twitter:description" content="Install customized fonts for imagemagick 7 Download the font, for example, Roboto  wget https://fonts.google.com/download?family=Roboto  Download the processing script for fonts wget http://imagemagic">
+<meta name="twitter:title" content="Bugs when using the tranquilpeak hexo theme">
+<meta name="twitter:description" content="Bugs when using the tranquilpeak hexo theme">
 <meta name="twitter:creator" content="@crnormal">
     
     
@@ -33,6 +35,12 @@
         <meta property="og:image" content="https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"/>
     
     
+        <meta property="og:image" content="https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg" />
+    
+    
+        <meta property="og:image" content="https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg" />
     
     
     <!--STYLES-->
@@ -185,74 +193,74 @@
 </nav>
 
             
-            <div id="main" data-behavior="4"
-                 class="
-                        hasCoverMetaIn
-                        ">
-                
-<article class="post">
-    
-    
-        <div class="post-header main-content-wrap text-left">
+        <div class="post-header-cover
+                    text-center
+                    post-header-cover--full" style="background-image:url('https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg');" data-behavior="4">
+            
+                <div class="post-header main-content-wrap text-center">
     
         <h1 class="post-title">
-            Install customized fonts for imagemagick
+            Bugs when using the tranquilpeak hexo theme
         </h1>
     
     
         <div class="post-meta">
-    <time datetime="2018-09-28T23:46:24+08:00">
+    <time datetime="2019-03-16T01:48:20+08:00">
 	
-		    9月 28, 2018
+		    3月 16, 2019
     	
     </time>
     
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/网络技术/">网络技术</a>
+
+
+    
 </div>
 
     
 </div>
 
+            
+        </div>
+
+            <div id="main" data-behavior="4"
+                 class="hasCover
+                        hasCoverMetaIn
+                        hasCoverCaption">
+                
+<article class="post">
+    
+        <span class="post-header-cover-caption caption">Hexo建站分享</span>
+    
     
     <div class="post-content markdown">
         <div class="main-content-wrap">
-            <h1 id="Install-customized-fonts-for-imagemagick-7"><a href="#Install-customized-fonts-for-imagemagick-7" class="headerlink" title="Install customized fonts for imagemagick 7"></a>Install customized fonts for imagemagick 7</h1><ol>
-<li><p>Download the font, for example, Roboto </p>
-<pre><code>wget https://fonts.google.com/download?family=Roboto
-</code></pre></li>
-<li><p>Download the processing script for fonts</p>
-<pre><code>wget http://imagemagick.org/Usage/scripts/imagick_type_gen
-chmod +x imagick_type_gen
-</code></pre></li>
-<li><p>According to the documents of imagemagick 7 (<a href="https://imagemagick.org/script/resources.php)" target="_blank" rel="noopener">https://imagemagick.org/script/resources.php)</a>, ImageMagick is able to load raw TrueType and Postscript font files. It searches for the font configuration file, type.xml, in the following order, and loads them if found:</p>
-<pre><code>\$MAGICK_CONFIGURE_PATH
-\$MAGICK_HOME/etc/ImageMagick/-7.0.8
-\$MAGICK_HOME/share/ImageMagick-7.0.8
-\$XDG_CACHE_HOME/ImageMagick
-\$HOME/.config/ImageMagick
-&lt;client path&gt;/etc/ImageMagick
-\$MAGICK_FONT_PATH$
-</code></pre></li>
+            <!-- excerpt --><p></p>
+<p>今天想将blog的主题从next 换成tranquilpeak,结果发现了很多的问题,这里记录一下:</p>
+<ol>
+<li><p>因为我使用travis自动在线部署,所以主题里面的node_modules不是必须的.</p>
+</li>
+<li><p>这个主题的.gitignore文件中自动略去了assets文件夹,导致了网站看不到格式,只有文字.</p>
+</li>
+<li><p>需要将主题中的package.json里面的dependencies拷贝到主目录的package.json才能在travis端自动安装.</p>
+</li>
+<li><p>需要在主目录的_config.yml中设置language,不然出现的是德语.其中语言设置必须与主题中languages目录下的文件名对应.</p>
+</li>
 </ol>
-<p>So create a dir ~/.config/ImageMagick</p>
-<pre><code>mkdir ~/.config/ImageMagick
-</code></pre><ol start="4">
-<li><p>According the description section  in the script imageick_type_gen, create a xml for your fonts using the processing script:</p>
-<pre><code>find /dir/to/font/ -type f -name &apos;*.ttf&apos; | imagick_type_gen -f - &gt; ~/.ImageMagick/type-myfonts.xml
-</code></pre></li>
-</ol>
-<ol start="5">
-<li><p>Include the xml in main xml file:</p>
-<pre><code>cat &lt;&lt;\EOF &gt;&gt;~/.magick/type.xml
-&lt;typemap&gt;
-&lt;include file=&quot;type-myfonts.xml&quot; /&gt;
-&lt;/typemap&gt;
-EOF
-</code></pre></li>
-<li><p>Check font using the command:</p>
-<pre><code>convert -list font
-</code></pre></li>
-</ol>
-
+<h2 id="标准调试过程"><a href="#标准调试过程" class="headerlink" title="标准调试过程"></a>标准调试过程</h2><p>为了加快下一次的调试,经验如下:</p>
+<h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><p>本地安装包,找出依赖的问题:</p>
+<pre><code>npm install
+</code></pre><h3 id="第二步"><a href="#第二步" class="headerlink" title="第二步"></a>第二步</h3><p>生成本地public目录:</p>
+<pre><code>hexo clean
+hexo g
+hexo s
+</code></pre><p>用本地浏览器打开确定本地显示是否出错:</p>
+<pre><code>localhost:4000
+</code></pre><p>如果本地没错可以将这个本地版本git到remote端,使用网页链接查看是否有错.</p>
+<p>如果有错则核对两次commit之间的偏差,确定问题所在.</p>
+<p>在本次调试过程中,主要问题是assets文件夹被主题目录中的.gitignore忽略,这样网页只有文字没有样式.</p>
             
 
         </div>
@@ -262,7 +270,7 @@ EOF
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">标签</span><br>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/trick/">trick</a>
+    <a class="tag tag--primary tag--small t-link" href="/tags/博客/">博客</a>
 
             </div>
         
@@ -273,7 +281,7 @@ EOF
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/01/22/terminal-in-windows-sub-linux-system/" data-tooltip="Windows 10下面最好的terminal (WSL)" aria-label="上一篇: Windows 10下面最好的terminal (WSL)">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/03/22/How-to-install-v2ray-service-on-R7800/" data-tooltip="How to install v2ray service on R7800" aria-label="上一篇: How to install v2ray service on R7800">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -282,7 +290,7 @@ EOF
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" data-tooltip="Modify the hotkey of Chinese-English language switching in Windows 10" aria-label="下一篇: Modify the hotkey of Chinese-English language switching in Windows 10">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/01/22/Unblock-region-restriction-of-musics-videos/" data-tooltip="Unblock region restriction of musics/videos" aria-label="下一篇: Unblock region restriction of musics/videos">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -300,7 +308,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Facebook">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/" title="分享到 Facebook">
                     <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
@@ -308,7 +316,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Twitter">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/" title="分享到 Twitter">
                     <i class="fab fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -316,7 +324,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Google+">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/" title="分享到 Google+">
                     <i class="fab fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -324,7 +332,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Weibo">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/" title="分享到 Weibo">
                     <i class="fab fa-weibo" aria-hidden="true"></i>
                 </a>
             </li>
@@ -332,7 +340,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/&amp;title=Install customized fonts for imagemagick" title="分享到 QQ">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/&amp;title=Bugs when using the tranquilpeak hexo theme" title="分享到 QQ">
                     <i class="fab fa-qq" aria-hidden="true"></i>
                 </a>
             </li>
@@ -340,7 +348,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Qzone">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/" title="分享到 Qzone">
                     <i class="fa fa-star" aria-hidden="true"></i>
                 </a>
             </li>
@@ -391,7 +399,7 @@ EOF
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/01/22/terminal-in-windows-sub-linux-system/" data-tooltip="Windows 10下面最好的terminal (WSL)" aria-label="上一篇: Windows 10下面最好的terminal (WSL)">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/03/22/How-to-install-v2ray-service-on-R7800/" data-tooltip="How to install v2ray service on R7800" aria-label="上一篇: How to install v2ray service on R7800">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -400,7 +408,7 @@ EOF
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" data-tooltip="Modify the hotkey of Chinese-English language switching in Windows 10" aria-label="下一篇: Modify the hotkey of Chinese-English language switching in Windows 10">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/01/22/Unblock-region-restriction-of-musics-videos/" data-tooltip="Unblock region restriction of musics/videos" aria-label="下一篇: Unblock region restriction of musics/videos">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -418,7 +426,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Facebook">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/" title="分享到 Facebook">
                     <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
@@ -426,7 +434,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Twitter">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/" title="分享到 Twitter">
                     <i class="fab fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -434,7 +442,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Google+">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/" title="分享到 Google+">
                     <i class="fab fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -442,7 +450,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Weibo">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/" title="分享到 Weibo">
                     <i class="fab fa-weibo" aria-hidden="true"></i>
                 </a>
             </li>
@@ -450,7 +458,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/&amp;title=Install customized fonts for imagemagick" title="分享到 QQ">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/&amp;title=Bugs when using the tranquilpeak hexo theme" title="分享到 QQ">
                     <i class="fab fa-qq" aria-hidden="true"></i>
                 </a>
             </li>
@@ -458,7 +466,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Qzone">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/" title="分享到 Qzone">
                     <i class="fa fa-star" aria-hidden="true"></i>
                 </a>
             </li>
@@ -492,7 +500,7 @@ EOF
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
+                    <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/">
                         <i class="fab fa-facebook" aria-hidden="true"></i><span>分享到 Facebook</span>
                     </a>
                 </li>
@@ -500,7 +508,7 @@ EOF
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
+                    <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/">
                         <i class="fab fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
                     </a>
                 </li>
@@ -508,7 +516,7 @@ EOF
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
+                    <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/">
                         <i class="fab fa-google-plus" aria-hidden="true"></i><span>分享到 Google+</span>
                     </a>
                 </li>
@@ -516,7 +524,7 @@ EOF
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
+                    <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/">
                         <i class="fab fa-weibo" aria-hidden="true"></i><span>分享到 Weibo</span>
                     </a>
                 </li>
@@ -524,7 +532,7 @@ EOF
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/&amp;title=Install customized fonts for imagemagick">
+                    <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/&amp;title=Bugs when using the tranquilpeak hexo theme">
                         <i class="fab fa-qq" aria-hidden="true"></i><span>分享到 QQ</span>
                     </a>
                 </li>
@@ -532,7 +540,7 @@ EOF
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
+                    <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/">
                         <i class="fa fa-star" aria-hidden="true"></i><span>分享到 Qzone</span>
                     </a>
                 </li>
@@ -817,7 +825,7 @@ EOF
             (function() {
                 function render() {
                     new Gitment({
-                        id: 'https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/',
+                        id: 'https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/',
                         owner: 'crotoc',
                         repo: 'crotoc.github.io',
                         oauth: {
