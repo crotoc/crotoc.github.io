@@ -6,19 +6,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Chen Rui&#39;s Blog">
-    <title>标签: 博客 - Chen Rui&#39;s Blog</title>
+    <title>Tranquilpeak Setup algolia search - Chen Rui&#39;s Blog</title>
     <meta name="author" content="">
     
+        <meta name="keywords" content="tranquilpeak">
     
     
-    <script type="application/ld+json">{}</script>
-    <meta property="og:type" content="blog">
-<meta property="og:title" content="Chen Rui&#39;s Blog">
-<meta property="og:url" content="https://crotoc.github.io/tags/博客/index.html">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"},"articleBody":"\n[//]: # \nTranquilpeak Setup algolia search\n注册并获取相关帐号信息到Algolia观望注册一个帐号，然后新建一个index，可以在algolia站点找到Application, Search-Only API Key, Admin API Key。点击ALL API KEYS 找到新建INDEX对应的key，编辑权限，在弹出框中找到ACL选择勾选Add records, Delete records, List indices, Delete index权限，点击update更新。\n编辑站点配置文件编辑hexo根目录下的_config.yml文件，加入下列行：\nAlgolia setting\nalgolia:\nappId: &quot;**************&quot;\napiKey: &quot;**********&quot;\nadminApiKey: &quot;************&quot;\nchunkSize: 5000\nindexName: &quot;Blog&quot;\nfields:\n    - content:strip:truncate,0,500\n    - excerpt:strip\n    - gallery\n    - permalink\n    - photos\n    - slug\n    - tags\n    - title\n将文件中设置部分打开：\nalgolia_search:\n    enable: true\n    hits:\n        per_page: 10\n    labels:\n        input_placeholder: Search for Posts\n        hits_empty: &quot;We didn&apos;t find any results for the search: `${query}&quot;\n        hits_stats: &quot;`${hits} results found in `${time} ms&quot;\n如何使用每一次添加新的文章到要做一次：\nexport HEXO_ALGOLIA_INDEXING_KEY=你的API Key\nhexo algolia\n上面相当于建立搜索index上传到网上，这样静态网站就能访问index了\n参考链接https://www.zhihu.com/question/46822587","dateCreated":"2019-03-26T10:34:50+08:00","dateModified":"2019-03-27T00:21:10+08:00","datePublished":"2019-03-26T10:34:50+08:00","description":"Tranquilpeak Setup algolia search","headline":"Tranquilpeak Setup algolia search","image":["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYi7FGA5FfpekOBRLFsOSCep_sIqCw38lX0HgueXz6shmKqCdl","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYi7FGA5FfpekOBRLFsOSCep_sIqCw38lX0HgueXz6shmKqCdl"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg","logo":{"@type":"ImageObject","url":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"}},"url":"https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/","keywords":"主题配置","thumbnailUrl":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYi7FGA5FfpekOBRLFsOSCep_sIqCw38lX0HgueXz6shmKqCdl"}</script>
+    <meta name="description" content="Tranquilpeak Setup algolia search">
+<meta name="keywords" content="tranquilpeak">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Tranquilpeak Setup algolia search">
+<meta property="og:url" content="https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/index.html">
 <meta property="og:site_name" content="Chen Rui&#39;s Blog">
+<meta property="og:description" content="Tranquilpeak Setup algolia search">
 <meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2019-03-26T16:21:10.455Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Chen Rui&#39;s Blog">
+<meta name="twitter:title" content="Tranquilpeak Setup algolia search">
+<meta name="twitter:description" content="Tranquilpeak Setup algolia search">
 <meta name="twitter:creator" content="@crnormal">
     
     
@@ -28,6 +35,12 @@
         <meta property="og:image" content="https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"/>
     
     
+        <meta property="og:image" content="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYi7FGA5FfpekOBRLFsOSCep_sIqCw38lX0HgueXz6shmKqCdl"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYi7FGA5FfpekOBRLFsOSCep_sIqCw38lX0HgueXz6shmKqCdl" />
+    
+    
+        <meta property="og:image" content="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYi7FGA5FfpekOBRLFsOSCep_sIqCw38lX0HgueXz6shmKqCdl"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYi7FGA5FfpekOBRLFsOSCep_sIqCw38lX0HgueXz6shmKqCdl" />
     
     
     <!--STYLES-->
@@ -58,7 +71,7 @@
         
     
 
-<header id="header" data-behavior="1">
+<header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a class="header-title-link" href="/ ">Chen Rui&#39;s Blog</a>
@@ -81,7 +94,7 @@
         
     
 
-<nav id="sidebar" data-behavior="1">
+<nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
         
             <div class="sidebar-profile">
@@ -180,72 +193,206 @@
 </nav>
 
             
-            <div id="main" data-behavior="1"
-                 class="
-                        hasCoverMetaIn
-                        ">
-                
-    <section class="postShorten-group main-content-wrap">
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-left">
-        <div class="postShorten-wrap">
+        <div class="post-header-cover
+                    text-center
+                    post-header-cover--full" style="background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYi7FGA5FfpekOBRLFsOSCep_sIqCw38lX0HgueXz6shmKqCdl');" data-behavior="4">
             
-            <div class="postShorten-header">
-                <h1 class="postShorten-title">
-                    
-                        <a class="link-unstyled" href="/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/">
-                            Bugs when using the tranquilpeak hexo theme
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time datetime="2019-03-16T01:48:20+08:00">
+                <div class="post-header main-content-wrap text-center">
+    
+        <h1 class="post-title">
+            Tranquilpeak Setup algolia search
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2019-03-26T10:34:50+08:00">
 	
-		    3月 16, 2019
+		    3月 26, 2019
     	
     </time>
     
         <span>发布在 </span>
         
-    <a class="category-link" href="/categories/网络技术/">网络技术</a>
+    <a class="category-link" href="/categories/博客/">博客</a>
 
 
     
 </div>
 
-            </div>
-            
-                <div class="postShorten-excerpt">
-                    <p>Bugs when using the tranquilpeak hexo theme<br>
-                    
-                        <a href="/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/" class="postShorten-excerpt_link link">
-                            阅读全文
-                        </a>
-                        
-                    
-                </p></div>
+    
+</div>
+
             
         </div>
+
+            <div id="main" data-behavior="4"
+                 class="hasCover
+                        hasCoverMetaIn
+                        hasCoverCaption">
+                
+<article class="post">
+    
+        <span class="post-header-cover-caption caption">Hexo建站分享</span>
+    
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt --><p></p>
+<p>[//]: # <a id="more"></a></p>
+<h1 id="Tranquilpeak-Setup-algolia-search"><a href="#Tranquilpeak-Setup-algolia-search" class="headerlink" title="Tranquilpeak Setup algolia search"></a>Tranquilpeak Setup algolia search</h1><h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Tranquilpeak-Setup-algolia-search"><span class="toc-text">Tranquilpeak Setup algolia search</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#注册并获取相关帐号信息"><span class="toc-text">注册并获取相关帐号信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编辑站点配置文件"><span class="toc-text">编辑站点配置文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何使用"><span class="toc-text">如何使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接"><span class="toc-text">参考链接</span></a></li></ol></li></ol>
+<h2 id="注册并获取相关帐号信息"><a href="#注册并获取相关帐号信息" class="headerlink" title="注册并获取相关帐号信息"></a>注册并获取相关帐号信息</h2><p>到Algolia观望注册一个帐号，然后新建一个index，可以在algolia站点找到Application, Search-Only API Key, Admin API Key。点击ALL API KEYS 找到新建INDEX对应的key，编辑权限，在弹出框中找到ACL选择勾选Add records, Delete records, List indices, Delete index权限，点击update更新。</p>
+<h2 id="编辑站点配置文件"><a href="#编辑站点配置文件" class="headerlink" title="编辑站点配置文件"></a>编辑站点配置文件</h2><p>编辑hexo根目录下的_config.yml文件，加入下列行：</p>
+<pre><code>Algolia setting
+algolia:
+appId: &quot;**************&quot;
+apiKey: &quot;**********&quot;
+adminApiKey: &quot;************&quot;
+chunkSize: 5000
+indexName: &quot;Blog&quot;
+fields:
+    - content:strip:truncate,0,500
+    - excerpt:strip
+    - gallery
+    - permalink
+    - photos
+    - slug
+    - tags
+    - title
+</code></pre><p>将文件中设置部分打开：</p>
+<pre><code>algolia_search:
+    enable: true
+    hits:
+        per_page: 10
+    labels:
+        input_placeholder: Search for Posts
+        hits_empty: &quot;We didn&apos;t find any results for the search: `${query}&quot;
+        hits_stats: &quot;`${hits} results found in `${time} ms&quot;
+</code></pre><h2 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h2><p>每一次添加新的文章到要做一次：</p>
+<pre><code>export HEXO_ALGOLIA_INDEXING_KEY=你的API Key
+hexo algolia
+</code></pre><p>上面相当于建立搜索index上传到网上，这样静态网站就能访问index了</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://www.zhihu.com/question/46822587" target="_blank" rel="noopener">https://www.zhihu.com/question/46822587</a></p>
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
         
-            <a href="/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/">
-                <div class="postShorten-thumbnailimg">
-                    <img alt src="https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg">
-                </div>
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/主题配置/">主题配置</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/" data-tooltip="Tranquilpeak中使用gitment评论系统" aria-label="上一篇: Tranquilpeak中使用gitment评论系统">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/03/22/How-to-install-v2ray-service-on-R7800/" data-tooltip="How to install v2ray service on R7800" aria-label="下一篇: How to install v2ray service on R7800">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/" title="分享到 Facebook">
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/" title="分享到 Twitter">
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/" title="分享到 Google+">
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/" title="分享到 Weibo">
+                    <i class="fab fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/&amp;title=Tranquilpeak Setup algolia search" title="分享到 QQ">
+                    <i class="fab fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/" title="分享到 Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#gitment">
+                         <i class="fa fa-comment"></i>
+                    </a>
+                </li>
             
         
-    </article>
-    
-    <div class="pagination-bar">
-    <ul class="pagination">
-        
-        
-        <li class="pagination-number">第 1 页 共 1 页</li>
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
     </ul>
 </div>
 
-</section>
+
+        
+        
+            
+                <div id="gitment"></div>
+            
+        
+    </div>
+</article>
+
 
 
                 <footer id="footer" class="main-content-wrap">
@@ -255,6 +402,164 @@
 </footer>
 
             </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/" data-tooltip="Tranquilpeak中使用gitment评论系统" aria-label="上一篇: Tranquilpeak中使用gitment评论系统">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/03/22/How-to-install-v2ray-service-on-R7800/" data-tooltip="How to install v2ray service on R7800" aria-label="下一篇: How to install v2ray service on R7800">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/" title="分享到 Facebook">
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/" title="分享到 Twitter">
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/" title="分享到 Google+">
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/" title="分享到 Weibo">
+                    <i class="fab fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/&amp;title=Tranquilpeak Setup algolia search" title="分享到 QQ">
+                    <i class="fab fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/" title="分享到 Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#gitment">
+                         <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/">
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>分享到 Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/">
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/">
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>分享到 Google+</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/">
+                        <i class="fab fa-weibo" aria-hidden="true"></i><span>分享到 Weibo</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/&amp;title=Tranquilpeak Setup algolia search">
+                        <i class="fab fa-qq" aria-hidden="true"></i><span>分享到 QQ</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/">
+                        <i class="fa fa-star" aria-hidden="true"></i><span>分享到 Qzone</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
             
         </div>
         
@@ -579,6 +884,37 @@
         <!--SCRIPTS-->
 <script src="/assets/js/script-dbd16rvloemmuxdzniplmnxxvwoz24eya9wol0b7vvmlokgqsjivmb8dnscy.min.js"></script>
 <!--SCRIPTS END-->
+
+    
+        <script type="text/javascript">
+            (function() {
+                function render() {
+                    new Gitment({
+                        id: 'Tue Mar 26 2019 10:34:50 GMT+0800',
+                        owner: 'crotoc',
+                        repo: 'crotoc.github.io',
+                        oauth: {
+                            client_id: '8949a42af7f682244101',
+                            client_secret: '65bb20f6caaa62c4f2bfd335684056ec2f936473',
+                        }
+                    }).render('gitment');
+                }
+                var gc = document.createElement('script');
+                gc.type = 'text/javascript';
+                gc.src = '//jjeejj.github.io/js/gitment.js';
+                gc.charset = 'UTF-8';
+                gc.onload = render;
+                gc.async = true;
+                document.querySelector('body').appendChild(gc);
+                var gcs = document.createElement('link');
+                gcs.href = '//jjeejj.github.io/css/gitment.css';
+                gcs.type = 'text/css';
+                gcs.rel = 'stylesheet';
+                gcs.media = 'screen,print';
+                document.querySelector('head').appendChild(gcs);
+            })();
+	    </script>
+    
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment-with-locales.min.js"></script>

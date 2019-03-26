@@ -6,26 +6,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Chen Rui&#39;s Blog">
-    <title>Install customized fonts for imagemagick - Chen Rui&#39;s Blog</title>
+    <title>Tranquilpeak中使用gitment评论系统 - Chen Rui&#39;s Blog</title>
     <meta name="author" content="">
     
-        <meta name="keywords" content="imagemagick">
+        <meta name="keywords" content="tranquipeak,hexo,建站">
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"},"articleBody":"\n[//]: # \nInstall customized fonts for imagemagick\n\nDownload the font, for example, Roboto \nwget https://fonts.google.com/download?family=Roboto\n\nDownload the processing script for fonts\nwget http://imagemagick.org/Usage/scripts/imagick_type_gen\nchmod +x imagick_type_gen\n\nAccording to the documents of imagemagick 7 (https://imagemagick.org/script/resources.php), ImageMagick is able to load raw TrueType and Postscript font files. It searches for the font configuration file, type.xml, in the following order, and loads them if found:\n\\$MAGICK_CONFIGURE_PATH\n\\$MAGICK_HOME/etc/ImageMagick/-7.0.8\n\\$MAGICK_HOME/share/ImageMagick-7.0.8\n\\$XDG_CACHE_HOME/ImageMagick\n\\$HOME/.config/ImageMagick\n&lt;client path&gt;/etc/ImageMagick\n\\$MAGICK_FONT_PATH$\n\n\nSo create a dir ~/.config/ImageMagick\nmkdir ~/.config/ImageMagick\n\nAccording the description section  in the script imageick_type_gen, create a xml for your fonts using the processing script:\nfind /dir/to/font/ -type f -name &apos;*.ttf&apos; | imagick_type_gen -f - &gt; ~/.ImageMagick/type-myfonts.xml\n\n\n\nInclude the xml in main xml file:\ncat &lt;&lt;\\EOF &gt;&gt;~/.magick/type.xml\n&lt;typemap&gt;\n&lt;include file=&quot;type-myfonts.xml&quot; /&gt;\n&lt;/typemap&gt;\nEOF\n\nCheck font using the command:\nconvert -list font\n\n","dateCreated":"2018-09-28T23:46:24+08:00","dateModified":"2019-03-27T00:21:10+08:00","datePublished":"2018-09-28T23:46:24+08:00","description":"Install customized fonts for imagemagick","headline":"Install customized fonts for imagemagick","image":["https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&cs=tinysrgb&dpr=1&w=500","https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&cs=tinysrgb&dpr=1&w=500"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg","logo":{"@type":"ImageObject","url":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"}},"url":"https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/","keywords":"图片处理","thumbnailUrl":"https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&cs=tinysrgb&dpr=1&w=500"}</script>
-    <meta name="description" content="Install customized fonts for imagemagick">
-<meta name="keywords" content="imagemagick">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"},"articleBody":"\n[//]: # \n“Tranquilpeak中使用gitment评论系统”\n设置OAuth app授权要使用github的gitment评论系统，需要一个repository和一个访问github的授权应用。在Personal setting-&gt;Developer settings-&gt;OAuth Apps-&gt;New OAuth Appp。\n\nApplication name：app的名字，随便写\n\nHomepage URL：填写自己的主页地址即可\n\nApplication description：随便填\n\nAuthorization callback URL：这一步最重要，也是填写自己的博客地址，这里要注意到底是http与https，填写的一定要与自己的博客使用的一致。github会使用callback url回调传你一个code参数。\n\n\n建立完成之后就可以看到其中的client_id和client_secret了。\n配置文件设置Tranquilpeak主题中已经集成了gitment的评论系统，所以直接修改这部分代码：\ngitment:\n    # Switch\n    enable: true\n    # Your Github ID (Github username):\n    github_id: crotoc\n    # The repo to store comments:\n    repo: crotoc.github.io\n    # Your client ID:\n    client_id: **********\n    # Your client secret:\n    client_secret: **********\n问题object ProgressEvent因为gitment开发者的一些原因，到这里使用的时候会出现object ProgressEvent的错误，需要修改tranquilpeak\\layout_partial\\scripts.ejs中的两处地方:\ngc.src = &apos;//imsun.github.io/gitment/dist/gitment.browser.js&apos;;\ngcs.href = &apos;//imsun.github.io/gitment/style/default.css&apos;;\n修改成\ngc.src = &apos;//jjeejj.github.io/js/gitment.js&apos;;\ngcs.href = &apos;//jjeejj.github.io/css/gitment.css&apos;;\nComments Not Initialized、这一般是Authorization callback URL配置错误或者在这一个评论区没有登录github账号。\nvalidation failed这是由于github issue的Label的长度限制小于50字符，我们可以将tranquilpeak\\layout_partial\\scripts.ejs的id由post.permalink改为post.date：\nfunction render() {\n    new Gitment({\n    id: &apos;&lt;%= post.permalink %&gt;&apos;\n    owner: &apos;&lt;%- theme.gitment.github_id %&gt;&apos;,\n    repo: &apos;&lt;%- theme.gitment.repo %&gt;&apos;,\n    oauth: {\n    client_id: &apos;&lt;%- theme.gitment.client_id %&gt;&apos;,\n    client_secret: &apos;&lt;%- theme.gitment.client_secret %&gt;&apos;,\n    }\n    }).render(&apos;gitment&apos;);\n}\n改成\nfunction render() {\n    new Gitment({\n    id: &apos;&lt;%= post.date %&gt;&apos;\n    owner: &apos;&lt;%- theme.gitment.github_id %&gt;&apos;,\n    repo: &apos;&lt;%- theme.gitment.repo %&gt;&apos;,\n    oauth: {\n    client_id: &apos;&lt;%- theme.gitment.client_id %&gt;&apos;,\n    client_secret: &apos;&lt;%- theme.gitment.client_secret %&gt;&apos;,\n    }\n    }).render(&apos;gitment&apos;);\n}\n参考链接https://blog.csdn.net/du_milestone/article/details/83048444https://blog.csdn.net/yen_csdn/article/details/80142392https://github.com/imsun/gitment/issues/170","dateCreated":"2019-03-26T10:51:05+08:00","dateModified":"2019-03-27T00:21:10+08:00","datePublished":"2019-03-26T10:51:05+08:00","description":"“Tranquilpeak中使用gitment评论系统”","headline":"Tranquilpeak中使用gitment评论系统","image":["https://data.1freewallpapers.com/download/water-bungalow-bora-bora-st-regis.jpg","https://data.1freewallpapers.com/download/water-bungalow-bora-bora-st-regis.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg","logo":{"@type":"ImageObject","url":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"}},"url":"https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/","keywords":"主题配置","thumbnailUrl":"https://data.1freewallpapers.com/download/water-bungalow-bora-bora-st-regis.jpg"}</script>
+    <meta name="description" content="“Tranquilpeak中使用gitment评论系统”">
+<meta name="keywords" content="tranquipeak,hexo,建站">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="Install customized fonts for imagemagick">
-<meta property="og:url" content="https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/index.html">
+<meta property="og:title" content="Tranquilpeak中使用gitment评论系统">
+<meta property="og:url" content="https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/index.html">
 <meta property="og:site_name" content="Chen Rui&#39;s Blog">
-<meta property="og:description" content="Install customized fonts for imagemagick">
+<meta property="og:description" content="“Tranquilpeak中使用gitment评论系统”">
 <meta property="og:locale" content="zh-cn">
 <meta property="og:updated_time" content="2019-03-26T16:21:10.455Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Install customized fonts for imagemagick">
-<meta name="twitter:description" content="Install customized fonts for imagemagick">
+<meta name="twitter:title" content="Tranquilpeak中使用gitment评论系统">
+<meta name="twitter:description" content="“Tranquilpeak中使用gitment评论系统”">
 <meta name="twitter:creator" content="@crnormal">
     
     
@@ -35,12 +35,12 @@
         <meta property="og:image" content="https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"/>
     
     
-        <meta property="og:image" content="https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=500"/>
-        <meta class="swiftype" name="image" data-type="enum" content="https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=500" />
+        <meta property="og:image" content="https://data.1freewallpapers.com/download/water-bungalow-bora-bora-st-regis.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://data.1freewallpapers.com/download/water-bungalow-bora-bora-st-regis.jpg" />
     
     
-        <meta property="og:image" content="https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=500"/>
-        <meta class="swiftype" name="image" data-type="enum" content="https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=500" />
+        <meta property="og:image" content="https://data.1freewallpapers.com/download/water-bungalow-bora-bora-st-regis.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://data.1freewallpapers.com/download/water-bungalow-bora-bora-st-regis.jpg" />
     
     
     <!--STYLES-->
@@ -195,25 +195,25 @@
             
         <div class="post-header-cover
                     text-center
-                    post-header-cover--full" style="background-image:url('https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=500');" data-behavior="4">
+                    post-header-cover--full" style="background-image:url('https://data.1freewallpapers.com/download/water-bungalow-bora-bora-st-regis.jpg');" data-behavior="4">
             
                 <div class="post-header main-content-wrap text-center">
     
         <h1 class="post-title">
-            Install customized fonts for imagemagick
+            Tranquilpeak中使用gitment评论系统
         </h1>
     
     
         <div class="post-meta">
-    <time datetime="2018-09-28T23:46:24+08:00">
+    <time datetime="2019-03-26T10:51:05+08:00">
 	
-		    9月 28, 2018
+		    3月 26, 2019
     	
     </time>
     
         <span>发布在 </span>
         
-    <a class="category-link" href="/categories/小技巧/">小技巧</a>
+    <a class="category-link" href="/categories/博客/">博客</a>
 
 
     
@@ -239,44 +239,63 @@
         <div class="main-content-wrap">
             <!-- excerpt --><p></p>
 <p>[//]: # <a id="more"></a></p>
-<h1 id="Install-customized-fonts-for-imagemagick"><a href="#Install-customized-fonts-for-imagemagick" class="headerlink" title="Install customized fonts for imagemagick"></a>Install customized fonts for imagemagick</h1><h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Install-customized-fonts-for-imagemagick"><span class="toc-text">Install customized fonts for imagemagick</span></a></li></ol>
+<h1 id="“Tranquilpeak中使用gitment评论系统”"><a href="#“Tranquilpeak中使用gitment评论系统”" class="headerlink" title="“Tranquilpeak中使用gitment评论系统”"></a>“Tranquilpeak中使用gitment评论系统”</h1><h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#“Tranquilpeak中使用gitment评论系统”"><span class="toc-text">“Tranquilpeak中使用gitment评论系统”</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#设置OAuth-app授权"><span class="toc-text">设置OAuth app授权</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置文件设置"><span class="toc-text">配置文件设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题"><span class="toc-text">问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#object-ProgressEvent"><span class="toc-text">object ProgressEvent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Comments-Not-Initialized、"><span class="toc-text">Comments Not Initialized、</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#validation-failed"><span class="toc-text">validation failed</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接"><span class="toc-text">参考链接</span></a></li></ol></li></ol>
+<h2 id="设置OAuth-app授权"><a href="#设置OAuth-app授权" class="headerlink" title="设置OAuth app授权"></a>设置OAuth app授权</h2><p>要使用github的gitment评论系统，需要一个repository和一个访问github的授权应用。在Personal setting-&gt;Developer settings-&gt;OAuth Apps-&gt;New OAuth Appp。</p>
 <ol>
-<li><p>Download the font, for example, Roboto </p>
-<pre><code>wget https://fonts.google.com/download?family=Roboto
-</code></pre></li>
-<li><p>Download the processing script for fonts</p>
-<pre><code>wget http://imagemagick.org/Usage/scripts/imagick_type_gen
-chmod +x imagick_type_gen
-</code></pre></li>
-<li><p>According to the documents of imagemagick 7 (<a href="https://imagemagick.org/script/resources.php)" target="_blank" rel="noopener">https://imagemagick.org/script/resources.php)</a>, ImageMagick is able to load raw TrueType and Postscript font files. It searches for the font configuration file, type.xml, in the following order, and loads them if found:</p>
-<pre><code>\$MAGICK_CONFIGURE_PATH
-\$MAGICK_HOME/etc/ImageMagick/-7.0.8
-\$MAGICK_HOME/share/ImageMagick-7.0.8
-\$XDG_CACHE_HOME/ImageMagick
-\$HOME/.config/ImageMagick
-&lt;client path&gt;/etc/ImageMagick
-\$MAGICK_FONT_PATH$
-</code></pre></li>
+<li><p>Application name：app的名字，随便写</p>
+</li>
+<li><p>Homepage URL：填写自己的主页地址即可</p>
+</li>
+<li><p>Application description：随便填</p>
+</li>
+<li><p>Authorization callback URL：这一步最重要，也是填写自己的博客地址，这里要注意到底是http与https，填写的一定要与自己的博客使用的一致。github会使用callback url回调传你一个code参数。</p>
+</li>
 </ol>
-<p>So create a dir ~/.config/ImageMagick</p>
-<pre><code>mkdir ~/.config/ImageMagick
-</code></pre><ol start="4">
-<li><p>According the description section  in the script imageick_type_gen, create a xml for your fonts using the processing script:</p>
-<pre><code>find /dir/to/font/ -type f -name &apos;*.ttf&apos; | imagick_type_gen -f - &gt; ~/.ImageMagick/type-myfonts.xml
-</code></pre></li>
-</ol>
-<ol start="5">
-<li><p>Include the xml in main xml file:</p>
-<pre><code>cat &lt;&lt;\EOF &gt;&gt;~/.magick/type.xml
-&lt;typemap&gt;
-&lt;include file=&quot;type-myfonts.xml&quot; /&gt;
-&lt;/typemap&gt;
-EOF
-</code></pre></li>
-<li><p>Check font using the command:</p>
-<pre><code>convert -list font
-</code></pre></li>
-</ol>
+<p>建立完成之后就可以看到其中的client_id和client_secret了。</p>
+<h2 id="配置文件设置"><a href="#配置文件设置" class="headerlink" title="配置文件设置"></a>配置文件设置</h2><p>Tranquilpeak主题中已经集成了gitment的评论系统，所以直接修改这部分代码：</p>
+<pre><code>gitment:
+    # Switch
+    enable: true
+    # Your Github ID (Github username):
+    github_id: crotoc
+    # The repo to store comments:
+    repo: crotoc.github.io
+    # Your client ID:
+    client_id: **********
+    # Your client secret:
+    client_secret: **********
+</code></pre><h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><h3 id="object-ProgressEvent"><a href="#object-ProgressEvent" class="headerlink" title="object ProgressEvent"></a>object ProgressEvent</h3><p>因为gitment开发者的一些原因，到这里使用的时候会出现object ProgressEvent的错误，需要修改tranquilpeak\layout_partial\scripts.ejs中的两处地方:</p>
+<pre><code>gc.src = &apos;//imsun.github.io/gitment/dist/gitment.browser.js&apos;;
+gcs.href = &apos;//imsun.github.io/gitment/style/default.css&apos;;
+</code></pre><p>修改成</p>
+<pre><code>gc.src = &apos;//jjeejj.github.io/js/gitment.js&apos;;
+gcs.href = &apos;//jjeejj.github.io/css/gitment.css&apos;;
+</code></pre><h3 id="Comments-Not-Initialized、"><a href="#Comments-Not-Initialized、" class="headerlink" title="Comments Not Initialized、"></a>Comments Not Initialized、</h3><p>这一般是Authorization callback URL配置错误或者在这一个评论区没有登录github账号。</p>
+<h3 id="validation-failed"><a href="#validation-failed" class="headerlink" title="validation failed"></a>validation failed</h3><p>这是由于github issue的Label的长度限制小于50字符，我们可以将tranquilpeak\layout_partial\scripts.ejs的id由post.permalink改为post.date：</p>
+<pre><code>function render() {
+    new Gitment({
+    id: &apos;&lt;%= post.permalink %&gt;&apos;
+    owner: &apos;&lt;%- theme.gitment.github_id %&gt;&apos;,
+    repo: &apos;&lt;%- theme.gitment.repo %&gt;&apos;,
+    oauth: {
+    client_id: &apos;&lt;%- theme.gitment.client_id %&gt;&apos;,
+    client_secret: &apos;&lt;%- theme.gitment.client_secret %&gt;&apos;,
+    }
+    }).render(&apos;gitment&apos;);
+}
+</code></pre><p>改成</p>
+<pre><code>function render() {
+    new Gitment({
+    id: &apos;&lt;%= post.date %&gt;&apos;
+    owner: &apos;&lt;%- theme.gitment.github_id %&gt;&apos;,
+    repo: &apos;&lt;%- theme.gitment.repo %&gt;&apos;,
+    oauth: {
+    client_id: &apos;&lt;%- theme.gitment.client_id %&gt;&apos;,
+    client_secret: &apos;&lt;%- theme.gitment.client_secret %&gt;&apos;,
+    }
+    }).render(&apos;gitment&apos;);
+}
+</code></pre><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://blog.csdn.net/du_milestone/article/details/83048444" target="_blank" rel="noopener">https://blog.csdn.net/du_milestone/article/details/83048444</a><br><a href="https://blog.csdn.net/yen_csdn/article/details/80142392" target="_blank" rel="noopener">https://blog.csdn.net/yen_csdn/article/details/80142392</a><br><a href="https://github.com/imsun/gitment/issues/170" target="_blank" rel="noopener">https://github.com/imsun/gitment/issues/170</a></p>
             
 
         </div>
@@ -286,7 +305,7 @@ EOF
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">标签</span><br>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/图片处理/">图片处理</a>
+    <a class="tag tag--primary tag--small t-link" href="/tags/主题配置/">主题配置</a>
 
             </div>
         
@@ -296,8 +315,7 @@ EOF
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/01/22/terminal-in-windows-sub-linux-system/" data-tooltip="Windows 10下面最好的terminal (WSL)" aria-label="上一篇: Windows 10下面最好的terminal (WSL)">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -306,7 +324,7 @@ EOF
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" data-tooltip="Modify the hotkey of Chinese-English language switching in Windows 10" aria-label="下一篇: Modify the hotkey of Chinese-English language switching in Windows 10">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/03/26/Tranquilpeak-Setup-algolia-search/" data-tooltip="Tranquilpeak Setup algolia search" aria-label="下一篇: Tranquilpeak Setup algolia search">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -324,7 +342,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Facebook">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/" title="分享到 Facebook">
                     <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
@@ -332,7 +350,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Twitter">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/" title="分享到 Twitter">
                     <i class="fab fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -340,7 +358,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Google+">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/" title="分享到 Google+">
                     <i class="fab fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -348,7 +366,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Weibo">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/" title="分享到 Weibo">
                     <i class="fab fa-weibo" aria-hidden="true"></i>
                 </a>
             </li>
@@ -356,7 +374,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/&amp;title=Install customized fonts for imagemagick" title="分享到 QQ">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/&amp;title=Tranquilpeak中使用gitment评论系统" title="分享到 QQ">
                     <i class="fab fa-qq" aria-hidden="true"></i>
                 </a>
             </li>
@@ -364,7 +382,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Qzone">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/" title="分享到 Qzone">
                     <i class="fa fa-star" aria-hidden="true"></i>
                 </a>
             </li>
@@ -414,8 +432,7 @@ EOF
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/01/22/terminal-in-windows-sub-linux-system/" data-tooltip="Windows 10下面最好的terminal (WSL)" aria-label="上一篇: Windows 10下面最好的terminal (WSL)">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -424,7 +441,7 @@ EOF
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" data-tooltip="Modify the hotkey of Chinese-English language switching in Windows 10" aria-label="下一篇: Modify the hotkey of Chinese-English language switching in Windows 10">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/03/26/Tranquilpeak-Setup-algolia-search/" data-tooltip="Tranquilpeak Setup algolia search" aria-label="下一篇: Tranquilpeak Setup algolia search">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -442,7 +459,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Facebook">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/" title="分享到 Facebook">
                     <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
@@ -450,7 +467,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Twitter">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/" title="分享到 Twitter">
                     <i class="fab fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -458,7 +475,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Google+">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/" title="分享到 Google+">
                     <i class="fab fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -466,7 +483,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Weibo">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/" title="分享到 Weibo">
                     <i class="fab fa-weibo" aria-hidden="true"></i>
                 </a>
             </li>
@@ -474,7 +491,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/&amp;title=Install customized fonts for imagemagick" title="分享到 QQ">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/&amp;title=Tranquilpeak中使用gitment评论系统" title="分享到 QQ">
                     <i class="fab fa-qq" aria-hidden="true"></i>
                 </a>
             </li>
@@ -482,7 +499,7 @@ EOF
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/" title="分享到 Qzone">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/" title="分享到 Qzone">
                     <i class="fa fa-star" aria-hidden="true"></i>
                 </a>
             </li>
@@ -516,7 +533,7 @@ EOF
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
+                    <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/">
                         <i class="fab fa-facebook" aria-hidden="true"></i><span>分享到 Facebook</span>
                     </a>
                 </li>
@@ -524,7 +541,7 @@ EOF
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
+                    <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/">
                         <i class="fab fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
                     </a>
                 </li>
@@ -532,7 +549,7 @@ EOF
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
+                    <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/">
                         <i class="fab fa-google-plus" aria-hidden="true"></i><span>分享到 Google+</span>
                     </a>
                 </li>
@@ -540,7 +557,7 @@ EOF
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
+                    <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/">
                         <i class="fab fa-weibo" aria-hidden="true"></i><span>分享到 Weibo</span>
                     </a>
                 </li>
@@ -548,7 +565,7 @@ EOF
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/&amp;title=Install customized fonts for imagemagick">
+                    <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/&amp;title=Tranquilpeak中使用gitment评论系统">
                         <i class="fab fa-qq" aria-hidden="true"></i><span>分享到 QQ</span>
                     </a>
                 </li>
@@ -556,7 +573,7 @@ EOF
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
+                    <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2019/03/26/Tranquilpeak-How-to-use-gitment-comment-system/">
                         <i class="fa fa-star" aria-hidden="true"></i><span>分享到 Qzone</span>
                     </a>
                 </li>
@@ -895,7 +912,7 @@ EOF
             (function() {
                 function render() {
                     new Gitment({
-                        id: 'Fri Sep 28 2018 23:46:24 GMT+0800',
+                        id: 'Tue Mar 26 2019 10:51:05 GMT+0800',
                         owner: 'crotoc',
                         repo: 'crotoc.github.io',
                         oauth: {
