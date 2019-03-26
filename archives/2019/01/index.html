@@ -188,14 +188,14 @@
     <section class="postShorten-group main-content-wrap">
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom">
+    <article class="postShorten postShorten--thumbnailimg-left">
         <div class="postShorten-wrap">
             
             <div class="postShorten-header">
                 <h1 class="postShorten-title">
                     
                         <a class="link-unstyled" href="/2019/01/22/Unblock-region-restriction-of-musics-videos/">
-                            Unblock region restriction of musics/videos
+                            List for unblock region restriction of musics/videos
                         </a>
                     
                 </h1>
@@ -206,35 +206,39 @@
     	
     </time>
     
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/网络技术/">网络技术</a>
+
+
+    
 </div>
 
             </div>
             
-                <div class="postShorten-content">
-                    <p>I try to capture the link for qq video, music and netease music. The file is at below:</p>
-<a href="/2019/01/22/Unblock-region-restriction-of-musics-videos/unblock.rules.txt" title="Unblock rules">Unblock rules</a>
-<a href="/2019/01/22/Unblock-region-restriction-of-musics-videos/unblock.rules.dnsmasq.conf" title="Unblock rules for dnsmasq on openWRT router">Unblock rules for dnsmasq on openWRT router</a>
-<a href="/2019/01/22/Unblock-region-restriction-of-musics-videos/unblock.rules.v2ray.dnsmasq.conf" title="Unblock rules of v2ray for dnsmasq on openWRT router">Unblock rules of v2ray for dnsmasq on openWRT router</a>
-
+                <div class="postShorten-excerpt">
+                    <p>List for unblock region restriction of musics/videos<br>
                     
+                        <a href="/2019/01/22/Unblock-region-restriction-of-musics-videos/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
                         
-
                     
-                    
-                        <p>
-                            <a href="/2019/01/22/Unblock-region-restriction-of-musics-videos/#post-footer" class="postShorten-excerpt_link link">
-                                评论和共享
-                            </a>
-                        </p>
-                    
-                </div>
+                </p></div>
             
         </div>
+        
+            <a href="/2019/01/22/Unblock-region-restriction-of-musics-videos/">
+                <div class="postShorten-thumbnailimg">
+                    <img alt src="https://store-images.s-microsoft.com/image/apps.6197.13569891971238701.dab36319-31db-42e5-b32b-edb97c11d8b7.b4ec6763-6d93-4369-87b7-81c25913395f?mode=scale&amp;q=90&amp;h=1080&amp;w=1920">
+                </div>
+            </a>
+            
         
     </article>
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom">
+    <article class="postShorten postShorten--thumbnailimg-left">
         <div class="postShorten-wrap">
             
             <div class="postShorten-header">
@@ -252,91 +256,34 @@
     	
     </time>
     
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/电脑设置/">电脑设置</a>
+
+
+    
 </div>
 
             </div>
             
-                <div class="postShorten-content">
-                    <h1 id="Windows-10下面最好的terminal-WSL"><a href="#Windows-10下面最好的terminal-WSL" class="headerlink" title="Windows 10下面最好的terminal (WSL)"></a>Windows 10下面最好的terminal (WSL)</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>我主要的工作都在linux的服务器上,所以有个好用的终端非常重要.我使用过的终端非常多,包括了最简单的putty,稍微复杂一些的cygwin,然后是基于cmder的Conmu.他们各有个的优点:</p>
-<ol>
-<li>Putty贵在简单,只要能连上服务器就行,但是问题在于有的时候没有服务器我没法运行linux命令.</li>
-<li>cygwin是个很好的windows下面的linux系统,也有很多的插件可以开发,但是终端实在太难看了.我尝试过使用mintty作为前端,但是用过一两年之后还是弃用了,因为它对linux的原生命令支持的不好.</li>
-<li>ConEmu是我最满意的终端系统之一,但是后来出现了一个bug毁掉一切.那就是连到服务器上的时候,我使用emacs的分屏功能,中间的分隔会是不是的抽风,将一切变成乱码.作为一个常年使用emacs的人,这也是接受不能.</li>
-<li>其他.</li>
-</ol>
-<p>后来Windows 10系统集成了Windows sublinux系统实在太符合我的胃口了.作为一个使用过ubuntu系统作为主系统的人,简直对在windows上面运行ubuntu的诱惑无法抵御,于是我掉坑里了.</p>
-<h2 id="安装WSL"><a href="#安装WSL" class="headerlink" title="安装WSL"></a>安装WSL</h2><p>这不是重点,贴个链接在此.<a href="https://www.cnblogs.com/JettTang/p/8186315.html" target="_blank" rel="noopener">WSL的安装和使用</a></p>
-<h2 id="安装X-windows"><a href="#安装X-windows" class="headerlink" title="安装X windows"></a>安装X windows</h2><p>WSL可以使用windows的powershell,但是对于这个终端我实在无爱,所以后来我选中了ubuntu的里面的原生linux终端terminator.那么首要的问题是如何在windows上面运行x windows的应用.这里有两个选择,一个是<a href="https://sourceforge.net/projects/vcxsrv/" target="_blank" rel="noopener">VcXsrv</a>,一个是<a href="https://sourceforge.net/projects/xming/" target="_blank" rel="noopener">Xming</a>. </p>
-<p>我选择了XcXsrv, 大体步骤就是下载安装文件安装,这里不详述.</p>
-<h2 id="配置terminator"><a href="#配置terminator" class="headerlink" title="配置terminator"></a>配置terminator</h2><p>安装了xwindows之后就可以打开WSL,安装terminator:</p>
-<pre><code>sudo apt-get install terminator
-</code></pre><h2 id="命令行启动"><a href="#命令行启动" class="headerlink" title="命令行启动"></a>命令行启动</h2><p>打开命令行工具,然后输入下面命令:</p>
-<pre><code>bash -c -l &quot;DISPLAY=:0 terminator &amp;&quot;
-</code></pre><h2 id="快捷方式启动"><a href="#快捷方式启动" class="headerlink" title="快捷方式启动"></a>快捷方式启动</h2><p>为了让terminator看起来像个程序一样启动,还需要一些其他的工作.</p>
-<p>首先在ubuntu里面写一个脚本叫做<a href="./terminal-in-windows-sub-linux-system/terminator.sh">terminator.sh</a>.这个脚本主要为了实现自动检测打开x window服务器:</p>
-<pre><code>#!/bin/sh
-cd ~
-
-## 检查windows系统当前的进程里面是否有vcxsrv.exe.如果有代表x windows已经开启,如果没有则开启
-x=`/mnt/c/Windows/System32/tasklist.exe /FI &quot;IMAGENAME eq vcxsrv.exe&quot; | grep vcxsrv.exe`;
-
-if [[ ! \$x ]];then
-
-&quot;/mnt/c/Program Files/VcXsrv/vcxsrv.exe&quot; :0 -ac -terminate -lesspointer -multiwindow -clipboard -wgl -dpi auto 2&gt; /dev/null &amp; 
-fi
-##将x windows的显示定在本地.
-export DISPLAY=:0.0
-
-##启动 terminator
-terminator
-</code></pre><p>然后在windows下面边写一个快捷方式脚本<a href="./terminal-in-windows-sub-linux-system/startTerminator.vbs">startTerminator,vbs</a>,这个脚本主要用于实现建立快捷方式打开terminator:</p>
-<pre><code>&apos; 将运行服务器上的terminator.sh脚本存成一个参数变量
-args = &quot;-c&quot; &amp; &quot; -l &quot; &amp; &quot;&quot;&quot;bash ~/SHscript/terminator.sh&quot;&quot;&quot;
-
-
-&apos; windows自动运行脚本，用上面的arg作为参数
-WScript.CreateObject(&quot;Shell.Application&quot;).ShellExecute &quot;bash&quot;, args, &quot;&quot;, &quot;open&quot;, 0
-</code></pre><p>然后在桌面建立一个快捷方式,在目标里面写上C:\Users\chenr6\Downloads\startTerminator.vbs,图标改成自己喜欢的样子.双击就可以打开了.</p>
-<h1 id="如何使用中文输入法"><a href="#如何使用中文输入法" class="headerlink" title="如何使用中文输入法"></a>如何使用中文输入法</h1><p>首先我选择搜狗输入法,因为我想使用双拼,而且我在windows下面的输入法就是搜狗.</p>
-<h2 id="安装fcitx框架"><a href="#安装fcitx框架" class="headerlink" title="安装fcitx框架"></a>安装fcitx框架</h2><p>搜狗输入法的linux版本输入法需要fcitx框架,所以首先安装框架:</p>
-<pre><code>sudo apt-get update
-sudo apt-get install fcitx
-sudo apt-get install fcitx-config-gtk
-sudo apt-get install fcitx-table-all
-sudo apt-get install im-switch
-</code></pre><p>然后下载<a href="https://pinyin.sogou.com/linux/?r=pinyin" target="_blank" rel="noopener">搜狗linux最新版deb包</a>,并且安装:</p>
-<pre><code>sudo dpkg -i sogouxxx.deb
-</code></pre><p>如果需要输入法设置软件的界面中文,生成中文locale:</p>
-<pre><code>sudo locale-gen zh_CN.UTF-8
-</code></pre><p>将下列</p>
-<p>在wsl的.bashrc文件中加入下面的设置:</p>
-<pre><code>export XMODIFIERS=@im=fcitx
-export GTK_IM_MODULE=fcitx
-export QT_IM_MODULE=fcitx
-
-if [ \$(ps -ax | grep dbus-daemon | wc -l) -eq 1 ]; then
-    eval &apos;dbus-launch &gt; /dev/null 2&gt;&amp;1&apos;
-fi
-</code></pre><p>打开fcitx设置程序:</p>
-<pre><code>fcitx-configtool
-</code></pre><p>在里面加入搜狗拼音,并且最好将全局设置中的输入法热键修改一下.重新打开wsl,愉快的使用吧</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://blog.ropnop.com/configuring-a-pretty-and-usable-terminal-emulator-for-wsl/" target="_blank" rel="noopener">terminator参考</a></p>
-<p><a href="https://pinyin.sogou.com/linux/?r=pinyin" target="_blank" rel="noopener">搜狗输入法参考</a></p>
-
+                <div class="postShorten-excerpt">
+                    <p>Windows 10下面最好的terminal (WSL)<br>
                     
+                        <a href="/2019/01/22/terminal-in-windows-sub-linux-system/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
                         
-
                     
-                    
-                        <p>
-                            <a href="/2019/01/22/terminal-in-windows-sub-linux-system/#post-footer" class="postShorten-excerpt_link link">
-                                评论和共享
-                            </a>
-                        </p>
-                    
-                </div>
+                </p></div>
             
         </div>
+        
+            <a href="/2019/01/22/terminal-in-windows-sub-linux-system/">
+                <div class="postShorten-thumbnailimg">
+                    <img alt src="http://img.univs.cn/webfile/event/279/4585308/D5B18660-6B04-11E4-A4B4-E02212B11521/1415863236024_4585308.JPG">
+                </div>
+            </a>
+            
         
     </article>
     
@@ -419,24 +366,11 @@ fi
                 
                 <div class="media">
                     
-                    <div class="media-body">
-                        <a class="link-unstyled" href="https://crotoc.github.io/2018/08/09/travis-test/">
-                            <h3 class="media-heading">travis_test</h3>
+                    <div class="media-left">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2018/08/10/gnu-join/">
+                            <img class="media-image" src="https://img1.quimg.com/upload/201712/1513834333388.jpg" width="90" height="90">
                         </a>
-                        <span class="media-meta">
-                            <span class="media-date text-small">
-                                
-                                    2018年8月9日
-                                
-                            </span>
-                        </span>
-                        <div class="media-content hide-xs font-merryweather"></div>
                     </div>
-                    <div style="clear:both;"></div>
-                    <hr>
-                </div>
-                
-                <div class="media">
                     
                     <div class="media-body">
                         <a class="link-unstyled" href="https://crotoc.github.io/2018/08/10/gnu-join/">
@@ -449,13 +383,19 @@ fi
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Gnu join - join two files by specified field<br></p></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
                 </div>
                 
                 <div class="media">
+                    
+                    <div class="media-left">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2018/09/11/rmarkdown-config/">
+                            <img class="media-image" src="http://www.cncd8.com/uploads/allimg/120308/1-12030R10R7.jpg" width="90" height="90">
+                        </a>
+                    </div>
                     
                     <div class="media-body">
                         <a class="link-unstyled" href="https://crotoc.github.io/2018/09/11/rmarkdown-config/">
@@ -468,7 +408,7 @@ fi
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Setup rmarkdown on server without Rstudio<br></p></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -476,24 +416,11 @@ fi
                 
                 <div class="media">
                     
-                    <div class="media-body">
-                        <a class="link-unstyled" href="https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
-                            <h3 class="media-heading">Unblock Youku on a openWRT Router</h3>
+                    <div class="media-left">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/">
+                            <img class="media-image" src="https://static.boredpanda.com/blog/wp-content/uploads/2015/11/reflection-landscape-photography-jaewoon-u-fb.jpg" width="90" height="90">
                         </a>
-                        <span class="media-meta">
-                            <span class="media-date text-small">
-                                
-                                    2018年9月14日
-                                
-                            </span>
-                        </span>
-                        <div class="media-content hide-xs font-merryweather"></div>
                     </div>
-                    <div style="clear:both;"></div>
-                    <hr>
-                </div>
-                
-                <div class="media">
                     
                     <div class="media-body">
                         <a class="link-unstyled" href="https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/">
@@ -506,13 +433,19 @@ fi
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Modify the hotkey of Chinese-English language switching in Windows 10<br></p></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
                 </div>
                 
                 <div class="media">
+                    
+                    <div class="media-left">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
+                            <img class="media-image" src="https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=500" width="90" height="90">
+                        </a>
+                    </div>
                     
                     <div class="media-body">
                         <a class="link-unstyled" href="https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
@@ -525,7 +458,7 @@ fi
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Install customized fonts for imagemagick<br></p></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -533,9 +466,15 @@ fi
                 
                 <div class="media">
                     
+                    <div class="media-left">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2019/01/22/Unblock-region-restriction-of-musics-videos/">
+                            <img class="media-image" src="https://store-images.s-microsoft.com/image/apps.6197.13569891971238701.dab36319-31db-42e5-b32b-edb97c11d8b7.b4ec6763-6d93-4369-87b7-81c25913395f?mode=scale&amp;q=90&amp;h=1080&amp;w=1920" width="90" height="90">
+                        </a>
+                    </div>
+                    
                     <div class="media-body">
                         <a class="link-unstyled" href="https://crotoc.github.io/2019/01/22/Unblock-region-restriction-of-musics-videos/">
-                            <h3 class="media-heading">Unblock region restriction of musics/videos</h3>
+                            <h3 class="media-heading">List for unblock region restriction of musics/videos</h3>
                         </a>
                         <span class="media-meta">
                             <span class="media-date text-small">
@@ -544,13 +483,19 @@ fi
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"></div>
+                        <div class="media-content hide-xs font-merryweather"><p>List for unblock region restriction of musics/videos<br></p></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
                 </div>
                 
                 <div class="media">
+                    
+                    <div class="media-left">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2019/01/22/terminal-in-windows-sub-linux-system/">
+                            <img class="media-image" src="http://img.univs.cn/webfile/event/279/4585308/D5B18660-6B04-11E4-A4B4-E02212B11521/1415863236024_4585308.JPG" width="90" height="90">
+                        </a>
+                    </div>
                     
                     <div class="media-body">
                         <a class="link-unstyled" href="https://crotoc.github.io/2019/01/22/terminal-in-windows-sub-linux-system/">
@@ -563,7 +508,7 @@ fi
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Windows 10下面最好的terminal (WSL)<br></p></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -596,6 +541,12 @@ fi
                 
                 <div class="media">
                     
+                    <div class="media-left">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2019/03/22/How-to-install-v2ray-service-on-R7800/">
+                            <img class="media-image" src="https://images.pexels.com/photos/371633/pexels-photo-371633.jpeg?auto=compress&amp;cs=tinysrgb&amp;h=750&amp;w=1260" width="90" height="90">
+                        </a>
+                    </div>
+                    
                     <div class="media-body">
                         <a class="link-unstyled" href="https://crotoc.github.io/2019/03/22/How-to-install-v2ray-service-on-R7800/">
                             <h3 class="media-heading">How to install v2ray service on R7800</h3>
@@ -607,7 +558,7 @@ fi
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"></div>
+                        <div class="media-content hide-xs font-merryweather"><p>如何在netgear R7800上面安装v2ray服务<br></p></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -617,7 +568,7 @@ fi
         </div>
         <div class="modal-footer">
             <p class="results-count text-medium" data-message-zero="没有找到文章" data-message-one="找到 1 篇文章" data-message-other="找到 {n} 篇文章">
-                找到 11 篇文章
+                找到 8 篇文章
             </p>
         </div>
     </div>

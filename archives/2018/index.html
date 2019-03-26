@@ -188,7 +188,7 @@
     <section class="postShorten-group main-content-wrap">
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom">
+    <article class="postShorten postShorten--thumbnailimg-left">
         <div class="postShorten-wrap">
             
             <div class="postShorten-header">
@@ -206,68 +206,39 @@
     	
     </time>
     
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/小技巧/">小技巧</a>
+
+
+    
 </div>
 
             </div>
             
-                <div class="postShorten-content">
-                    <h1 id="Install-customized-fonts-for-imagemagick-7"><a href="#Install-customized-fonts-for-imagemagick-7" class="headerlink" title="Install customized fonts for imagemagick 7"></a>Install customized fonts for imagemagick 7</h1><ol>
-<li><p>Download the font, for example, Roboto </p>
-<pre><code>wget https://fonts.google.com/download?family=Roboto
-</code></pre></li>
-<li><p>Download the processing script for fonts</p>
-<pre><code>wget http://imagemagick.org/Usage/scripts/imagick_type_gen
-chmod +x imagick_type_gen
-</code></pre></li>
-<li><p>According to the documents of imagemagick 7 (<a href="https://imagemagick.org/script/resources.php)" target="_blank" rel="noopener">https://imagemagick.org/script/resources.php)</a>, ImageMagick is able to load raw TrueType and Postscript font files. It searches for the font configuration file, type.xml, in the following order, and loads them if found:</p>
-<pre><code>\$MAGICK_CONFIGURE_PATH
-\$MAGICK_HOME/etc/ImageMagick/-7.0.8
-\$MAGICK_HOME/share/ImageMagick-7.0.8
-\$XDG_CACHE_HOME/ImageMagick
-\$HOME/.config/ImageMagick
-&lt;client path&gt;/etc/ImageMagick
-\$MAGICK_FONT_PATH$
-</code></pre></li>
-</ol>
-<p>So create a dir ~/.config/ImageMagick</p>
-<pre><code>mkdir ~/.config/ImageMagick
-</code></pre><ol start="4">
-<li><p>According the description section  in the script imageick_type_gen, create a xml for your fonts using the processing script:</p>
-<pre><code>find /dir/to/font/ -type f -name &apos;*.ttf&apos; | imagick_type_gen -f - &gt; ~/.ImageMagick/type-myfonts.xml
-</code></pre></li>
-</ol>
-<ol start="5">
-<li><p>Include the xml in main xml file:</p>
-<pre><code>cat &lt;&lt;\EOF &gt;&gt;~/.magick/type.xml
-&lt;typemap&gt;
-&lt;include file=&quot;type-myfonts.xml&quot; /&gt;
-&lt;/typemap&gt;
-EOF
-</code></pre></li>
-<li><p>Check font using the command:</p>
-<pre><code>convert -list font
-</code></pre></li>
-</ol>
-
+                <div class="postShorten-excerpt">
+                    <p>Install customized fonts for imagemagick<br>
                     
+                        <a href="/2018/09/28/Install-customized-fonts-for-imagemagick/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
                         
-
                     
-                    
-                        <p>
-                            <a href="/2018/09/28/Install-customized-fonts-for-imagemagick/#post-footer" class="postShorten-excerpt_link link">
-                                评论和共享
-                            </a>
-                        </p>
-                    
-                </div>
+                </p></div>
             
         </div>
+        
+            <a href="/2018/09/28/Install-customized-fonts-for-imagemagick/">
+                <div class="postShorten-thumbnailimg">
+                    <img alt src="https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=500">
+                </div>
+            </a>
+            
         
     </article>
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom">
+    <article class="postShorten postShorten--thumbnailimg-left">
         <div class="postShorten-wrap">
             
             <div class="postShorten-header">
@@ -285,255 +256,39 @@ EOF
     	
     </time>
     
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/电脑设置/">电脑设置</a>
+
+
+    
 </div>
 
             </div>
             
-                <div class="postShorten-content">
-                    <h1 id="Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10"><a href="#Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10" class="headerlink" title="Modify the hotkey of Chinese-English language switching in Windows 10"></a>Modify the hotkey of Chinese-English language switching in Windows 10</h1><p>The problem is very annoying because the hotkey ctrl+space has conflicted with others in emacs or other program. My thought is changing it to another combination ctrl+F1.</p>
-<ol>
-<li>Open regedit</li>
-<li>Navigate to HKEY_USER.DEFAULT\Input Method\Hot Keys\00000010\</li>
-<li>Modify the Key Modifiers and Virtual Key.</li>
-<li><p>Only disable the hotkey is change the first two digits of the two keys in 00.</p>
-<pre><code>Key Modifiers: 00 c0 00 00.
-Virtual Key: 00 00 00 00
-</code></pre></li>
-<li><p>For Key modifiers, the rules of the number are like:</p>
-<pre><code>__00__ c0 00 00 : The underlining two digits indicate one of modifier keys.
-
-CTRL: 02
-ALT: 01
-SHIFT: 04
-Disable: 00
-
-00 __c0__ 00 00 : The underlining two digits indicate the left or right position on the keybord.
-
-Left: 80
-Right: 40
-Left or Right: 8+4=12=c0
-</code></pre></li>
-<li><p>For virtual key, the rules are like:</p>
-<pre><code>__00__ 00 00 00 : The hex of ascii of a virtual key.
-</code></pre><p> Please see the reference: <a href="https://docs.microsoft.com/en-us/windows/desktop/inputdev/virtual-key-codes" target="_blank" rel="noopener">https://docs.microsoft.com/en-us/windows/desktop/inputdev/virtual-key-codes</a></p>
-<p> So if we want F1, the hex code is 70:</p>
-<pre><code>__70__ 00 00 00 : The hex of ascii of F1.
-</code></pre></li>
-<li><p>Restart your computer.</p>
-</li>
-</ol>
-<p>For my case, I just need to modify virtual key to 70 00 00 00</p>
-
+                <div class="postShorten-excerpt">
+                    <p>Modify the hotkey of Chinese-English language switching in Windows 10<br>
                     
-                        
-
-                    
-                    
-                        <p>
-                            <a href="/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/#post-footer" class="postShorten-excerpt_link link">
-                                评论和共享
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title">
-                    
-                        <a class="link-unstyled" href="/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
-                            Unblock Youku on a openWRT Router
+                        <a href="/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/" class="postShorten-excerpt_link link">
+                            阅读全文
                         </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time datetime="2018-09-14T10:18:12+08:00">
-	
-		    9月 14, 2018
-    	
-    </time>
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content">
-                    <h1 id="How-to-unblock-youku-on-your-router"><a href="#How-to-unblock-youku-on-your-router" class="headerlink" title="How to unblock youku on your router"></a>How to unblock youku on your router</h1><p>To watched videos from China apps like youku, tencent, sogou, we have to unblock the restrictions put on these website.</p>
-<p>I applied this method to two models of routers: NETGEAR WNDR3700 ($20 on ebay) and R7800 ($160 on ebay) and they perform well enough.</p>
-<h2 id="Prerequisites"><a href="#Prerequisites" class="headerlink" title="Prerequisites"></a>Prerequisites</h2><ol>
-<li>A router that can install openWRT.</li>
-<li>A list of urls needed to be unblocked.</li>
-<li>A shadowsocks proxy (let me know if you don’t have)</li>
-<li>Plenty of time</li>
-</ol>
-<h2 id="Installation-of-openWRT"><a href="#Installation-of-openWRT" class="headerlink" title="Installation of openWRT"></a>Installation of openWRT</h2><p>The openWRT is a open-source system that can be installed on routers, which can bring many great new functions. It is actively developed and maintained.</p>
-<p>For R7800, we need to flash openWRT through tftp.</p>
-<p>1) Download the firmware from <a href="https://openwrt.org/toh/hwdata/netgear/netgear_r7800" target="_blank" rel="noopener">https://openwrt.org/toh/hwdata/netgear/netgear_r7800</a>. Remember the right file is with suffix of “.img”</p>
-<pre><code>wget http://downloads.openwrt.org/releases/18.06.1/targets/ipq806x/generic/openwrt-18.06.1-ipq806x-netgear_r7800-squashfs-factory.img
-</code></pre><p>2) Install tftp on the computer(Ubuntu).</p>
-<pre><code>sudo apt-get install tftp
-</code></pre><p>3) Let the router enter into recovery mode.</p>
-<pre><code>a. Power off the router
-b. Keep pressing the reset button using a pin and turn on the router.
-c. Release the reset button until the light blink white. The light of router will blink orange first and then after for a few seconds blink white. 
-</code></pre><p>4) Connect the computer with router to one of the lan ports and mannually set the ip to 192.168.1.2. Because the router’s ip is 192.168.1.1, don’t use this ip for the computer.</p>
-<pre><code>IP: 192.168.1.2
-MASK: 255.255.255.0
-Gateway: 192.168.1.1
-DNS: 192.168.1.1 (Not important)
-</code></pre><p>5) Ping the router from the computer to make sure everthing is all right.</p>
-<pre><code>ping 192.168.1.1
-
-## 64 bytes from 192.168.1.1: icmp_seq=1 ttl=47 time=80.3 ms
-## 64 bytes from 192.168.1.1: icmp_seq=2 ttl=47 time=80.3 ms
-## 64 bytes from 192.168.1.1: icmp_seq=3 ttl=47 time=80.3 ms
-## 64 bytes from 192.168.1.1: icmp_seq=4 ttl=47 time=80.2 ms
-</code></pre><p>6) Connect to the router using tftp and upload the openWRT image.</p>
-<pre><code>tftp 192.168.1.1
-
-tftp&gt; ?
-Commands may be abbreviated.  Commands are:
-
-connect connect to remote tftp
-mode    set file transfer mode
-put     send file
-get     receive file
-quit    exit tftp
-verbose toggle verbose mode
-trace   toggle packet tracing
-status  show current status
-binary  set mode to octet
-ascii   set mode to netascii
-rexmt   set per-packet retransmission timeout
-timeout set total retransmission timeout
-?       print help information
-</code></pre><p>   Change to binary mode. This step is necessary. </p>
-<pre><code>tftp&gt; binary
-</code></pre><p>   Upload the openWRT img file.</p>
-<pre><code>tftp&gt; put openwrt-18.06.1-ipq806x-netgear_r7800-squashfs-factory.img
-</code></pre><p>   It will show the size uploaded.</p>
-<p>   Quit tftp.</p>
-<pre><code>tftp&gt; quit
-</code></pre><p>7) If everything goes well, the blinking white light will turn off and the router will restart with openWRT.</p>
-<h2 id="Install-shadowsocks-packages"><a href="#Install-shadowsocks-packages" class="headerlink" title="Install shadowsocks packages"></a>Install shadowsocks packages</h2><p>After restarting, the router is running openWRT and we can connect to the router using luci.</p>
-<p>Input 192.168.1.1 in a browser and it will ask you to set a password. After this we can connect to the router using ssh with the password.</p>
-<pre><code>ssh root@192.168.1.1
-</code></pre><p>To install shdowsocks, we need use the package manager command. First refresh the package list by:</p>
-<pre><code>opkg update
-</code></pre><p>Then find all the packages related to shawdowsocks.</p>
-<pre><code>opkg find &quot;*shadowsocks*&quot;
-opkg install shadowsocks-client
-
-## Must
-opkg install shadowsocks-libev-config
-
-## Not necessary
-opkg install shadowsocks-libev-ss-local
-
-## Redirect requests to shadowsocks server)
-opkg install shadowsocks-libev-ss-redir 
-
-## Build up rules to redirect)
-opkg install shadowsocks-libev-ss-rules 
-
-## ss server, not necessary
-opkg install shadowsocks-libev-ss-server
-
-## For DNS requests, not necessary in this case
-opkg install shadowsocks-libev-ss-tunnel
-
-##To simple your life
-opkg install luci-app-shadowsocks
-</code></pre><p>This method needs dnsmasq and ipset to build a ip filter.</p>
-<p>The dnsmasq installed by the image does not support ipset, so we need to install dnsmasq-full</p>
-<pre><code>opkg remove dnsmasq
-opkg install dnsmasq-full
-</code></pre><p>I believe ipset package is already installed with shadowsocks. We can validate it by:</p>
-<pre><code>opkg install ipset
-</code></pre><h2 id="Configurations-of-shadowsocks"><a href="#Configurations-of-shadowsocks" class="headerlink" title="Configurations of shadowsocks"></a>Configurations of shadowsocks</h2><p>I would like to configure shadowsocks using luci, which can save you a lot of time.</p>
-<ol>
-<li>Add a ss proxy server.</li>
-<li>Add a ss-redir service.</li>
-<li>The key part is putting the url list to the place that is to be forward to ss proxy server.</li>
-<li>Because the step 3 needs to add the url to the related ipset hash when starting the service, so it doesn’t allow any bad urls. Or the service can not start. To overcome this flaw, I modified the /usr/bin/ss-rules by adding a new ipset hash set named “_unblock” and build a new iptable rules to this set.</li>
-</ol>
-<p>If you don’t want to revise the ss-rules, you can use the command bellow.</p>
-<h2 id="configuratins-of-ipset-and-iptables"><a href="#configuratins-of-ipset-and-iptables" class="headerlink" title="configuratins of ipset and iptables"></a>configuratins of ipset and iptables</h2><p>Initiate a new ipset</p>
-<pre><code>ipset -N _unblock hash:ip
-</code></pre><p>Add the following iptable rules to iptable:</p>
-<pre><code>## Create shadowsocks router rules
-iptables -t nat -N shadowsocks
-iptables -t mangle -N shadowsocks
-
-iptables -t nat -A shadowsocks -d x.x.x.x -j RETURN 
-# x.x.x.x为shadowsocks服务器地址
-iptables -t nat -A shadowsocks -d 0.0.0.0/8 -j RETURN
-iptables -t nat -A shadowsocks -d 10.0.0.0/8 -j RETURN
-iptables -t nat -A shadowsocks -d 127.0.0.0/8 -j RETURN
-iptables -t nat -A shadowsocks -d 169.254.0.0/16 -j RETURN
-iptables -t nat -A shadowsocks -d 172.16.0.0/12 -j RETURN
-iptables -t nat -A shadowsocks -d 192.168.0.0/16 -j RETURN
-iptables -t nat -A shadowsocks -d 224.0.0.0/4 -j RETURN
-iptables -t nat -A shadowsocks -d 240.0.0.0/4 -j RETURN
-
-## TCP
-iptables -t nat -A shadowsocks -p tcp -m set --match-set _unblock_ dst -j REDIRECT --to-port 1080
-
-## UDP using TPROXY
-iptables -t mangle -A shadowsocks -p udp -m set --match-set redir dst ! --dport 53 -j TPROXY --on-port 1080 --tproxy-mark 0x01/0x01
-ip route add local default dev lo table 100
-ip rule add fwmark 0x01/0x01 lookup 100
-ip route list table 100
-
-
-iptables -t nat -A PREROUTING -p tcp -j shadowsocks
-iptables -t mangle -A PREROUTING -j shadowsocks
-
-iptables -t nat -A OUTPUT -p tcp -j shadowsocks
-iptables -t mangle -A OUTPUT -j shadowsocks
-</code></pre><h2 id="Configuration-of-dnsmasq-full"><a href="#Configuration-of-dnsmasq-full" class="headerlink" title="Configuration of dnsmasq-full"></a>Configuration of dnsmasq-full</h2><p>Add a conf dir to be loaded by dnsmasq</p>
-<pre><code>echo &quot;conf-dir=/etc/dnsmasq.d&quot;&gt;&gt;/etc/dnsmasq.conf
-mkdir /etc/dnsmasq.d
-cd /etc/dnsmasq.d
-touch redir_test.conf
-</code></pre><p>Restart dnsmasq after revising config file every time</p>
-<pre><code>/etc/init.d/dnsmasq restart
-</code></pre><h2 id="Test"><a href="#Test" class="headerlink" title="Test"></a>Test</h2><pre><code>netstat -nlp
-
-## listen to the port to see what kind of url 
-tcpdump -i br-lan host xxxxx
-
-## Test ipset
-ping xxxx
-ipset list
-</code></pre><h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><p><a href="http://blog.kompaz.win/2017/03/24/OpenWRT%20Shadowsocks+GFWList%20%E6%B5%81%E9%87%8F%E8%87%AA%E5%8A%A8%E5%88%86%E6%B5%81/" target="_blank" rel="noopener">http://blog.kompaz.win/2017/03/24/OpenWRT%20Shadowsocks+GFWList%20%E6%B5%81%E9%87%8F%E8%87%AA%E5%8A%A8%E5%88%86%E6%B5%81/</a></p>
-
-                    
                         
-
                     
-                    
-                        <p>
-                            <a href="/2018/09/14/Unblock-Youku-on-a-openWRT-Router/#post-footer" class="postShorten-excerpt_link link">
-                                评论和共享
-                            </a>
-                        </p>
-                    
-                </div>
+                </p></div>
             
         </div>
+        
+            <a href="/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/">
+                <div class="postShorten-thumbnailimg">
+                    <img alt src="https://static.boredpanda.com/blog/wp-content/uploads/2015/11/reflection-landscape-photography-jaewoon-u-fb.jpg">
+                </div>
+            </a>
+            
         
     </article>
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom">
+    <article class="postShorten postShorten--thumbnailimg-left">
         <div class="postShorten-wrap">
             
             <div class="postShorten-header">
@@ -551,96 +306,39 @@ ipset list
     	
     </time>
     
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/电脑设置/">电脑设置</a>
+
+
+    
 </div>
 
             </div>
             
-                <div class="postShorten-content">
-                    <h1 id="How-to-Setup-rmarkdown-on-server-without-Rstudio"><a href="#How-to-Setup-rmarkdown-on-server-without-Rstudio" class="headerlink" title="How to Setup rmarkdown on server without Rstudio"></a>How to Setup rmarkdown on server without Rstudio</h1><h2 id="Install-texlive"><a href="#Install-texlive" class="headerlink" title="Install texlive"></a>Install texlive</h2><p>Because the server is centos6 and the glibc is too old to support texlive 2018, I downloaded texlive 2017 from a website.</p>
-<pre><code>wget http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2017/texlive2017-20170524.iso
-</code></pre><p>Mount the iso and then cp the files to a dir, cd to the dir and them install a minimal distribute using the command:</p>
-<pre><code>cd ~/chenr6/download/texlive
-./install-tl --gui=text
-</code></pre><p>If you want to install to a specific dir:</p>
-<pre><code>export TEXLIVE_INSTALL_PREFIX=/your/dir/
-</code></pre><p>Input capital S to select scheme and input lower case d to select basic scheme:</p>
-<pre><code>Select scheme:
-
-a [ ] full scheme (everything)
-b [ ] medium scheme (small + more packages and languages)
-c [ ] small scheme (basic + xetex, metapost, a few languages)
-d [X] basic scheme (plain and latex)
-e [ ] minimal scheme (plain only)
-f [ ] ConTeXt scheme
-g [ ] GUST TeX Live scheme
-h [ ] infrastructure-only scheme (no TeX at all)
-i [ ] teTeX scheme (more than medium, but nowhere near full)
-j [ ] custom selection of collections
-
-Actions: (disk space required: 157 MB)
-&lt;R&gt; return to main menu
-&lt;Q&gt; quit
-
-Enter letter to select scheme: d
-</code></pre><p>Input R to return</p>
-<p>Input O to ignore the installation of document:</p>
-<pre><code>Options customization:
-
-&lt;P&gt; use letter size instead of A4 by default: [ ]
-&lt;E&gt; execution of restricted list of programs: [X]
-&lt;F&gt; create format files:                      [X]
-&lt;D&gt; install font/macro doc tree:              [ ]
-&lt;S&gt; install font/macro source tree:           [ ]
-&lt;L&gt; create symlinks in standard directories:  [ ]
-binaries to: 
-manpages to: 
-info to: 
-&lt;Y&gt; after installation, get package updates from CTAN: [X]
-
-Actions: (disk space required: 157 MB)
-&lt;R&gt; return to main menu
-&lt;Q&gt; quit
-
-Enter command: 
-</code></pre><p>Input R to return and Input I to begin the installation</p>
-<h2 id="Setup-texlive"><a href="#Setup-texlive" class="headerlink" title="Setup texlive"></a>Setup texlive</h2><p>After installation, put the binary dir to your PATH:</p>
-<pre><code>export PATH=$PATH:/your/dir/to/bin/
-</code></pre><p>To avoide to use the local repository, which is default, set a online repository:</p>
-<pre><code>tlmgr option repository http://mirror.ctan.org/systems/texlive/tlnet
-</code></pre><p>Install the missing packages by using the command:</p>
-<pre><code>tlmgr list ecrm2074
-
-    Packages containing files matching crm2074&apos;:
-    ec:
-        texmf-dist/fonts/source/jknappen/ec/ecrm2074.mf
-        texmf-dist/fonts/tfm/jknappen/ec/ecrm2074.tfm
-</code></pre><p>The package including ecrm2074 is ec, so use the command:</p>
-<pre><code>tlmgr install ec
-</code></pre><p>If you want to install the package to a specific dir:</p>
-<pre><code>export TEXMFHOME=/your/dir/
-</code></pre><p>## </p>
-<p>Test your installation by compile a pdf using:</p>
-<pre><code>pdflatex your.tex
-</code></pre>
+                <div class="postShorten-excerpt">
+                    <p>Setup rmarkdown on server without Rstudio<br>
                     
+                        <a href="/2018/09/11/rmarkdown-config/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
                         
-
                     
-                    
-                        <p>
-                            <a href="/2018/09/11/rmarkdown-config/#post-footer" class="postShorten-excerpt_link link">
-                                评论和共享
-                            </a>
-                        </p>
-                    
-                </div>
+                </p></div>
             
         </div>
+        
+            <a href="/2018/09/11/rmarkdown-config/">
+                <div class="postShorten-thumbnailimg">
+                    <img alt src="http://www.cncd8.com/uploads/allimg/120308/1-12030R10R7.jpg">
+                </div>
+            </a>
+            
         
     </article>
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom">
+    <article class="postShorten postShorten--thumbnailimg-left">
         <div class="postShorten-wrap">
             
             <div class="postShorten-header">
@@ -658,163 +356,34 @@ Enter command:
     	
     </time>
     
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/小技巧/">小技巧</a>
+
+
+    
 </div>
 
             </div>
             
-                <div class="postShorten-content">
-                    <h1 id="How-to-join-multiple-files-using-GNU-join"><a href="#How-to-join-multiple-files-using-GNU-join" class="headerlink" title="How to join multiple files using GNU join"></a>How to join multiple files using GNU join</h1><h2 id="Basic-usage"><a href="#Basic-usage" class="headerlink" title="Basic usage"></a>Basic usage</h2><p>Create two files with <em>TAB</em> delimiter</p>
-<p>file1:</p>
-<pre><code>a    1
-b   1
-d       1
-e       1
-g       1
-</code></pre><p>file2:</p>
-<pre><code>a   2
-b   2
-c   2
-e   2
-f   2
-</code></pre><p>Join them use join:</p>
-<pre><code>join -1 1 -2 1 file1 file2
-</code></pre><p>Output:</p>
-<pre><code>a 1 2
-d 1 2
-e 1 2
-</code></pre><h2 id="The-very-useful-options-for-GNU-join"><a href="#The-very-useful-options-for-GNU-join" class="headerlink" title="The very useful options for GNU join"></a>The very useful options for GNU join</h2><h3 id="a1-print-unmatched-lines-in-file1"><a href="#a1-print-unmatched-lines-in-file1" class="headerlink" title="-a1 - print unmatched lines in file1;"></a>-a1 - print unmatched lines in file1;</h3><pre><code>join -1 1 -1 1 file1 file2 -a1
-</code></pre><p>Output:</p>
-<pre><code>a 1 2
-b 1
-d 1 2
-e 1 2
-g 1
-</code></pre><h3 id="a2-print-unmatched-lines-in-file2"><a href="#a2-print-unmatched-lines-in-file2" class="headerlink" title="-a2 - print unmatched lines in file2"></a>-a2 - print unmatched lines in file2</h3><pre><code>join -1 1 -1 1 file1 file2 -a2
-</code></pre><p>Output:</p>
-<pre><code>a 1 2
-c 2
-d 1 2
-e 1 2
-f 2
-</code></pre><h3 id="a1-a2-print-unmatched-lines-in-both-file1-and-file2"><a href="#a1-a2-print-unmatched-lines-in-both-file1-and-file2" class="headerlink" title="-a1 -a2 - print unmatched lines in both file1 and file2"></a>-a1 -a2 - print unmatched lines in both file1 and file2</h3><pre><code>join  -1 1 -1 1 file1 file2 -a1 -a2
-</code></pre><p>Output:</p>
-<pre><code>a 1 2
-b 1
-c 2
-d 1 2
-e 1 2
-f 2
-g 1
-</code></pre><p><em>Be careful that tab is not aligned well.</em></p>
-<h3 id="o-To-align-the-output-in-table-format-use-the-option-to-custome-the-output"><a href="#o-To-align-the-output-in-table-format-use-the-option-to-custome-the-output" class="headerlink" title="-o - To align the output in table format, use the option to custome the output"></a>-o - To align the output in table format, use the option to custome the output</h3><pre><code>join  -1 1 -1 1 file1 file2 -a1 -a2 -o 0,1.2,2.2
-</code></pre><p><em>0</em>  means the joined column.<br><em>1.2</em> means print the column 2 in file1;<br><em>2.2</em> means print the column 2 in file2;</p>
-<p>Output:</p>
-<pre><code>a 1 2
-b 1 
-c  2
-d 1 2
-e 1 2
-f  2
-g 1 
-</code></pre><p>If file1 and files have more than 2 columns, modify the -o string</p>
-<h3 id="t-To-use-the-TAB-as-output-delimiter"><a href="#t-To-use-the-TAB-as-output-delimiter" class="headerlink" title="-t - To use the TAB as output delimiter"></a>-t - To use the <em>TAB</em> as output delimiter</h3><pre><code>join  -1 1 -1 1 file1 file2 -a1 -a2 -o 0,1.2,2.2 -t$&apos;\t&apos;
-</code></pre><p>Output:</p>
-<pre><code>a       1       2
-b       1
-c               2
-d       1       2
-e       1       2
-f               2
-g       1
-</code></pre><h3 id="–check-order-join-requires-the-input-file-sorted-if-join-with-1st-column-please-sort-the-input-files-using-1st-columns-before-use-join-And-to-make-sure-there-is-no-problem-use-this-option-to-check"><a href="#–check-order-join-requires-the-input-file-sorted-if-join-with-1st-column-please-sort-the-input-files-using-1st-columns-before-use-join-And-to-make-sure-there-is-no-problem-use-this-option-to-check" class="headerlink" title="–check-order -  join requires the input file sorted, if join with 1st column, please sort the input files using 1st columns before use join. And to make sure there is no problem, use this option to check."></a>–check-order -  join requires the input file sorted, if join with 1st column, please sort the input files using 1st columns before use join. And to make sure there is no problem, use this option to check.</h3><pre><code>join  -1 1 -1 1 file1 file2 -a1 -a2 -o 0,1.2,2.2 -t$&apos;\t&apos; --check-order
-</code></pre><p>Output:</p>
-<pre><code>a       1       2
-b       1
-c               2
-d       1       2
-e       1       2
-f               2
-g       1
-</code></pre><p>Create non-sorted file3:</p>
-<pre><code>a       3
-d       3
-c       3
-e       3
-f       3
-</code></pre><p>join file1 and file3:</p>
-<pre><code>join  -1 1 -1 1 file1 file3 -a1 -a2 -o 0,1.2,2.2 -t$&apos;\t&apos; --check-order
-</code></pre><p>Output with error message:</p>
-<pre><code>a       1       3
-b       1
-join: file3:3: is not sorted: c 3
-</code></pre><h3 id="e-To-make-the-output-format-more-strict-and-use-this-option-to-fill-missing-columns-This-helps-greatly-if-you-need-to-process-the-file-in-the-downstreaming-analysis"><a href="#e-To-make-the-output-format-more-strict-and-use-this-option-to-fill-missing-columns-This-helps-greatly-if-you-need-to-process-the-file-in-the-downstreaming-analysis" class="headerlink" title="-e -  To make the output format more strict and use this option to fill missing columns. This helps greatly if you need to process the file in the downstreaming analysis."></a>-e -  To make the output format more strict and use this option to fill missing columns. This helps greatly if you need to process the file in the downstreaming analysis.</h3><pre><code>join  -1 1 -1 1 file1 file2 -a1 -a2 -o 0,1.2,2.2 -t$&apos;\t&apos; --check-order -eNULL
-</code></pre><p>Output:</p>
-<pre><code>a       1       2
-b       1       NULL
-c       NULL    2
-d       1       2
-e       1       2
-f       NULL    2
-g       1       NULL
-</code></pre><p>Output is a very tidy table.</p>
-
+                <div class="postShorten-excerpt">
+                    <p>Gnu join - join two files by specified field<br>
                     
+                        <a href="/2018/08/10/gnu-join/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
                         
-
                     
-                    
-                        <p>
-                            <a href="/2018/08/10/gnu-join/#post-footer" class="postShorten-excerpt_link link">
-                                评论和共享
-                            </a>
-                        </p>
-                    
-                </div>
+                </p></div>
             
         </div>
         
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title">
-                    
-                        <a class="link-unstyled" href="/2018/08/09/travis-test/">
-                            travis_test
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time datetime="2018-08-09T15:56:14+08:00">
-	
-		    8月 09, 2018
-    	
-    </time>
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content">
-                    <p>This artile is auto deployed by travis! Test!</p>
-
-                    
-                        
-
-                    
-                    
-                        <p>
-                            <a href="/2018/08/09/travis-test/#post-footer" class="postShorten-excerpt_link link">
-                                评论和共享
-                            </a>
-                        </p>
-                    
+            <a href="/2018/08/10/gnu-join/">
+                <div class="postShorten-thumbnailimg">
+                    <img alt src="https://img1.quimg.com/upload/201712/1513834333388.jpg">
                 </div>
+            </a>
             
-        </div>
         
     </article>
     
@@ -897,24 +466,11 @@ g       1       NULL
                 
                 <div class="media">
                     
-                    <div class="media-body">
-                        <a class="link-unstyled" href="https://crotoc.github.io/2018/08/09/travis-test/">
-                            <h3 class="media-heading">travis_test</h3>
+                    <div class="media-left">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2018/08/10/gnu-join/">
+                            <img class="media-image" src="https://img1.quimg.com/upload/201712/1513834333388.jpg" width="90" height="90">
                         </a>
-                        <span class="media-meta">
-                            <span class="media-date text-small">
-                                
-                                    2018年8月9日
-                                
-                            </span>
-                        </span>
-                        <div class="media-content hide-xs font-merryweather"></div>
                     </div>
-                    <div style="clear:both;"></div>
-                    <hr>
-                </div>
-                
-                <div class="media">
                     
                     <div class="media-body">
                         <a class="link-unstyled" href="https://crotoc.github.io/2018/08/10/gnu-join/">
@@ -927,13 +483,19 @@ g       1       NULL
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Gnu join - join two files by specified field<br></p></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
                 </div>
                 
                 <div class="media">
+                    
+                    <div class="media-left">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2018/09/11/rmarkdown-config/">
+                            <img class="media-image" src="http://www.cncd8.com/uploads/allimg/120308/1-12030R10R7.jpg" width="90" height="90">
+                        </a>
+                    </div>
                     
                     <div class="media-body">
                         <a class="link-unstyled" href="https://crotoc.github.io/2018/09/11/rmarkdown-config/">
@@ -946,7 +508,7 @@ g       1       NULL
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Setup rmarkdown on server without Rstudio<br></p></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -954,24 +516,11 @@ g       1       NULL
                 
                 <div class="media">
                     
-                    <div class="media-body">
-                        <a class="link-unstyled" href="https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
-                            <h3 class="media-heading">Unblock Youku on a openWRT Router</h3>
+                    <div class="media-left">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/">
+                            <img class="media-image" src="https://static.boredpanda.com/blog/wp-content/uploads/2015/11/reflection-landscape-photography-jaewoon-u-fb.jpg" width="90" height="90">
                         </a>
-                        <span class="media-meta">
-                            <span class="media-date text-small">
-                                
-                                    2018年9月14日
-                                
-                            </span>
-                        </span>
-                        <div class="media-content hide-xs font-merryweather"></div>
                     </div>
-                    <div style="clear:both;"></div>
-                    <hr>
-                </div>
-                
-                <div class="media">
                     
                     <div class="media-body">
                         <a class="link-unstyled" href="https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/">
@@ -984,13 +533,19 @@ g       1       NULL
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Modify the hotkey of Chinese-English language switching in Windows 10<br></p></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
                 </div>
                 
                 <div class="media">
+                    
+                    <div class="media-left">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
+                            <img class="media-image" src="https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=500" width="90" height="90">
+                        </a>
+                    </div>
                     
                     <div class="media-body">
                         <a class="link-unstyled" href="https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
@@ -1003,7 +558,7 @@ g       1       NULL
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Install customized fonts for imagemagick<br></p></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -1011,9 +566,15 @@ g       1       NULL
                 
                 <div class="media">
                     
+                    <div class="media-left">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2019/01/22/Unblock-region-restriction-of-musics-videos/">
+                            <img class="media-image" src="https://store-images.s-microsoft.com/image/apps.6197.13569891971238701.dab36319-31db-42e5-b32b-edb97c11d8b7.b4ec6763-6d93-4369-87b7-81c25913395f?mode=scale&amp;q=90&amp;h=1080&amp;w=1920" width="90" height="90">
+                        </a>
+                    </div>
+                    
                     <div class="media-body">
                         <a class="link-unstyled" href="https://crotoc.github.io/2019/01/22/Unblock-region-restriction-of-musics-videos/">
-                            <h3 class="media-heading">Unblock region restriction of musics/videos</h3>
+                            <h3 class="media-heading">List for unblock region restriction of musics/videos</h3>
                         </a>
                         <span class="media-meta">
                             <span class="media-date text-small">
@@ -1022,13 +583,19 @@ g       1       NULL
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"></div>
+                        <div class="media-content hide-xs font-merryweather"><p>List for unblock region restriction of musics/videos<br></p></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
                 </div>
                 
                 <div class="media">
+                    
+                    <div class="media-left">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2019/01/22/terminal-in-windows-sub-linux-system/">
+                            <img class="media-image" src="http://img.univs.cn/webfile/event/279/4585308/D5B18660-6B04-11E4-A4B4-E02212B11521/1415863236024_4585308.JPG" width="90" height="90">
+                        </a>
+                    </div>
                     
                     <div class="media-body">
                         <a class="link-unstyled" href="https://crotoc.github.io/2019/01/22/terminal-in-windows-sub-linux-system/">
@@ -1041,7 +608,7 @@ g       1       NULL
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Windows 10下面最好的terminal (WSL)<br></p></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -1074,6 +641,12 @@ g       1       NULL
                 
                 <div class="media">
                     
+                    <div class="media-left">
+                        <a class="link-unstyled" href="https://crotoc.github.io/2019/03/22/How-to-install-v2ray-service-on-R7800/">
+                            <img class="media-image" src="https://images.pexels.com/photos/371633/pexels-photo-371633.jpeg?auto=compress&amp;cs=tinysrgb&amp;h=750&amp;w=1260" width="90" height="90">
+                        </a>
+                    </div>
+                    
                     <div class="media-body">
                         <a class="link-unstyled" href="https://crotoc.github.io/2019/03/22/How-to-install-v2ray-service-on-R7800/">
                             <h3 class="media-heading">How to install v2ray service on R7800</h3>
@@ -1085,7 +658,7 @@ g       1       NULL
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"></div>
+                        <div class="media-content hide-xs font-merryweather"><p>如何在netgear R7800上面安装v2ray服务<br></p></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -1095,7 +668,7 @@ g       1       NULL
         </div>
         <div class="modal-footer">
             <p class="results-count text-medium" data-message-zero="没有找到文章" data-message-one="找到 1 篇文章" data-message-other="找到 {n} 篇文章">
-                找到 11 篇文章
+                找到 8 篇文章
             </p>
         </div>
     </div>
