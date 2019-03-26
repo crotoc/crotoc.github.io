@@ -11,7 +11,7 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"crnormal"},"articleBody":"Install customized fonts for imagemagick 7\nDownload the font, for example, Roboto \nwget https://fonts.google.com/download?family=Roboto\n\nDownload the processing script for fonts\nwget http://imagemagick.org/Usage/scripts/imagick_type_gen\nchmod +x imagick_type_gen\n\nAccording to the documents of imagemagick 7 (https://imagemagick.org/script/resources.php), ImageMagick is able to load raw TrueType and Postscript font files. It searches for the font configuration file, type.xml, in the following order, and loads them if found:\n\\$MAGICK_CONFIGURE_PATH\n\\$MAGICK_HOME/etc/ImageMagick/-7.0.8\n\\$MAGICK_HOME/share/ImageMagick-7.0.8\n\\$XDG_CACHE_HOME/ImageMagick\n\\$HOME/.config/ImageMagick\n&lt;client path&gt;/etc/ImageMagick\n\\$MAGICK_FONT_PATH$\n\n\nSo create a dir ~/.config/ImageMagick\nmkdir ~/.config/ImageMagick\n\nAccording the description section  in the script imageick_type_gen, create a xml for your fonts using the processing script:\nfind /dir/to/font/ -type f -name &apos;*.ttf&apos; | imagick_type_gen -f - &gt; ~/.ImageMagick/type-myfonts.xml\n\n\n\nInclude the xml in main xml file:\ncat &lt;&lt;\\EOF &gt;&gt;~/.magick/type.xml\n&lt;typemap&gt;\n&lt;include file=&quot;type-myfonts.xml&quot; /&gt;\n&lt;/typemap&gt;\nEOF\n\nCheck font using the command:\nconvert -list font\n\n\n","dateCreated":"2018-09-28T23:46:24+08:00","dateModified":"2019-03-26T05:56:42+08:00","datePublished":"2018-09-28T23:46:24+08:00","description":"","headline":"Install customized fonts for imagemagick","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"crnormal","logo":{"@type":"ImageObject","url":"crnormal"}},"url":"https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/","keywords":"trick"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"crnormal"},"articleBody":"Install customized fonts for imagemagick 7\nDownload the font, for example, Roboto \nwget https://fonts.google.com/download?family=Roboto\n\nDownload the processing script for fonts\nwget http://imagemagick.org/Usage/scripts/imagick_type_gen\nchmod +x imagick_type_gen\n\nAccording to the documents of imagemagick 7 (https://imagemagick.org/script/resources.php), ImageMagick is able to load raw TrueType and Postscript font files. It searches for the font configuration file, type.xml, in the following order, and loads them if found:\n\\$MAGICK_CONFIGURE_PATH\n\\$MAGICK_HOME/etc/ImageMagick/-7.0.8\n\\$MAGICK_HOME/share/ImageMagick-7.0.8\n\\$XDG_CACHE_HOME/ImageMagick\n\\$HOME/.config/ImageMagick\n&lt;client path&gt;/etc/ImageMagick\n\\$MAGICK_FONT_PATH$\n\n\nSo create a dir ~/.config/ImageMagick\nmkdir ~/.config/ImageMagick\n\nAccording the description section  in the script imageick_type_gen, create a xml for your fonts using the processing script:\nfind /dir/to/font/ -type f -name &apos;*.ttf&apos; | imagick_type_gen -f - &gt; ~/.ImageMagick/type-myfonts.xml\n\n\n\nInclude the xml in main xml file:\ncat &lt;&lt;\\EOF &gt;&gt;~/.magick/type.xml\n&lt;typemap&gt;\n&lt;include file=&quot;type-myfonts.xml&quot; /&gt;\n&lt;/typemap&gt;\nEOF\n\nCheck font using the command:\nconvert -list font\n\n\n","dateCreated":"2018-09-28T23:46:24+08:00","dateModified":"2019-03-26T11:24:57+08:00","datePublished":"2018-09-28T23:46:24+08:00","description":"","headline":"Install customized fonts for imagemagick","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"crnormal","logo":{"@type":"ImageObject","url":"crnormal"}},"url":"https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/","keywords":"trick"}</script>
     <meta name="description" content="Install customized fonts for imagemagick 7 Download the font, for example, Roboto  wget https://fonts.google.com/download?family=Roboto  Download the processing script for fonts wget http://imagemagic">
 <meta name="keywords" content="trick">
 <meta property="og:type" content="blog">
@@ -20,7 +20,7 @@
 <meta property="og:site_name" content="Chen Rui&#39;s Blog">
 <meta property="og:description" content="Install customized fonts for imagemagick 7 Download the font, for example, Roboto  wget https://fonts.google.com/download?family=Roboto  Download the processing script for fonts wget http://imagemagic">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2019-03-25T21:56:42.225Z">
+<meta property="og:updated_time" content="2019-03-26T03:24:57.940Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Install customized fonts for imagemagick">
 <meta name="twitter:description" content="Install customized fonts for imagemagick 7 Download the font, for example, Roboto  wget https://fonts.google.com/download?family=Roboto  Download the processing script for fonts wget http://imagemagic">
@@ -821,13 +821,13 @@ EOF
                 }
                 var gc = document.createElement('script');
                 gc.type = 'text/javascript';
-                gc.src = '//imsun.github.io/gitment/dist/gitment.browser.js';
+                gc.src = '//jjeejj.github.io/js/gitment.js';
                 gc.charset = 'UTF-8';
                 gc.onload = render;
                 gc.async = true;
                 document.querySelector('body').appendChild(gc);
                 var gcs = document.createElement('link');
-                gcs.href = '//imsun.github.io/gitment/style/default.css';
+                gcs.href = '//jjeejj.github.io/css/gitment.css';
                 gcs.type = 'text/css';
                 gcs.rel = 'stylesheet';
                 gcs.media = 'screen,print';

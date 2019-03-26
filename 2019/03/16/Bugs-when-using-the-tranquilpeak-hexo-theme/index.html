@@ -11,7 +11,7 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"crnormal"},"articleBody":"今天想将blog的主题从next 换成tranquilpeak,结果发现了很多的问题,这里记录一下:\n\n因为我使用travis自动在线部署,所以主题里面的node_modules不是必须的.\n\n这个主题的.gitignore文件中自动略去了assets文件夹,导致了网站看不到格式,只有文字.\n\n需要将主题中的package.json里面的dependencies拷贝到主目录的package.json才能在travis端自动安装.\n\n需要在主目录的_config.yml中设置language,不然出现的是德语.其中语言设置必须与主题中languages目录下的文件名对应.\n\n\n标准调试过程为了加快下一次的调试,经验如下:\n第一步本地安装包,找出依赖的问题:\nnpm install\n第二步生成本地public目录:\nhexo clean\nhexo g\nhexo s\n用本地浏览器打开确定本地显示是否出错:\nlocalhost:4000\n如果本地没错可以将这个本地版本git到remote端,使用网页链接查看是否有错.\n如果有错则核对两次commit之间的偏差,确定问题所在.\n在本次调试过程中,主要问题是assets文件夹被主题目录中的.gitignore忽略,这样网页只有文字没有样式.\n","dateCreated":"2019-03-16T01:48:20+08:00","dateModified":"2019-03-26T05:56:42+08:00","datePublished":"2019-03-16T01:48:20+08:00","description":"","headline":"Bugs when using the tranquilpeak hexo theme","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"crnormal","logo":{"@type":"ImageObject","url":"crnormal"}},"url":"https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"crnormal"},"articleBody":"今天想将blog的主题从next 换成tranquilpeak,结果发现了很多的问题,这里记录一下:\n\n因为我使用travis自动在线部署,所以主题里面的node_modules不是必须的.\n\n这个主题的.gitignore文件中自动略去了assets文件夹,导致了网站看不到格式,只有文字.\n\n需要将主题中的package.json里面的dependencies拷贝到主目录的package.json才能在travis端自动安装.\n\n需要在主目录的_config.yml中设置language,不然出现的是德语.其中语言设置必须与主题中languages目录下的文件名对应.\n\n\n标准调试过程为了加快下一次的调试,经验如下:\n第一步本地安装包,找出依赖的问题:\nnpm install\n第二步生成本地public目录:\nhexo clean\nhexo g\nhexo s\n用本地浏览器打开确定本地显示是否出错:\nlocalhost:4000\n如果本地没错可以将这个本地版本git到remote端,使用网页链接查看是否有错.\n如果有错则核对两次commit之间的偏差,确定问题所在.\n在本次调试过程中,主要问题是assets文件夹被主题目录中的.gitignore忽略,这样网页只有文字没有样式.\n","dateCreated":"2019-03-16T01:48:20+08:00","dateModified":"2019-03-26T11:24:57+08:00","datePublished":"2019-03-16T01:48:20+08:00","description":"","headline":"Bugs when using the tranquilpeak hexo theme","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"crnormal","logo":{"@type":"ImageObject","url":"crnormal"}},"url":"https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/"}</script>
     <meta name="description" content="今天想将blog的主题从next 换成tranquilpeak,结果发现了很多的问题,这里记录一下:  因为我使用travis自动在线部署,所以主题里面的node_modules不是必须的.  这个主题的.gitignore文件中自动略去了assets文件夹,导致了网站看不到格式,只有文字.  需要将主题中的package.json里面的dependencies拷贝到主目录的package.jso">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Bugs when using the tranquilpeak hexo theme">
@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="Chen Rui&#39;s Blog">
 <meta property="og:description" content="今天想将blog的主题从next 换成tranquilpeak,结果发现了很多的问题,这里记录一下:  因为我使用travis自动在线部署,所以主题里面的node_modules不是必须的.  这个主题的.gitignore文件中自动略去了assets文件夹,导致了网站看不到格式,只有文字.  需要将主题中的package.json里面的dependencies拷贝到主目录的package.jso">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2019-03-25T21:56:42.225Z">
+<meta property="og:updated_time" content="2019-03-26T03:24:57.940Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Bugs when using the tranquilpeak hexo theme">
 <meta name="twitter:description" content="今天想将blog的主题从next 换成tranquilpeak,结果发现了很多的问题,这里记录一下:  因为我使用travis自动在线部署,所以主题里面的node_modules不是必须的.  这个主题的.gitignore文件中自动略去了assets文件夹,导致了网站看不到格式,只有文字.  需要将主题中的package.json里面的dependencies拷贝到主目录的package.jso">
@@ -799,13 +799,13 @@ hexo s
                 }
                 var gc = document.createElement('script');
                 gc.type = 'text/javascript';
-                gc.src = '//imsun.github.io/gitment/dist/gitment.browser.js';
+                gc.src = '//jjeejj.github.io/js/gitment.js';
                 gc.charset = 'UTF-8';
                 gc.onload = render;
                 gc.async = true;
                 document.querySelector('body').appendChild(gc);
                 var gcs = document.createElement('link');
-                gcs.href = '//imsun.github.io/gitment/style/default.css';
+                gcs.href = '//jjeejj.github.io/css/gitment.css';
                 gcs.type = 'text/css';
                 gcs.rel = 'stylesheet';
                 gcs.media = 'screen,print';
