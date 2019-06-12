@@ -188,6 +188,119 @@
     <section class="postShorten-group main-content-wrap">
     
     
+    <article class="postShorten postShorten--thumbnailimg-bottom">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title">
+                    
+                        <a class="link-unstyled" href="/2019/06/13/How-to-install-luci-v2ray-on-R7800/">
+                            (无标题)
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time datetime="2019-06-13T05:32:30+08:00">
+	
+		    6月 13, 2019
+    	
+    </time>
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content">
+                    <h1 id="如何在openwrt-18-06-1中安装v2ray服务器和luci-v2ray"><a href="#如何在openwrt-18-06-1中安装v2ray服务器和luci-v2ray" class="headerlink" title="如何在openwrt 18.06.1中安装v2ray服务器和luci-v2ray"></a>如何在openwrt 18.06.1中安装v2ray服务器和luci-v2ray</h1><p><a href="https://github.com/crotoc/luci-app-v2ray" target="_blank" rel="noopener">这个项目</a>是基于coolsnowwolf/lede项目，从中间提取了相关依赖包。针对海外党做了如下的改动：</p>
+<ol>
+<li>在luci中添加了修改用户自定义unbluck-youku列表的设置。</li>
+<li>针对一些app中不使用域名进行解析的问题，将自定义的列表分成域名和ip两部分。</li>
+<li>其中域名部分可以只使用用户自定义的列表，也可以下载网上的列表与自己的列表合并。网上的列表提取子coolsnowwolf/lede项目中的ipset-lists包。</li>
+<li>ip部分使用ipset add命令添加。</li>
+<li>添加了重启，启动，停止的按钮，方便使用</li>
+</ol>
+<p>水平有限，大家随意</p>
+<h2 id="要求"><a href="#要求" class="headerlink" title="要求"></a>要求</h2><ol>
+<li>一个安装openwrt的路由</li>
+<li>一颗折腾的心</li>
+</ol>
+<h2 id="Compile"><a href="#Compile" class="headerlink" title="Compile"></a>Compile</h2><h3 id="下载sdk并且解压缩"><a href="#下载sdk并且解压缩" class="headerlink" title="下载sdk并且解压缩"></a>下载sdk并且解压缩</h3><p>SDK可以用于制作openwrt可以使用的ipk包，每种路由器根据不同核心需要下载不同的sdk包，我的路由器是R7800,所以去openwrt下载了对应的<a href="https://downloads.openwrt.org/releases/18.06.2/targets/" target="_blank" rel="noopener">sdk</a>,即ipq806x的sdk：</p>
+<pre><code>wget https://downloads.openwrt.org/releases/18.06.1/targets/ipq806x/generic/openwrt-sdk-18.06.1-ipq806x_gcc-7.3.0_musl_eabi.Linux-x86_64.tar.xz
+tar xf openwrt-sdk-18.06.1-ipq806x_gcc-7.3.0_musl_eabi.Linux-x86_64.tar.xz
+</code></pre><h3 id="下载luci到sdk目录下的package文件夹"><a href="#下载luci到sdk目录下的package文件夹" class="headerlink" title="下载luci到sdk目录下的package文件夹"></a>下载luci到sdk目录下的package文件夹</h3><pre><code>git clone https://github.com/crotoc/luci-app-v2ray.git
+cd openwrt-sdk-18.06.1-ipq806x_gcc-7.3.0_musl_eabi.Linux-x86_64
+cp -R ../luci-app-v2ray/* package/
+rm -rf package/luci-app-v2ray-pro/
+cp -R ~/git_project/luci-app-v2ray/luci-app-v2ray-pro/ package/
+</code></pre><h3 id="更新sdk需要的安装包"><a href="#更新sdk需要的安装包" class="headerlink" title="更新sdk需要的安装包"></a>更新sdk需要的安装包</h3><pre><code>./script/feeds update -a
+</code></pre><h3 id="安装依赖包"><a href="#安装依赖包" class="headerlink" title="安装依赖包"></a>安装依赖包</h3><pre><code>./scripts/feeds install iptables-mod-tproxy kmod-ipt-tproxy ip ipset-lists pdnsd-alt coreutils coreutils-base64 coreutils-nohup dnsmasq-full v2ray ca-certificates lua-cjson luci-base
+</code></pre><h3 id="制作ipk包"><a href="#制作ipk包" class="headerlink" title="制作ipk包"></a>制作ipk包</h3><pre><code>make package/luci-app-v2ray-pro/{down,compile} -j8
+</code></pre><p>生成的ipk文件会存放在./bin/packages/arm_cortex-a15_neon-vfpv4/base/中.</p>
+<h3 id="重新制作"><a href="#重新制作" class="headerlink" title="重新制作"></a>重新制作</h3><p>如果修改部分代码之后需要重新制作:</p>
+<pre><code>rm -rf package/luci-app-v2ray-pro/
+cp -R ~/git_project/luci-app-v2ray/luci-app-v2ray-pro/ package/
+make package/luci-app-v2ray-pro/{clean,compile} -j8
+</code></pre><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>将上面的ipset-lists，pdnsd-alt，v2ray和luci-app-v2ray-pro四个ipk文件传到路由器上，除上述四个依赖包意外，其他的依赖包可以直接在服务器上安装：</p>
+<pre><code>opkg install iptables-mod-tproxy kmod-ipt-tproxy ip  coreutils coreutils-base64 coreutils-nohup  v2ray ca-certificates lua-cjson luci-base
+</code></pre><p>这四个包单独安装:</p>
+<pre><code>opkg install ipset-lists*ipk
+opkg install pdnsd-alt*ipk
+opkg install v2ray*ipk
+opkg install luci-app-v2ray-pro*ipk
+</code></pre><p>如果安装过程中出现依赖包缺失的情况，就使用opkg安装。</p>
+<h2 id="一些调试"><a href="#一些调试" class="headerlink" title="一些调试"></a>一些调试</h2><p>安装的过程中还会出现有些包已经存在的情况。例如dnsmasq需要移除才能安装dnsmasq-full。卸载dnsmasq的过程中会出现断网的情况：</p>
+<pre><code>/etc/init.d/dnsmasq stop
+opkg remove dnsmasq
+opkg instlal dnsmasq-full
+</code></pre><h2 id="如何判断自己成功了（一些debug的技巧）"><a href="#如何判断自己成功了（一些debug的技巧）" class="headerlink" title="如何判断自己成功了（一些debug的技巧）"></a>如何判断自己成功了（一些debug的技巧）</h2><h3 id="判断v2ray服务是否正确启动"><a href="#判断v2ray服务是否正确启动" class="headerlink" title="判断v2ray服务是否正确启动"></a>判断v2ray服务是否正确启动</h3><p>通过luci打开v2ray之后，使用下面的命令查看v2ray是否正常启动：</p>
+<pre><code>netstat -nlp | grep v2ray
+</code></pre><p>正常情况会看到两个监听的程序，分别对应ipv4和ipv6</p>
+<h3 id="判断正确的加入了iptables转发"><a href="#判断正确的加入了iptables转发" class="headerlink" title="判断正确的加入了iptables转发"></a>判断正确的加入了iptables转发</h3><p>通过iptables可以查看相关的条目是否添加：</p>
+<pre><code>iptables -t nat -L v2ray_pre
+</code></pre><h3 id="使用myip-ipip-net网站"><a href="#使用myip-ipip-net网站" class="headerlink" title="使用myip.ipip.net网站"></a>使用myip.ipip.net网站</h3><p>将myip.ipip.net加入到对应列表：如果使用gf，就加入到gf列表，如果使用unblock，就加入到unblock列表，重启服务。然后从客户端中（非路由）运行：</p>
+<pre><code>curl myip.ipip.net
+</code></pre><p>如果发现自己的ip变成了代理ip表示成功，这是查看iptables中对应规则，可以看到有包被转发了：</p>
+<pre><code>iptables -t nat -L v2ray_pre -vxn
+</code></pre><p>上面那条命令在路由器上运行是，无论是否成功没法变成代理ip，原因是客户端发出的包通过prerouting链被转进了v2ray_pre链中可以正确的转发，但是路由器自己产生的包没有通过prerouting，所以不能正确别转发。为了在路由器上运行上述命令，我查看了包的路径：</p>
+<pre><code>tcpdump -i eth0.2 &apos;(dst port 80) and (dst 104.24.21.50)&apos;
+</code></pre><p>发现路由器上使用curl的时候，只能从eth0.2（我的WAN端口）上面抓到相关的包。</p>
+<p>所以我使用了一条新的规则将wan端口到104.24.21.50包转发到v2ray_pre链中：</p>
+<pre><code>iptables -t nat -A OUTPUT -d 104.24.21.50 -p tcp -j v2ray_pre
+</code></pre><p>然后再运行curl，用下面命令查看OUTPUT链的确探测到了包：</p>
+<pre><code>iptables -t nat -L OUTPUT -nvx
+</code></pre><p>而v2ray_pre也能探测到包：</p>
+<pre><code>iptables -t nat -L v2ray_pre -vxn
+</code></pre><p>这样curl命令也返回了代理服务器的ip，成功。</p>
+<p>然后使用下面命令查看刚添加的那一条iptable规则编号并删除，并确认：</p>
+<pre><code>iptables -t nat -L OUTPUT --line-numbers
+iptables -t nat -L OUTPUT -D 1
+iptables -t nat -L OUTPUT -nvx
+</code></pre><p>注意我刚刚添加的那一条规则在我的路由器OUTPUT链中的编号是1，如果是你们的则可能是其他的数字，千万别删错了。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p>LUCI CBI维基： <a href="https://github.com/openwrt/luci/wiki/CBI" target="_blank" rel="noopener">https://github.com/openwrt/luci/wiki/CBI</a></p>
+<p><a href="https://github.com/seamustuohy/luci_tutorials/blob/master/04-model-cbi.md" target="_blank" rel="noopener">https://github.com/seamustuohy/luci_tutorials/blob/master/04-model-cbi.md</a></p>
+<p>L大的项目：<a href="https://github.com/coolsnowwolf/lede/tree/master/package" target="_blank" rel="noopener">https://github.com/coolsnowwolf/lede/tree/master/package</a></p>
+<p><a href="http://dvblog.soabit.com/building-custom-openwrt-packages-an-hopefully-complete-guide/" target="_blank" rel="noopener">http://dvblog.soabit.com/building-custom-openwrt-packages-an-hopefully-complete-guide/</a></p>
+<p><a href="https://oldwiki.archive.openwrt.org/doc/howto/obtain.firmware.sdk" target="_blank" rel="noopener">https://oldwiki.archive.openwrt.org/doc/howto/obtain.firmware.sdk</a></p>
+<p>iptables原理和用法：<a href="https://blog.51cto.com/wushank/1171768" target="_blank" rel="noopener">https://blog.51cto.com/wushank/1171768</a></p>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2019/06/13/How-to-install-luci-v2ray-on-R7800/#post-footer" class="postShorten-excerpt_link link">
+                                评论和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
     <article class="postShorten postShorten--thumbnailimg-left">
         <div class="postShorten-wrap">
             
@@ -637,56 +750,6 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-left">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title">
-                    
-                        <a class="link-unstyled" href="/2018/09/11/rmarkdown-config/">
-                            Setup rmarkdown on server without Rstudio
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time datetime="2018-09-11T14:03:45+08:00">
-	
-		    9月 11, 2018
-    	
-    </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/categories/电脑设置/">电脑设置</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt">
-                    <p>Setup rmarkdown on server without Rstudio<br>
-                    
-                        <a href="/2018/09/11/rmarkdown-config/" class="postShorten-excerpt_link link">
-                            阅读全文
-                        </a>
-                        
-                    
-                </p></div>
-            
-        </div>
-        
-            <a href="/2018/09/11/rmarkdown-config/">
-                <div class="postShorten-thumbnailimg">
-                    <img alt src="http://www.cncd8.com/uploads/allimg/120308/1-12030R10R7.jpg">
-                </div>
-            </a>
-            
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -1025,7 +1088,7 @@
         </div>
         <div class="modal-footer">
             <p class="results-count text-medium" data-message-zero="没有找到文章" data-message-one="找到 1 篇文章" data-message-other="找到 {n} 篇文章">
-                找到 11 篇文章
+                找到 12 篇文章
             </p>
         </div>
     </div>
