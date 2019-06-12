@@ -6,23 +6,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Chen Rui&#39;s Blog">
-    <title> - Chen Rui&#39;s Blog</title>
+    <title>如何在openwrt中安装luci-v2ray - Chen Rui&#39;s Blog</title>
     <meta name="author" content="">
     
+        <meta name="keywords" content="openwrt">
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"},"articleBody":"如何在openwrt 18.06.1中安装v2ray服务器和luci-v2ray这个项目是基于coolsnowwolf/lede项目，从中间提取了相关依赖包。针对海外党做了如下的改动：\n\n在luci中添加了修改用户自定义unbluck-youku列表的设置。\n针对一些app中不使用域名进行解析的问题，将自定义的列表分成域名和ip两部分。\n其中域名部分可以只使用用户自定义的列表，也可以下载网上的列表与自己的列表合并。网上的列表提取子coolsnowwolf/lede项目中的ipset-lists包。\nip部分使用ipset add命令添加。\n添加了重启，启动，停止的按钮，方便使用\n\n水平有限，大家随意\n要求\n一个安装openwrt的路由\n一颗折腾的心\n\nCompile下载sdk并且解压缩SDK可以用于制作openwrt可以使用的ipk包，每种路由器根据不同核心需要下载不同的sdk包，我的路由器是R7800,所以去openwrt下载了对应的sdk,即ipq806x的sdk：\nwget https://downloads.openwrt.org/releases/18.06.1/targets/ipq806x/generic/openwrt-sdk-18.06.1-ipq806x_gcc-7.3.0_musl_eabi.Linux-x86_64.tar.xz\ntar xf openwrt-sdk-18.06.1-ipq806x_gcc-7.3.0_musl_eabi.Linux-x86_64.tar.xz\n下载luci到sdk目录下的package文件夹git clone https://github.com/crotoc/luci-app-v2ray.git\ncd openwrt-sdk-18.06.1-ipq806x_gcc-7.3.0_musl_eabi.Linux-x86_64\ncp -R ../luci-app-v2ray/* package/\nrm -rf package/luci-app-v2ray-pro/\ncp -R ~/git_project/luci-app-v2ray/luci-app-v2ray-pro/ package/\n更新sdk需要的安装包./script/feeds update -a\n安装依赖包./scripts/feeds install iptables-mod-tproxy kmod-ipt-tproxy ip ipset-lists pdnsd-alt coreutils coreutils-base64 coreutils-nohup dnsmasq-full v2ray ca-certificates lua-cjson luci-base\n制作ipk包make package/luci-app-v2ray-pro/{down,compile} -j8\n生成的ipk文件会存放在./bin/packages/arm_cortex-a15_neon-vfpv4/base/中.\n重新制作如果修改部分代码之后需要重新制作:\nrm -rf package/luci-app-v2ray-pro/\ncp -R ~/git_project/luci-app-v2ray/luci-app-v2ray-pro/ package/\nmake package/luci-app-v2ray-pro/{clean,compile} -j8\n安装将上面的ipset-lists，pdnsd-alt，v2ray和luci-app-v2ray-pro四个ipk文件传到路由器上，除上述四个依赖包意外，其他的依赖包可以直接在服务器上安装：\nopkg install iptables-mod-tproxy kmod-ipt-tproxy ip  coreutils coreutils-base64 coreutils-nohup  v2ray ca-certificates lua-cjson luci-base\n这四个包单独安装:\nopkg install ipset-lists*ipk\nopkg install pdnsd-alt*ipk\nopkg install v2ray*ipk\nopkg install luci-app-v2ray-pro*ipk\n如果安装过程中出现依赖包缺失的情况，就使用opkg安装。\n一些调试安装的过程中还会出现有些包已经存在的情况。例如dnsmasq需要移除才能安装dnsmasq-full。卸载dnsmasq的过程中会出现断网的情况：\n/etc/init.d/dnsmasq stop\nopkg remove dnsmasq\nopkg instlal dnsmasq-full\n如何判断自己成功了（一些debug的技巧）判断v2ray服务是否正确启动通过luci打开v2ray之后，使用下面的命令查看v2ray是否正常启动：\nnetstat -nlp | grep v2ray\n正常情况会看到两个监听的程序，分别对应ipv4和ipv6\n判断正确的加入了iptables转发通过iptables可以查看相关的条目是否添加：\niptables -t nat -L v2ray_pre\n使用myip.ipip.net网站将myip.ipip.net加入到对应列表：如果使用gf，就加入到gf列表，如果使用unblock，就加入到unblock列表，重启服务。然后从客户端中（非路由）运行：\ncurl myip.ipip.net\n如果发现自己的ip变成了代理ip表示成功，这是查看iptables中对应规则，可以看到有包被转发了：\niptables -t nat -L v2ray_pre -vxn\n上面那条命令在路由器上运行是，无论是否成功没法变成代理ip，原因是客户端发出的包通过prerouting链被转进了v2ray_pre链中可以正确的转发，但是路由器自己产生的包没有通过prerouting，所以不能正确别转发。为了在路由器上运行上述命令，我查看了包的路径：\ntcpdump -i eth0.2 &apos;(dst port 80) and (dst 104.24.21.50)&apos;\n发现路由器上使用curl的时候，只能从eth0.2（我的WAN端口）上面抓到相关的包。\n所以我使用了一条新的规则将wan端口到104.24.21.50包转发到v2ray_pre链中：\niptables -t nat -A OUTPUT -d 104.24.21.50 -p tcp -j v2ray_pre\n然后再运行curl，用下面命令查看OUTPUT链的确探测到了包：\niptables -t nat -L OUTPUT -nvx\n而v2ray_pre也能探测到包：\niptables -t nat -L v2ray_pre -vxn\n这样curl命令也返回了代理服务器的ip，成功。\n然后使用下面命令查看刚添加的那一条iptable规则编号并删除，并确认：\niptables -t nat -L OUTPUT --line-numbers\niptables -t nat -L OUTPUT -D 1\niptables -t nat -L OUTPUT -nvx\n注意我刚刚添加的那一条规则在我的路由器OUTPUT链中的编号是1，如果是你们的则可能是其他的数字，千万别删错了。\n参考链接LUCI CBI维基： https://github.com/openwrt/luci/wiki/CBI\nhttps://github.com/seamustuohy/luci_tutorials/blob/master/04-model-cbi.md\nL大的项目：https://github.com/coolsnowwolf/lede/tree/master/package\nhttp://dvblog.soabit.com/building-custom-openwrt-packages-an-hopefully-complete-guide/\nhttps://oldwiki.archive.openwrt.org/doc/howto/obtain.firmware.sdk\niptables原理和用法：https://blog.51cto.com/wushank/1171768\n","dateCreated":"2019-06-13T05:32:30+08:00","dateModified":"2019-06-13T05:32:30+08:00","datePublished":"2019-06-13T05:32:30+08:00","description":"","headline":"","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg","logo":{"@type":"ImageObject","url":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"}},"url":"https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/"}</script>
-    <meta name="description" content="如何在openwrt 18.06.1中安装v2ray服务器和luci-v2ray这个项目是基于coolsnowwolf/lede项目，从中间提取了相关依赖包。针对海外党做了如下的改动：  在luci中添加了修改用户自定义unbluck-youku列表的设置。 针对一些app中不使用域名进行解析的问题，将自定义的列表分成域名和ip两部分。 其中域名部分可以只使用用户自定义的列表，也可以下载网上的列表">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"},"articleBody":"\n如何在openwrt中安装luci-v2ray\n如何在openwrt 18.06.1中安装v2ray服务器和luci-v2ray这个项目是基于coolsnowwolf/lede项目，从中间提取了相关依赖包。针对海外党做了如下的改动：\n\n在luci中添加了修改用户自定义unbluck-youku列表的设置。\n针对一些app中不使用域名进行解析的问题，将自定义的列表分成域名和ip两部分。\n其中域名部分可以只使用用户自定义的列表，也可以下载网上的列表与自己的列表合并。网上的列表提取子coolsnowwolf/lede项目中的ipset-lists包。\nip部分使用ipset add命令添加。\n添加了重启，启动，停止的按钮，方便使用\n\n水平有限，大家随意\n要求\n一个安装openwrt的路由\n一颗折腾的心\n\nCompile下载sdk并且解压缩SDK可以用于制作openwrt可以使用的ipk包，每种路由器根据不同核心需要下载不同的sdk包，我的路由器是R7800,所以去openwrt下载了对应的sdk,即ipq806x的sdk：\nwget https://downloads.openwrt.org/releases/18.06.1/targets/ipq806x/generic/openwrt-sdk-18.06.1-ipq806x_gcc-7.3.0_musl_eabi.Linux-x86_64.tar.xz\ntar xf openwrt-sdk-18.06.1-ipq806x_gcc-7.3.0_musl_eabi.Linux-x86_64.tar.xz\n下载luci到sdk目录下的package文件夹git clone https://github.com/crotoc/luci-app-v2ray.git\ncd openwrt-sdk-18.06.1-ipq806x_gcc-7.3.0_musl_eabi.Linux-x86_64\ncp -R ../luci-app-v2ray/* package/\nrm -rf package/luci-app-v2ray-pro/\ncp -R ~/git_project/luci-app-v2ray/luci-app-v2ray-pro/ package/\n更新sdk需要的安装包./script/feeds update -a\n安装依赖包./scripts/feeds install iptables-mod-tproxy kmod-ipt-tproxy ip ipset-lists pdnsd-alt coreutils coreutils-base64 coreutils-nohup dnsmasq-full v2ray ca-certificates lua-cjson luci-base\n制作ipk包make package/luci-app-v2ray-pro/{down,compile} -j8\n生成的ipk文件会存放在./bin/packages/arm_cortex-a15_neon-vfpv4/base/中.\n重新制作如果修改部分代码之后需要重新制作:\nrm -rf package/luci-app-v2ray-pro/\ncp -R ~/git_project/luci-app-v2ray/luci-app-v2ray-pro/ package/\nmake package/luci-app-v2ray-pro/{clean,compile} -j8\n安装将上面的ipset-lists，pdnsd-alt，v2ray和luci-app-v2ray-pro四个ipk文件传到路由器上，除上述四个依赖包意外，其他的依赖包可以直接在服务器上安装：\nopkg install iptables-mod-tproxy kmod-ipt-tproxy ip  coreutils coreutils-base64 coreutils-nohup  v2ray ca-certificates lua-cjson luci-base\n这四个包单独安装:\nopkg install ipset-lists*ipk\nopkg install pdnsd-alt*ipk\nopkg install v2ray*ipk\nopkg install luci-app-v2ray-pro*ipk\n如果安装过程中出现依赖包缺失的情况，就使用opkg安装。\n一些调试安装的过程中还会出现有些包已经存在的情况。例如dnsmasq需要移除才能安装dnsmasq-full。卸载dnsmasq的过程中会出现断网的情况：\n/etc/init.d/dnsmasq stop\nopkg remove dnsmasq\nopkg instlal dnsmasq-full\n如何判断自己成功了（一些debug的技巧）判断v2ray服务是否正确启动通过luci打开v2ray之后，使用下面的命令查看v2ray是否正常启动：\nnetstat -nlp | grep v2ray\n正常情况会看到两个监听的程序，分别对应ipv4和ipv6\n判断正确的加入了iptables转发通过iptables可以查看相关的条目是否添加：\niptables -t nat -L v2ray_pre\n使用myip.ipip.net网站将myip.ipip.net加入到对应列表：如果使用gf，就加入到gf列表，如果使用unblock，就加入到unblock列表，重启服务。然后从客户端中（非路由）运行：\ncurl myip.ipip.net\n如果发现自己的ip变成了代理ip表示成功，这是查看iptables中对应规则，可以看到有包被转发了：\niptables -t nat -L v2ray_pre -vxn\n上面那条命令在路由器上运行是，无论是否成功没法变成代理ip，原因是客户端发出的包通过prerouting链被转进了v2ray_pre链中可以正确的转发，但是路由器自己产生的包没有通过prerouting，所以不能正确别转发。为了在路由器上运行上述命令，我查看了包的路径：\ntcpdump -i eth0.2 &apos;(dst port 80) and (dst 104.24.21.50)&apos;\n发现路由器上使用curl的时候，只能从eth0.2（我的WAN端口）上面抓到相关的包。\n所以我使用了一条新的规则将wan端口到104.24.21.50包转发到v2ray_pre链中：\niptables -t nat -A OUTPUT -d 104.24.21.50 -p tcp -j v2ray_pre\n然后再运行curl，用下面命令查看OUTPUT链的确探测到了包：\niptables -t nat -L OUTPUT -nvx\n而v2ray_pre也能探测到包：\niptables -t nat -L v2ray_pre -vxn\n这样curl命令也返回了代理服务器的ip，成功。\n然后使用下面命令查看刚添加的那一条iptable规则编号并删除，并确认：\niptables -t nat -L OUTPUT --line-numbers\niptables -t nat -L OUTPUT -D 1\niptables -t nat -L OUTPUT -nvx\n注意我刚刚添加的那一条规则在我的路由器OUTPUT链中的编号是1，如果是你们的则可能是其他的数字，千万别删错了。\n参考链接LUCI CBI维基： https://github.com/openwrt/luci/wiki/CBI\nhttps://github.com/seamustuohy/luci_tutorials/blob/master/04-model-cbi.md\nL大的项目：https://github.com/coolsnowwolf/lede/tree/master/package\nhttp://dvblog.soabit.com/building-custom-openwrt-packages-an-hopefully-complete-guide/\nhttps://oldwiki.archive.openwrt.org/doc/howto/obtain.firmware.sdk\niptables原理和用法：https://blog.51cto.com/wushank/1171768","dateCreated":"2019-06-12T16:33:05+08:00","dateModified":"2019-06-13T05:44:04+08:00","datePublished":"2019-06-12T16:33:05+08:00","description":"如何在openwrt中安装luci-v2ray","headline":"如何在openwrt中安装luci-v2ray","image":["https://www.aqniu.com/wp-content/uploads/2017/07/cybersecurity.jpg","https://www.aqniu.com/wp-content/uploads/2017/07/cybersecurity.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg","logo":{"@type":"ImageObject","url":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"}},"url":"https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/","thumbnailUrl":"https://www.aqniu.com/wp-content/uploads/2017/07/cybersecurity.jpg"}</script>
+    <meta name="description" content="如何在openwrt中安装luci-v2ray">
+<meta name="keywords" content="openwrt">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="Chen Rui&#39;s Blog">
-<meta property="og:url" content="https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/index.html">
+<meta property="og:title" content="如何在openwrt中安装luci-v2ray">
+<meta property="og:url" content="https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/index.html">
 <meta property="og:site_name" content="Chen Rui&#39;s Blog">
-<meta property="og:description" content="如何在openwrt 18.06.1中安装v2ray服务器和luci-v2ray这个项目是基于coolsnowwolf/lede项目，从中间提取了相关依赖包。针对海外党做了如下的改动：  在luci中添加了修改用户自定义unbluck-youku列表的设置。 针对一些app中不使用域名进行解析的问题，将自定义的列表分成域名和ip两部分。 其中域名部分可以只使用用户自定义的列表，也可以下载网上的列表">
+<meta property="og:description" content="如何在openwrt中安装luci-v2ray">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2019-06-12T21:32:30.157Z">
+<meta property="og:updated_time" content="2019-06-12T21:44:04.512Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Chen Rui&#39;s Blog">
-<meta name="twitter:description" content="如何在openwrt 18.06.1中安装v2ray服务器和luci-v2ray这个项目是基于coolsnowwolf/lede项目，从中间提取了相关依赖包。针对海外党做了如下的改动：  在luci中添加了修改用户自定义unbluck-youku列表的设置。 针对一些app中不使用域名进行解析的问题，将自定义的列表分成域名和ip两部分。 其中域名部分可以只使用用户自定义的列表，也可以下载网上的列表">
+<meta name="twitter:title" content="如何在openwrt中安装luci-v2ray">
+<meta name="twitter:description" content="如何在openwrt中安装luci-v2ray">
 <meta name="twitter:creator" content="@crnormal">
     
     
@@ -32,6 +35,12 @@
         <meta property="og:image" content="https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"/>
     
     
+        <meta property="og:image" content="https://www.aqniu.com/wp-content/uploads/2017/07/cybersecurity.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://www.aqniu.com/wp-content/uploads/2017/07/cybersecurity.jpg" />
+    
+    
+        <meta property="og:image" content="https://www.aqniu.com/wp-content/uploads/2017/07/cybersecurity.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://www.aqniu.com/wp-content/uploads/2017/07/cybersecurity.jpg" />
     
     
     <!--STYLES-->
@@ -184,25 +193,21 @@
 </nav>
 
             
-            <div id="main" data-behavior="4"
-                 class="
-                        hasCoverMetaIn
-                        ">
-                
-<article class="post">
-    
-    
-        <div class="post-header main-content-wrap text-left">
+        <div class="post-header-cover
+                    text-center
+                    post-header-cover--full" style="background-image:url('https://www.aqniu.com/wp-content/uploads/2017/07/cybersecurity.jpg');" data-behavior="4">
+            
+                <div class="post-header main-content-wrap text-center">
     
         <h1 class="post-title">
-            (无标题)
+            如何在openwrt中安装luci-v2ray
         </h1>
     
     
         <div class="post-meta">
-    <time datetime="2019-06-13T05:32:30+08:00">
+    <time datetime="2019-06-12T16:33:05+08:00">
 	
-		    6月 13, 2019
+		    6月 12, 2019
     	
     </time>
     
@@ -211,10 +216,22 @@
     
 </div>
 
+            
+        </div>
+
+            <div id="main" data-behavior="4"
+                 class="hasCover
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
     
     <div class="post-content markdown">
         <div class="main-content-wrap">
-            <h1 id="如何在openwrt-18-06-1中安装v2ray服务器和luci-v2ray"><a href="#如何在openwrt-18-06-1中安装v2ray服务器和luci-v2ray" class="headerlink" title="如何在openwrt 18.06.1中安装v2ray服务器和luci-v2ray"></a>如何在openwrt 18.06.1中安装v2ray服务器和luci-v2ray</h1><p><a href="https://github.com/crotoc/luci-app-v2ray" target="_blank" rel="noopener">这个项目</a>是基于coolsnowwolf/lede项目，从中间提取了相关依赖包。针对海外党做了如下的改动：</p>
+            <!-- excerpt --><p></p>
+<h1 id><a href="#" class="headerlink" title></a><a id="more"></a></h1><h1 id="如何在openwrt中安装luci-v2ray"><a href="#如何在openwrt中安装luci-v2ray" class="headerlink" title="如何在openwrt中安装luci-v2ray"></a>如何在openwrt中安装luci-v2ray</h1><h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#"><span class="toc-text"></span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#如何在openwrt中安装luci-v2ray"><span class="toc-text">如何在openwrt中安装luci-v2ray</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#如何在openwrt-18-06-1中安装v2ray服务器和luci-v2ray"><span class="toc-text">如何在openwrt 18.06.1中安装v2ray服务器和luci-v2ray</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#要求"><span class="toc-text">要求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Compile"><span class="toc-text">Compile</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#下载sdk并且解压缩"><span class="toc-text">下载sdk并且解压缩</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#下载luci到sdk目录下的package文件夹"><span class="toc-text">下载luci到sdk目录下的package文件夹</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#更新sdk需要的安装包"><span class="toc-text">更新sdk需要的安装包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装依赖包"><span class="toc-text">安装依赖包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#制作ipk包"><span class="toc-text">制作ipk包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重新制作"><span class="toc-text">重新制作</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装"><span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一些调试"><span class="toc-text">一些调试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何判断自己成功了（一些debug的技巧）"><span class="toc-text">如何判断自己成功了（一些debug的技巧）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#判断v2ray服务是否正确启动"><span class="toc-text">判断v2ray服务是否正确启动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#判断正确的加入了iptables转发"><span class="toc-text">判断正确的加入了iptables转发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用myip-ipip-net网站"><span class="toc-text">使用myip.ipip.net网站</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接"><span class="toc-text">参考链接</span></a></li></ol></li></ol>
+<h1 id="如何在openwrt-18-06-1中安装v2ray服务器和luci-v2ray"><a href="#如何在openwrt-18-06-1中安装v2ray服务器和luci-v2ray" class="headerlink" title="如何在openwrt 18.06.1中安装v2ray服务器和luci-v2ray"></a>如何在openwrt 18.06.1中安装v2ray服务器和luci-v2ray</h1><p><a href="https://github.com/crotoc/luci-app-v2ray" target="_blank" rel="noopener">这个项目</a>是基于coolsnowwolf/lede项目，从中间提取了相关依赖包。针对海外党做了如下的改动：</p>
 <ol>
 <li>在luci中添加了修改用户自定义unbluck-youku列表的设置。</li>
 <li>针对一些app中不使用域名进行解析的问题，将自定义的列表分成域名和ip两部分。</li>
@@ -285,7 +302,6 @@ iptables -t nat -L OUTPUT -nvx
 <p><a href="http://dvblog.soabit.com/building-custom-openwrt-packages-an-hopefully-complete-guide/" target="_blank" rel="noopener">http://dvblog.soabit.com/building-custom-openwrt-packages-an-hopefully-complete-guide/</a></p>
 <p><a href="https://oldwiki.archive.openwrt.org/doc/howto/obtain.firmware.sdk" target="_blank" rel="noopener">https://oldwiki.archive.openwrt.org/doc/howto/obtain.firmware.sdk</a></p>
 <p>iptables原理和用法：<a href="https://blog.51cto.com/wushank/1171768" target="_blank" rel="noopener">https://blog.51cto.com/wushank/1171768</a></p>
-
             
 
         </div>
@@ -325,7 +341,7 @@ iptables -t nat -L OUTPUT -nvx
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/" title="分享到 Facebook">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/" title="分享到 Facebook">
                     <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
@@ -333,7 +349,7 @@ iptables -t nat -L OUTPUT -nvx
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/" title="分享到 Twitter">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/" title="分享到 Twitter">
                     <i class="fab fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -341,7 +357,7 @@ iptables -t nat -L OUTPUT -nvx
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/" title="分享到 Google+">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/" title="分享到 Google+">
                     <i class="fab fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -349,7 +365,7 @@ iptables -t nat -L OUTPUT -nvx
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/" title="分享到 Weibo">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/" title="分享到 Weibo">
                     <i class="fab fa-weibo" aria-hidden="true"></i>
                 </a>
             </li>
@@ -357,7 +373,7 @@ iptables -t nat -L OUTPUT -nvx
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/&amp;title=" title="分享到 QQ">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/&amp;title=如何在openwrt中安装luci-v2ray" title="分享到 QQ">
                     <i class="fab fa-qq" aria-hidden="true"></i>
                 </a>
             </li>
@@ -365,7 +381,7 @@ iptables -t nat -L OUTPUT -nvx
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/" title="分享到 Qzone">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/" title="分享到 Qzone">
                     <i class="fa fa-star" aria-hidden="true"></i>
                 </a>
             </li>
@@ -381,7 +397,7 @@ iptables -t nat -L OUTPUT -nvx
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
             
                 <i class="fa fa-list" aria-hidden="true"></i>
             </a>
@@ -442,7 +458,7 @@ iptables -t nat -L OUTPUT -nvx
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/" title="分享到 Facebook">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/" title="分享到 Facebook">
                     <i class="fab fa-facebook" aria-hidden="true"></i>
                 </a>
             </li>
@@ -450,7 +466,7 @@ iptables -t nat -L OUTPUT -nvx
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/" title="分享到 Twitter">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/" title="分享到 Twitter">
                     <i class="fab fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -458,7 +474,7 @@ iptables -t nat -L OUTPUT -nvx
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/" title="分享到 Google+">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/" title="分享到 Google+">
                     <i class="fab fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -466,7 +482,7 @@ iptables -t nat -L OUTPUT -nvx
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/" title="分享到 Weibo">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/" title="分享到 Weibo">
                     <i class="fab fa-weibo" aria-hidden="true"></i>
                 </a>
             </li>
@@ -474,7 +490,7 @@ iptables -t nat -L OUTPUT -nvx
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/&amp;title=" title="分享到 QQ">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/&amp;title=如何在openwrt中安装luci-v2ray" title="分享到 QQ">
                     <i class="fab fa-qq" aria-hidden="true"></i>
                 </a>
             </li>
@@ -482,7 +498,7 @@ iptables -t nat -L OUTPUT -nvx
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/" title="分享到 Qzone">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/" title="分享到 Qzone">
                     <i class="fa fa-star" aria-hidden="true"></i>
                 </a>
             </li>
@@ -498,7 +514,7 @@ iptables -t nat -L OUTPUT -nvx
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
             
                 <i class="fa fa-list" aria-hidden="true"></i>
             </a>
@@ -516,7 +532,7 @@ iptables -t nat -L OUTPUT -nvx
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/">
+                    <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/">
                         <i class="fab fa-facebook" aria-hidden="true"></i><span>分享到 Facebook</span>
                     </a>
                 </li>
@@ -524,7 +540,7 @@ iptables -t nat -L OUTPUT -nvx
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/">
+                    <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/">
                         <i class="fab fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
                     </a>
                 </li>
@@ -532,7 +548,7 @@ iptables -t nat -L OUTPUT -nvx
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/">
+                    <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/">
                         <i class="fab fa-google-plus" aria-hidden="true"></i><span>分享到 Google+</span>
                     </a>
                 </li>
@@ -540,7 +556,7 @@ iptables -t nat -L OUTPUT -nvx
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/">
+                    <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/">
                         <i class="fab fa-weibo" aria-hidden="true"></i><span>分享到 Weibo</span>
                     </a>
                 </li>
@@ -548,7 +564,7 @@ iptables -t nat -L OUTPUT -nvx
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/&amp;title=">
+                    <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/&amp;title=如何在openwrt中安装luci-v2ray">
                         <i class="fab fa-qq" aria-hidden="true"></i><span>分享到 QQ</span>
                     </a>
                 </li>
@@ -556,7 +572,7 @@ iptables -t nat -L OUTPUT -nvx
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2019/06/13/How-to-install-luci-v2ray-on-R7800/">
+                    <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/">
                         <i class="fa fa-star" aria-hidden="true"></i><span>分享到 Qzone</span>
                     </a>
                 </li>
@@ -895,7 +911,7 @@ iptables -t nat -L OUTPUT -nvx
             (function() {
                 function render() {
                     new Gitment({
-                        id: 'Thu Jun 13 2019 05:32:30 GMT+0800',
+                        id: 'Wed Jun 12 2019 16:33:05 GMT+0800',
                         owner: 'crotoc',
                         repo: 'crotoc.github.io',
                         oauth: {
