@@ -13,7 +13,7 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"},"articleBody":"\n如何在openwrt中安装luci-v2ray\n如何在openwrt 18.06.1中安装v2ray服务器和luci-v2ray这个项目是基于coolsnowwolf/lede项目，从中间提取了相关依赖包。针对海外党做了如下的改动：\n\n在luci中添加了修改用户自定义unbluck-youku列表的设置。\n针对一些app中不使用域名进行解析的问题，将自定义的列表分成域名和ip两部分。\n其中域名部分可以只使用用户自定义的列表，也可以下载网上的列表与自己的列表合并。网上的列表提取子coolsnowwolf/lede项目中的ipset-lists包。\nip部分使用ipset add命令添加。\n添加了重启，启动，停止的按钮，方便使用\n\n水平有限，大家随意\n要求\n一个安装openwrt的路由\n一颗折腾的心\n\nCompile下载sdk并且解压缩SDK可以用于制作openwrt可以使用的ipk包，每种路由器根据不同核心需要下载不同的sdk包，我的路由器是R7800,所以去openwrt下载了对应的sdk,即ipq806x的sdk：\nwget https://downloads.openwrt.org/releases/18.06.1/targets/ipq806x/generic/openwrt-sdk-18.06.1-ipq806x_gcc-7.3.0_musl_eabi.Linux-x86_64.tar.xz\ntar xf openwrt-sdk-18.06.1-ipq806x_gcc-7.3.0_musl_eabi.Linux-x86_64.tar.xz\n下载luci到sdk目录下的package文件夹git clone https://github.com/crotoc/luci-app-v2ray.git\ncd openwrt-sdk-18.06.1-ipq806x_gcc-7.3.0_musl_eabi.Linux-x86_64\ncp -R ../luci-app-v2ray/* package/\nrm -rf package/luci-app-v2ray-pro/\ncp -R ~/git_project/luci-app-v2ray/luci-app-v2ray-pro/ package/\n更新sdk需要的安装包./script/feeds update -a\n安装依赖包./scripts/feeds install iptables-mod-tproxy kmod-ipt-tproxy ip ipset-lists pdnsd-alt coreutils coreutils-base64 coreutils-nohup dnsmasq-full v2ray ca-certificates lua-cjson luci-base\n制作ipk包make package/luci-app-v2ray-pro/{down,compile} -j8\n生成的ipk文件会存放在./bin/packages/arm_cortex-a15_neon-vfpv4/base/中.\n重新制作如果修改部分代码之后需要重新制作:\nrm -rf package/luci-app-v2ray-pro/\ncp -R ~/git_project/luci-app-v2ray/luci-app-v2ray-pro/ package/\nmake package/luci-app-v2ray-pro/{clean,compile} -j8\n安装将上面的ipset-lists，pdnsd-alt，v2ray和luci-app-v2ray-pro四个ipk文件传到路由器上，除上述四个依赖包意外，其他的依赖包可以直接在服务器上安装：\nopkg install iptables-mod-tproxy kmod-ipt-tproxy ip  coreutils coreutils-base64 coreutils-nohup  v2ray ca-certificates lua-cjson luci-base\n这四个包单独安装:\nopkg install ipset-lists*ipk\nopkg install pdnsd-alt*ipk\nopkg install v2ray*ipk\nopkg install luci-app-v2ray-pro*ipk\n如果安装过程中出现依赖包缺失的情况，就使用opkg安装。\n一些调试安装的过程中还会出现有些包已经存在的情况。例如dnsmasq需要移除才能安装dnsmasq-full。卸载dnsmasq的过程中会出现断网的情况：\n/etc/init.d/dnsmasq stop\nopkg remove dnsmasq\nopkg instlal dnsmasq-full\n如何判断自己成功了（一些debug的技巧）判断v2ray服务是否正确启动通过luci打开v2ray之后，使用下面的命令查看v2ray是否正常启动：\nnetstat -nlp | grep v2ray\n正常情况会看到两个监听的程序，分别对应ipv4和ipv6\n判断正确的加入了iptables转发通过iptables可以查看相关的条目是否添加：\niptables -t nat -L v2ray_pre\n使用myip.ipip.net网站将myip.ipip.net加入到对应列表：如果使用gf，就加入到gf列表，如果使用unblock，就加入到unblock列表，重启服务。然后从客户端中（非路由）运行：\ncurl myip.ipip.net\n如果发现自己的ip变成了代理ip表示成功，这是查看iptables中对应规则，可以看到有包被转发了：\niptables -t nat -L v2ray_pre -vxn\n上面那条命令在路由器上运行是，无论是否成功没法变成代理ip，原因是客户端发出的包通过prerouting链被转进了v2ray_pre链中可以正确的转发，但是路由器自己产生的包没有通过prerouting，所以不能正确别转发。为了在路由器上运行上述命令，我查看了包的路径：\ntcpdump -i eth0.2 &apos;(dst port 80) and (dst 104.24.21.50)&apos;\n发现路由器上使用curl的时候，只能从eth0.2（我的WAN端口）上面抓到相关的包。\n所以我使用了一条新的规则将wan端口到104.24.21.50包转发到v2ray_pre链中：\niptables -t nat -A OUTPUT -d 104.24.21.50 -p tcp -j v2ray_pre\n然后再运行curl，用下面命令查看OUTPUT链的确探测到了包：\niptables -t nat -L OUTPUT -nvx\n而v2ray_pre也能探测到包：\niptables -t nat -L v2ray_pre -vxn\n这样curl命令也返回了代理服务器的ip，成功。\n然后使用下面命令查看刚添加的那一条iptable规则编号并删除，并确认：\niptables -t nat -L OUTPUT --line-numbers\niptables -t nat -L OUTPUT -D 1\niptables -t nat -L OUTPUT -nvx\n注意我刚刚添加的那一条规则在我的路由器OUTPUT链中的编号是1，如果是你们的则可能是其他的数字，千万别删错了。\n参考链接LUCI CBI维基： https://github.com/openwrt/luci/wiki/CBI\nhttps://github.com/seamustuohy/luci_tutorials/blob/master/04-model-cbi.md\nL大的项目：https://github.com/coolsnowwolf/lede/tree/master/package\nhttp://dvblog.soabit.com/building-custom-openwrt-packages-an-hopefully-complete-guide/\nhttps://oldwiki.archive.openwrt.org/doc/howto/obtain.firmware.sdk\niptables原理和用法：https://blog.51cto.com/wushank/1171768","dateCreated":"2019-06-12T16:33:05+08:00","dateModified":"2019-06-13T05:58:33+08:00","datePublished":"2019-06-12T16:33:05+08:00","description":"如何在openwrt中安装luci-v2ray","headline":"如何在openwrt中安装luci-v2ray","image":["https://www.aqniu.com/wp-content/uploads/2017/07/cybersecurity.jpg","https://www.aqniu.com/wp-content/uploads/2017/07/cybersecurity.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg","logo":{"@type":"ImageObject","url":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"}},"url":"https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/","thumbnailUrl":"https://www.aqniu.com/wp-content/uploads/2017/07/cybersecurity.jpg"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"},"articleBody":"\n如何在openwrt中安装luci-v2ray\n如何在openwrt 18.06.1中安装v2ray服务器和luci-v2ray这个项目是基于coolsnowwolf/lede项目，从中间提取了相关依赖包。针对海外党做了如下的改动：\n\n在luci中添加了修改用户自定义unbluck-youku列表的设置。\n针对一些app中不使用域名进行解析的问题，将自定义的列表分成域名和ip两部分。\n其中域名部分可以只使用用户自定义的列表，也可以下载网上的列表与自己的列表合并。网上的列表提取子coolsnowwolf/lede项目中的ipset-lists包。\nip部分使用ipset add命令添加。\n添加了重启，启动，停止的按钮，方便使用\n\n水平有限，大家随意\n要求\n一个安装openwrt的路由\n一颗折腾的心\n\nCompile下载sdk并且解压缩SDK可以用于制作openwrt可以使用的ipk包，每种路由器根据不同核心需要下载不同的sdk包，我的路由器是R7800,所以去openwrt下载了对应的sdk,即ipq806x的sdk：\nwget https://downloads.openwrt.org/releases/18.06.1/targets/ipq806x/generic/openwrt-sdk-18.06.1-ipq806x_gcc-7.3.0_musl_eabi.Linux-x86_64.tar.xz\ntar xf openwrt-sdk-18.06.1-ipq806x_gcc-7.3.0_musl_eabi.Linux-x86_64.tar.xz\n下载luci到sdk目录下的package文件夹git clone https://github.com/crotoc/luci-app-v2ray.git\ncd openwrt-sdk-18.06.1-ipq806x_gcc-7.3.0_musl_eabi.Linux-x86_64\ncp -R ../luci-app-v2ray/* package/\nrm -rf package/luci-app-v2ray-pro/\ncp -R ~/git_project/luci-app-v2ray/luci-app-v2ray-pro/ package/\n更新sdk需要的安装包./script/feeds update -a\n安装依赖包./scripts/feeds install iptables-mod-tproxy kmod-ipt-tproxy ip ipset-lists pdnsd-alt coreutils coreutils-base64 coreutils-nohup dnsmasq-full v2ray ca-certificates lua-cjson luci-base\n制作ipk包make package/luci-app-v2ray-pro/{down,compile} -j8\n生成的ipk文件会存放在./bin/packages/arm_cortex-a15_neon-vfpv4/base/中.\n重新制作如果修改部分代码之后需要重新制作:\nrm -rf package/luci-app-v2ray-pro/\ncp -R ~/git_project/luci-app-v2ray/luci-app-v2ray-pro/ package/\nmake package/luci-app-v2ray-pro/{clean,compile} -j8\n安装将上面的ipset-lists，pdnsd-alt，v2ray和luci-app-v2ray-pro四个ipk文件传到路由器上，除上述四个依赖包意外，其他的依赖包可以直接在服务器上安装：\nopkg install iptables-mod-tproxy kmod-ipt-tproxy ip  coreutils coreutils-base64 coreutils-nohup  v2ray ca-certificates lua-cjson luci-base\n这四个包单独安装:\nopkg install ipset-lists*ipk\nopkg install pdnsd-alt*ipk\nopkg install v2ray*ipk\nopkg install luci-app-v2ray-pro*ipk\n如果安装过程中出现依赖包缺失的情况，就使用opkg安装。\n一些调试安装的过程中还会出现有些包已经存在的情况。例如dnsmasq需要移除才能安装dnsmasq-full。卸载dnsmasq的过程中会出现断网的情况：\n/etc/init.d/dnsmasq stop\nopkg remove dnsmasq\nopkg instlal dnsmasq-full\n如何判断自己成功了（一些debug的技巧）判断v2ray服务是否正确启动通过luci打开v2ray之后，使用下面的命令查看v2ray是否正常启动：\nnetstat -nlp | grep v2ray\n正常情况会看到两个监听的程序，分别对应ipv4和ipv6\n判断正确的加入了iptables转发通过iptables可以查看相关的条目是否添加：\niptables -t nat -L v2ray_pre\n使用myip.ipip.net网站将myip.ipip.net加入到对应列表：如果使用gf，就加入到gf列表，如果使用unblock，就加入到unblock列表，重启服务。然后从客户端中（非路由）运行：\ncurl myip.ipip.net\n如果发现自己的ip变成了代理ip表示成功，这是查看iptables中对应规则，可以看到有包被转发了：\niptables -t nat -L v2ray_pre -vxn\n上面那条命令在路由器上运行是，无论是否成功没法变成代理ip，原因是客户端发出的包通过prerouting链被转进了v2ray_pre链中可以正确的转发，但是路由器自己产生的包没有通过prerouting，所以不能正确别转发。为了在路由器上运行上述命令，我查看了包的路径：\ntcpdump -i eth0.2 &apos;(dst port 80) and (dst 104.24.21.50)&apos;\n发现路由器上使用curl的时候，只能从eth0.2（我的WAN端口）上面抓到相关的包。\n所以我使用了一条新的规则将wan端口到104.24.21.50包转发到v2ray_pre链中：\niptables -t nat -A OUTPUT -d 104.24.21.50 -p tcp -j v2ray_pre\n然后再运行curl，用下面命令查看OUTPUT链的确探测到了包：\niptables -t nat -L OUTPUT -nvx\n而v2ray_pre也能探测到包：\niptables -t nat -L v2ray_pre -vxn\n这样curl命令也返回了代理服务器的ip，成功。\n然后使用下面命令查看刚添加的那一条iptable规则编号并删除，并确认：\niptables -t nat -L OUTPUT --line-numbers\niptables -t nat -L OUTPUT -D 1\niptables -t nat -L OUTPUT -nvx\n注意我刚刚添加的那一条规则在我的路由器OUTPUT链中的编号是1，如果是你们的则可能是其他的数字，千万别删错了。\n参考链接LUCI CBI维基： https://github.com/openwrt/luci/wiki/CBI\nhttps://github.com/seamustuohy/luci_tutorials/blob/master/04-model-cbi.md\nL大的项目：https://github.com/coolsnowwolf/lede/tree/master/package\nhttp://dvblog.soabit.com/building-custom-openwrt-packages-an-hopefully-complete-guide/\nhttps://oldwiki.archive.openwrt.org/doc/howto/obtain.firmware.sdk\niptables原理和用法：https://blog.51cto.com/wushank/1171768","dateCreated":"2019-06-12T16:33:05+08:00","dateModified":"2019-11-02T02:54:27+08:00","datePublished":"2019-06-12T16:33:05+08:00","description":"如何在openwrt中安装luci-v2ray","headline":"如何在openwrt中安装luci-v2ray","image":["https://www.aqniu.com/wp-content/uploads/2017/07/cybersecurity.jpg","https://www.aqniu.com/wp-content/uploads/2017/07/cybersecurity.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg","logo":{"@type":"ImageObject","url":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"}},"url":"https://crotoc.github.io/2019/06/12/How-to-install-luci-v2ray-on-R7800/","thumbnailUrl":"https://www.aqniu.com/wp-content/uploads/2017/07/cybersecurity.jpg"}</script>
     <meta name="description" content="如何在openwrt中安装luci-v2ray">
 <meta name="keywords" content="openwrt">
 <meta property="og:type" content="blog">
@@ -22,7 +22,7 @@
 <meta property="og:site_name" content="Chen Rui&#39;s Blog">
 <meta property="og:description" content="如何在openwrt中安装luci-v2ray">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2019-06-12T21:58:33.348Z">
+<meta property="og:updated_time" content="2019-11-01T18:54:27.044Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何在openwrt中安装luci-v2ray">
 <meta name="twitter:description" content="如何在openwrt中安装luci-v2ray">
@@ -78,10 +78,11 @@
     </div>
     
         
-            <a class="header-right-picture " href="#about">
+            <a  class="header-right-picture "
+                href="#about">
         
         
-            <img class="header-picture" src="https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg" alt="作者的图片">
+            <img class="header-picture" src="https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg" alt="作者的图片"/>
         
         </a>
     
@@ -99,7 +100,7 @@
         
             <div class="sidebar-profile">
                 <a href="/#about">
-                    <img class="sidebar-profile-picture" src="https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg" alt="作者的图片">
+                    <img class="sidebar-profile-picture" src="https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg" alt="作者的图片"/>
                 </a>
                 <h4 class="sidebar-profile-name"></h4>
                 
@@ -113,7 +114,11 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/ " title="首页">
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="首页"
+                        >
                     
                         <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">首页</span>
@@ -122,7 +127,11 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-categories" title="分类">
+                        <a  class="sidebar-button-link "
+                             href="/all-categories"
+                            
+                            title="分类"
+                        >
                     
                         <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">分类</span>
@@ -131,7 +140,11 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-tags" title="标签">
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="标签"
+                        >
                     
                         <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">标签</span>
@@ -140,7 +153,11 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-archives" title="归档">
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="归档"
+                        >
                     
                         <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">归档</span>
@@ -149,7 +166,11 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link open-algolia-search" href="#search" title="搜索">
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="搜索"
+                        >
                     
                         <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">搜索</span>
@@ -158,7 +179,11 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="#about" title="关于">
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="关于"
+                        >
                     
                         <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">关于</span>
@@ -171,7 +196,7 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="https://github.com/crotoc?tab=repositories" target="_blank" rel="noopener" title="GitHub">
+                        <a  class="sidebar-button-link " href="https://github.com/crotoc?tab=repositories" target="_blank" rel="noopener" title="GitHub">
                     
                         <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">GitHub</span>
@@ -180,7 +205,7 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="mailto:crotoc@gmail.com" target="_blank" rel="noopener" title="邮箱">
+                        <a  class="sidebar-button-link " href="mailto:crotoc@gmail.com" target="_blank" rel="noopener" title="邮箱">
                     
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">邮箱</span>
@@ -195,7 +220,9 @@
             
         <div class="post-header-cover
                     text-center
-                    post-header-cover--full" style="background-image:url('https://www.aqniu.com/wp-content/uploads/2017/07/cybersecurity.jpg');" data-behavior="4">
+                    post-header-cover--full"
+             style="background-image:url('https://www.aqniu.com/wp-content/uploads/2017/07/cybersecurity.jpg');"
+             data-behavior="4">
             
                 <div class="post-header main-content-wrap text-center">
     
@@ -229,8 +256,8 @@
     
     <div class="post-content markdown">
         <div class="main-content-wrap">
-            <!-- excerpt --><p></p>
-<h1 id><a href="#" class="headerlink" title></a><a id="more"></a></h1><h1 id="如何在openwrt中安装luci-v2ray"><a href="#如何在openwrt中安装luci-v2ray" class="headerlink" title="如何在openwrt中安装luci-v2ray"></a>如何在openwrt中安装luci-v2ray</h1><h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#"><span class="toc-text"></span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#如何在openwrt中安装luci-v2ray"><span class="toc-text">如何在openwrt中安装luci-v2ray</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#如何在openwrt-18-06-1中安装v2ray服务器和luci-v2ray"><span class="toc-text">如何在openwrt 18.06.1中安装v2ray服务器和luci-v2ray</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#要求"><span class="toc-text">要求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Compile"><span class="toc-text">Compile</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#下载sdk并且解压缩"><span class="toc-text">下载sdk并且解压缩</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#下载luci到sdk目录下的package文件夹"><span class="toc-text">下载luci到sdk目录下的package文件夹</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#更新sdk需要的安装包"><span class="toc-text">更新sdk需要的安装包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装依赖包"><span class="toc-text">安装依赖包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#制作ipk包"><span class="toc-text">制作ipk包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重新制作"><span class="toc-text">重新制作</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装"><span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一些调试"><span class="toc-text">一些调试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何判断自己成功了（一些debug的技巧）"><span class="toc-text">如何判断自己成功了（一些debug的技巧）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#判断v2ray服务是否正确启动"><span class="toc-text">判断v2ray服务是否正确启动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#判断正确的加入了iptables转发"><span class="toc-text">判断正确的加入了iptables转发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用myip-ipip-net网站"><span class="toc-text">使用myip.ipip.net网站</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接"><span class="toc-text">参考链接</span></a></li></ol></li></ol>
+            <!-- excerpt --></p>
+<h1 id><a href="#" class="headerlink" title></a><a id="more"></a></h1><h1 id="如何在openwrt中安装luci-v2ray"><a href="#如何在openwrt中安装luci-v2ray" class="headerlink" title="如何在openwrt中安装luci-v2ray"></a>如何在openwrt中安装luci-v2ray</h1><h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#null"><span class="toc-text"></span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#如何在openwrt中安装luci-v2ray"><span class="toc-text">如何在openwrt中安装luci-v2ray</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#如何在openwrt-18-06-1中安装v2ray服务器和luci-v2ray"><span class="toc-text">如何在openwrt 18.06.1中安装v2ray服务器和luci-v2ray</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#要求"><span class="toc-text">要求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Compile"><span class="toc-text">Compile</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#下载sdk并且解压缩"><span class="toc-text">下载sdk并且解压缩</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#下载luci到sdk目录下的package文件夹"><span class="toc-text">下载luci到sdk目录下的package文件夹</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#更新sdk需要的安装包"><span class="toc-text">更新sdk需要的安装包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装依赖包"><span class="toc-text">安装依赖包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#制作ipk包"><span class="toc-text">制作ipk包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重新制作"><span class="toc-text">重新制作</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装"><span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一些调试"><span class="toc-text">一些调试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何判断自己成功了（一些debug的技巧）"><span class="toc-text">如何判断自己成功了（一些debug的技巧）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#判断v2ray服务是否正确启动"><span class="toc-text">判断v2ray服务是否正确启动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#判断正确的加入了iptables转发"><span class="toc-text">判断正确的加入了iptables转发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用myip-ipip-net网站"><span class="toc-text">使用myip.ipip.net网站</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接"><span class="toc-text">参考链接</span></a></li></ol></li></ol>
 <h1 id="如何在openwrt-18-06-1中安装v2ray服务器和luci-v2ray"><a href="#如何在openwrt-18-06-1中安装v2ray服务器和luci-v2ray" class="headerlink" title="如何在openwrt 18.06.1中安装v2ray服务器和luci-v2ray"></a>如何在openwrt 18.06.1中安装v2ray服务器和luci-v2ray</h1><p><a href="https://github.com/crotoc/luci-app-v2ray" target="_blank" rel="noopener">这个项目</a>是基于coolsnowwolf/lede项目，从中间提取了相关依赖包。针对海外党做了如下的改动：</p>
 <ol>
 <li>在luci中添加了修改用户自定义unbluck-youku列表的设置。</li>
@@ -596,7 +623,7 @@ iptables -t nat -L OUTPUT -nvx
             <i class="fa fa-times"></i>
         </div>
         
-            <img id="about-card-picture" src="https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg" alt="作者的图片">
+            <img id="about-card-picture" src="https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg" alt="作者的图片"/>
         
             <h4 id="about-card-name"></h4>
         
@@ -606,7 +633,7 @@ iptables -t nat -L OUTPUT -nvx
         
             <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
-                <br>
+                <br/>
                 <p>遗传性，基因组学，生物信息学</p>
 
             </div>
@@ -614,7 +641,7 @@ iptables -t nat -L OUTPUT -nvx
         
             <div id="about-card-location">
                 <i class="fa fa-map-marker-alt"></i>
-                <br>
+                <br/>
                 Nashville, TN, U.S.
             </div>
         
@@ -632,7 +659,9 @@ iptables -t nat -L OUTPUT -nvx
             </a>
             <i class="search-icon fa fa-search"></i>
             <form id="algolia-search-form">
-                <input type="text" id="algolia-search-input" name="search" class="form-control input--large search-input" placeholder="Search ">
+                <input type="text" id="algolia-search-input" name="search"
+                    class="form-control input--large search-input" placeholder="Search "
+                    />
             </form>
         </div>
         <div class="modal-body">
@@ -643,7 +672,7 @@ iptables -t nat -L OUTPUT -nvx
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2018/08/10/gnu-join/">
-                            <img class="media-image" src="https://img1.quimg.com/upload/201712/1513834333388.jpg" width="90" height="90">
+                            <img class="media-image" src="https://img1.quimg.com/upload/201712/1513834333388.jpg" width="90" height="90"/>
                         </a>
                     </div>
                     
@@ -658,7 +687,7 @@ iptables -t nat -L OUTPUT -nvx
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"><p>Gnu join - join two files by specified field<br></p></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Gnu join - join two files by specified field<br></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -668,7 +697,7 @@ iptables -t nat -L OUTPUT -nvx
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2018/09/11/rmarkdown-config/">
-                            <img class="media-image" src="http://www.cncd8.com/uploads/allimg/120308/1-12030R10R7.jpg" width="90" height="90">
+                            <img class="media-image" src="http://www.cncd8.com/uploads/allimg/120308/1-12030R10R7.jpg" width="90" height="90"/>
                         </a>
                     </div>
                     
@@ -683,7 +712,7 @@ iptables -t nat -L OUTPUT -nvx
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"><p>Setup rmarkdown on server without Rstudio<br></p></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Setup rmarkdown on server without Rstudio<br></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -693,7 +722,7 @@ iptables -t nat -L OUTPUT -nvx
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
-                            <img class="media-image" src="https://www.nationalgeographic.com/content/dam/photography/PROOF/2017/April/epic-landscapes/24-9007740_uploadsmember798135yourshot-798135-9007740jpg_ci6qt7qzhqldf4ex35to2j2as7p3eflutfvvbpyjwjhzlmh4iziq_3066x1725.jpg" width="90" height="90">
+                            <img class="media-image" src="https://www.nationalgeographic.com/content/dam/photography/PROOF/2017/April/epic-landscapes/24-9007740_uploadsmember798135yourshot-798135-9007740jpg_ci6qt7qzhqldf4ex35to2j2as7p3eflutfvvbpyjwjhzlmh4iziq_3066x1725.jpg" width="90" height="90"/>
                         </a>
                     </div>
                     
@@ -708,7 +737,7 @@ iptables -t nat -L OUTPUT -nvx
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"><p>Unblock Youku on a openWRT Router<br></p></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Unblock Youku on a openWRT Router<br></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -718,7 +747,7 @@ iptables -t nat -L OUTPUT -nvx
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/">
-                            <img class="media-image" src="https://static.boredpanda.com/blog/wp-content/uploads/2015/11/reflection-landscape-photography-jaewoon-u-fb.jpg" width="90" height="90">
+                            <img class="media-image" src="https://static.boredpanda.com/blog/wp-content/uploads/2015/11/reflection-landscape-photography-jaewoon-u-fb.jpg" width="90" height="90"/>
                         </a>
                     </div>
                     
@@ -733,7 +762,7 @@ iptables -t nat -L OUTPUT -nvx
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"><p>Modify the hotkey of Chinese-English language switching in Windows 10<br></p></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Modify the hotkey of Chinese-English language switching in Windows 10<br></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -743,7 +772,7 @@ iptables -t nat -L OUTPUT -nvx
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
-                            <img class="media-image" src="https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=500" width="90" height="90">
+                            <img class="media-image" src="https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=500" width="90" height="90"/>
                         </a>
                     </div>
                     
@@ -758,7 +787,7 @@ iptables -t nat -L OUTPUT -nvx
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"><p>Install customized fonts for imagemagick<br></p></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Install customized fonts for imagemagick<br></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -768,7 +797,7 @@ iptables -t nat -L OUTPUT -nvx
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2019/01/22/Unblock-region-restriction-of-musics-videos/">
-                            <img class="media-image" src="https://store-images.s-microsoft.com/image/apps.6197.13569891971238701.dab36319-31db-42e5-b32b-edb97c11d8b7.b4ec6763-6d93-4369-87b7-81c25913395f?mode=scale&amp;q=90&amp;h=1080&amp;w=1920" width="90" height="90">
+                            <img class="media-image" src="https://store-images.s-microsoft.com/image/apps.6197.13569891971238701.dab36319-31db-42e5-b32b-edb97c11d8b7.b4ec6763-6d93-4369-87b7-81c25913395f?mode=scale&amp;q=90&amp;h=1080&amp;w=1920" width="90" height="90"/>
                         </a>
                     </div>
                     
@@ -783,7 +812,7 @@ iptables -t nat -L OUTPUT -nvx
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"><p>List for unblock region restriction of musics/videos<br></p></div>
+                        <div class="media-content hide-xs font-merryweather"><p>List for unblock region restriction of musics/videos<br></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -793,7 +822,7 @@ iptables -t nat -L OUTPUT -nvx
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2019/01/22/terminal-in-windows-sub-linux-system/">
-                            <img class="media-image" src="http://img.univs.cn/webfile/event/279/4585308/D5B18660-6B04-11E4-A4B4-E02212B11521/1415863236024_4585308.JPG" width="90" height="90">
+                            <img class="media-image" src="http://img.univs.cn/webfile/event/279/4585308/D5B18660-6B04-11E4-A4B4-E02212B11521/1415863236024_4585308.JPG" width="90" height="90"/>
                         </a>
                     </div>
                     
@@ -808,7 +837,7 @@ iptables -t nat -L OUTPUT -nvx
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"><p>Windows 10下面最好的terminal (WSL)<br></p></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Windows 10下面最好的terminal (WSL)<br></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -818,7 +847,7 @@ iptables -t nat -L OUTPUT -nvx
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/">
-                            <img class="media-image" src="https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg" width="90" height="90">
+                            <img class="media-image" src="https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg" width="90" height="90"/>
                         </a>
                     </div>
                     
@@ -833,7 +862,7 @@ iptables -t nat -L OUTPUT -nvx
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"><p>Bugs when using the tranquilpeak hexo theme<br></p></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Bugs when using the tranquilpeak hexo theme<br></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -843,7 +872,7 @@ iptables -t nat -L OUTPUT -nvx
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2019/03/22/How-to-install-v2ray-service-on-R7800/">
-                            <img class="media-image" src="https://images.pexels.com/photos/371633/pexels-photo-371633.jpeg?auto=compress&amp;cs=tinysrgb&amp;h=750&amp;w=1260" width="90" height="90">
+                            <img class="media-image" src="https://images.pexels.com/photos/371633/pexels-photo-371633.jpeg?auto=compress&amp;cs=tinysrgb&amp;h=750&amp;w=1260" width="90" height="90"/>
                         </a>
                     </div>
                     
@@ -858,7 +887,7 @@ iptables -t nat -L OUTPUT -nvx
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"><p>如何在netgear R7800上面安装v2ray服务<br></p></div>
+                        <div class="media-content hide-xs font-merryweather"><p>如何在netgear R7800上面安装v2ray服务<br></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -868,7 +897,7 @@ iptables -t nat -L OUTPUT -nvx
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/">
-                            <img class="media-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYi7FGA5FfpekOBRLFsOSCep_sIqCw38lX0HgueXz6shmKqCdl" width="90" height="90">
+                            <img class="media-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYi7FGA5FfpekOBRLFsOSCep_sIqCw38lX0HgueXz6shmKqCdl" width="90" height="90"/>
                         </a>
                     </div>
                     
@@ -883,7 +912,7 @@ iptables -t nat -L OUTPUT -nvx
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"><p>Tranquilpeak Setup algolia search<br></p></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Tranquilpeak Setup algolia search<br></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -892,7 +921,10 @@ iptables -t nat -L OUTPUT -nvx
             </div>
         </div>
         <div class="modal-footer">
-            <p class="results-count text-medium" data-message-zero="没有找到文章" data-message-one="找到 1 篇文章" data-message-other="找到 {n} 篇文章">
+            <p class="results-count text-medium"
+                data-message-zero="没有找到文章"
+                data-message-one="找到 1 篇文章"
+                data-message-other="找到 {n} 篇文章">
                 找到 12 篇文章
             </p>
         </div>

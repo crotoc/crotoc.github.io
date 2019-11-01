@@ -13,7 +13,7 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"},"articleBody":"\nBugs when using the tranquilpeak hexo theme\n今天想将blog的主题从next 换成tranquilpeak,结果发现了很多的问题,这里记录一下:\n\n因为我使用travis自动在线部署,所以主题里面的node_modules不是必须的.\n\n这个主题的.gitignore文件中自动略去了assets文件夹,导致了网站看不到格式,只有文字.\n\n需要将主题中的package.json里面的dependencies拷贝到主目录的package.json才能在travis端自动安装.\n\n需要在主目录的_config.yml中设置language,不然出现的是德语.其中语言设置必须与主题中languages目录下的文件名对应.\n\n\n标准调试过程为了加快下一次的调试,经验如下:\n第一步本地安装包,找出依赖的问题:\nnpm install\n第二步生成本地public目录:\nhexo clean\nhexo g\nhexo s\n用本地浏览器打开确定本地显示是否出错:\nlocalhost:4000\n如果本地没错可以将这个本地版本git到remote端,使用网页链接查看是否有错.\n如果有错则核对两次commit之间的偏差,确定问题所在.\n在本次调试过程中,主要问题是assets文件夹被主题目录中的.gitignore忽略,这样网页只有文字没有样式.","dateCreated":"2019-03-16T01:48:20+08:00","dateModified":"2019-06-13T05:58:33+08:00","datePublished":"2019-03-16T01:48:20+08:00","description":"Bugs when using the tranquilpeak hexo theme","headline":"Bugs when using the tranquilpeak hexo theme","image":["https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg","https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg","logo":{"@type":"ImageObject","url":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"}},"url":"https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/","keywords":"博客","thumbnailUrl":"https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"},"articleBody":"\nBugs when using the tranquilpeak hexo theme\n今天想将blog的主题从next 换成tranquilpeak,结果发现了很多的问题,这里记录一下:\n\n因为我使用travis自动在线部署,所以主题里面的node_modules不是必须的.\n\n这个主题的.gitignore文件中自动略去了assets文件夹,导致了网站看不到格式,只有文字.\n\n需要将主题中的package.json里面的dependencies拷贝到主目录的package.json才能在travis端自动安装.\n\n需要在主目录的_config.yml中设置language,不然出现的是德语.其中语言设置必须与主题中languages目录下的文件名对应.\n\n\n标准调试过程为了加快下一次的调试,经验如下:\n第一步本地安装包,找出依赖的问题:\nnpm install\n第二步生成本地public目录:\nhexo clean\nhexo g\nhexo s\n用本地浏览器打开确定本地显示是否出错:\nlocalhost:4000\n如果本地没错可以将这个本地版本git到remote端,使用网页链接查看是否有错.\n如果有错则核对两次commit之间的偏差,确定问题所在.\n在本次调试过程中,主要问题是assets文件夹被主题目录中的.gitignore忽略,这样网页只有文字没有样式.","dateCreated":"2019-03-16T01:48:20+08:00","dateModified":"2019-11-02T02:54:27+08:00","datePublished":"2019-03-16T01:48:20+08:00","description":"Bugs when using the tranquilpeak hexo theme","headline":"Bugs when using the tranquilpeak hexo theme","image":["https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg","https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/"},"publisher":{"@type":"Organization","name":null,"sameAs":["https://github.com/crotoc?tab=repositories","mailto:crotoc@gmail.com"],"image":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg","logo":{"@type":"ImageObject","url":"https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg"}},"url":"https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/","keywords":"博客","thumbnailUrl":"https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg"}</script>
     <meta name="description" content="Bugs when using the tranquilpeak hexo theme">
 <meta name="keywords" content="博客,主题">
 <meta property="og:type" content="blog">
@@ -22,7 +22,7 @@
 <meta property="og:site_name" content="Chen Rui&#39;s Blog">
 <meta property="og:description" content="Bugs when using the tranquilpeak hexo theme">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2019-06-12T21:58:33.348Z">
+<meta property="og:updated_time" content="2019-11-01T18:54:27.044Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Bugs when using the tranquilpeak hexo theme">
 <meta name="twitter:description" content="Bugs when using the tranquilpeak hexo theme">
@@ -78,10 +78,11 @@
     </div>
     
         
-            <a class="header-right-picture " href="#about">
+            <a  class="header-right-picture "
+                href="#about">
         
         
-            <img class="header-picture" src="https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg" alt="作者的图片">
+            <img class="header-picture" src="https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg" alt="作者的图片"/>
         
         </a>
     
@@ -99,7 +100,7 @@
         
             <div class="sidebar-profile">
                 <a href="/#about">
-                    <img class="sidebar-profile-picture" src="https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg" alt="作者的图片">
+                    <img class="sidebar-profile-picture" src="https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg" alt="作者的图片"/>
                 </a>
                 <h4 class="sidebar-profile-name"></h4>
                 
@@ -113,7 +114,11 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/ " title="首页">
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="首页"
+                        >
                     
                         <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">首页</span>
@@ -122,7 +127,11 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-categories" title="分类">
+                        <a  class="sidebar-button-link "
+                             href="/all-categories"
+                            
+                            title="分类"
+                        >
                     
                         <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">分类</span>
@@ -131,7 +140,11 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-tags" title="标签">
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="标签"
+                        >
                     
                         <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">标签</span>
@@ -140,7 +153,11 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-archives" title="归档">
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="归档"
+                        >
                     
                         <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">归档</span>
@@ -149,7 +166,11 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link open-algolia-search" href="#search" title="搜索">
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="搜索"
+                        >
                     
                         <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">搜索</span>
@@ -158,7 +179,11 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="#about" title="关于">
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="关于"
+                        >
                     
                         <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">关于</span>
@@ -171,7 +196,7 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="https://github.com/crotoc?tab=repositories" target="_blank" rel="noopener" title="GitHub">
+                        <a  class="sidebar-button-link " href="https://github.com/crotoc?tab=repositories" target="_blank" rel="noopener" title="GitHub">
                     
                         <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">GitHub</span>
@@ -180,7 +205,7 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="mailto:crotoc@gmail.com" target="_blank" rel="noopener" title="邮箱">
+                        <a  class="sidebar-button-link " href="mailto:crotoc@gmail.com" target="_blank" rel="noopener" title="邮箱">
                     
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">邮箱</span>
@@ -195,7 +220,9 @@
             
         <div class="post-header-cover
                     text-center
-                    post-header-cover--full" style="background-image:url('https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg');" data-behavior="4">
+                    post-header-cover--full"
+             style="background-image:url('https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg');"
+             data-behavior="4">
             
                 <div class="post-header main-content-wrap text-center">
     
@@ -237,7 +264,7 @@
     
     <div class="post-content markdown">
         <div class="main-content-wrap">
-            <!-- excerpt --><p></p>
+            <!-- excerpt --></p>
 <h1 id="Bugs-when-using-the-tranquilpeak-hexo-theme"><a href="#Bugs-when-using-the-tranquilpeak-hexo-theme" class="headerlink" title="Bugs when using the tranquilpeak hexo theme"></a>Bugs when using the tranquilpeak hexo theme</h1><h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Bugs-when-using-the-tranquilpeak-hexo-theme"><span class="toc-text">Bugs when using the tranquilpeak hexo theme</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#标准调试过程"><span class="toc-text">标准调试过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#第一步"><span class="toc-text">第一步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#第二步"><span class="toc-text">第二步</span></a></li></ol></li></ol></li></ol>
 <p>今天想将blog的主题从next 换成tranquilpeak,结果发现了很多的问题,这里记录一下:</p>
 <ol>
@@ -269,7 +296,7 @@ hexo s
     <div id="post-footer" class="post-footer main-content-wrap">
         
             <div class="post-footer-tags">
-                <span class="text-color-light text-small">标签</span><br>
+                <span class="text-color-light text-small">标签</span><br/>
                 
     <a class="tag tag--primary tag--small t-link" href="/tags/博客/">博客</a>
 
@@ -565,7 +592,7 @@ hexo s
             <i class="fa fa-times"></i>
         </div>
         
-            <img id="about-card-picture" src="https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg" alt="作者的图片">
+            <img id="about-card-picture" src="https://www.insidescience.org/sites/default/files/sites/default/files/images/articles/top-images/2018/5_heic1808a_crop.jpg" alt="作者的图片"/>
         
             <h4 id="about-card-name"></h4>
         
@@ -575,7 +602,7 @@ hexo s
         
             <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
-                <br>
+                <br/>
                 <p>遗传性，基因组学，生物信息学</p>
 
             </div>
@@ -583,7 +610,7 @@ hexo s
         
             <div id="about-card-location">
                 <i class="fa fa-map-marker-alt"></i>
-                <br>
+                <br/>
                 Nashville, TN, U.S.
             </div>
         
@@ -601,7 +628,9 @@ hexo s
             </a>
             <i class="search-icon fa fa-search"></i>
             <form id="algolia-search-form">
-                <input type="text" id="algolia-search-input" name="search" class="form-control input--large search-input" placeholder="Search ">
+                <input type="text" id="algolia-search-input" name="search"
+                    class="form-control input--large search-input" placeholder="Search "
+                    />
             </form>
         </div>
         <div class="modal-body">
@@ -612,7 +641,7 @@ hexo s
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2018/08/10/gnu-join/">
-                            <img class="media-image" src="https://img1.quimg.com/upload/201712/1513834333388.jpg" width="90" height="90">
+                            <img class="media-image" src="https://img1.quimg.com/upload/201712/1513834333388.jpg" width="90" height="90"/>
                         </a>
                     </div>
                     
@@ -627,7 +656,7 @@ hexo s
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"><p>Gnu join - join two files by specified field<br></p></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Gnu join - join two files by specified field<br></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -637,7 +666,7 @@ hexo s
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2018/09/11/rmarkdown-config/">
-                            <img class="media-image" src="http://www.cncd8.com/uploads/allimg/120308/1-12030R10R7.jpg" width="90" height="90">
+                            <img class="media-image" src="http://www.cncd8.com/uploads/allimg/120308/1-12030R10R7.jpg" width="90" height="90"/>
                         </a>
                     </div>
                     
@@ -652,7 +681,7 @@ hexo s
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"><p>Setup rmarkdown on server without Rstudio<br></p></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Setup rmarkdown on server without Rstudio<br></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -662,7 +691,7 @@ hexo s
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2018/09/14/Unblock-Youku-on-a-openWRT-Router/">
-                            <img class="media-image" src="https://www.nationalgeographic.com/content/dam/photography/PROOF/2017/April/epic-landscapes/24-9007740_uploadsmember798135yourshot-798135-9007740jpg_ci6qt7qzhqldf4ex35to2j2as7p3eflutfvvbpyjwjhzlmh4iziq_3066x1725.jpg" width="90" height="90">
+                            <img class="media-image" src="https://www.nationalgeographic.com/content/dam/photography/PROOF/2017/April/epic-landscapes/24-9007740_uploadsmember798135yourshot-798135-9007740jpg_ci6qt7qzhqldf4ex35to2j2as7p3eflutfvvbpyjwjhzlmh4iziq_3066x1725.jpg" width="90" height="90"/>
                         </a>
                     </div>
                     
@@ -677,7 +706,7 @@ hexo s
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"><p>Unblock Youku on a openWRT Router<br></p></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Unblock Youku on a openWRT Router<br></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -687,7 +716,7 @@ hexo s
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2018/09/25/Modify-the-hotkey-of-Chinese-English-language-switching-in-Windows-10/">
-                            <img class="media-image" src="https://static.boredpanda.com/blog/wp-content/uploads/2015/11/reflection-landscape-photography-jaewoon-u-fb.jpg" width="90" height="90">
+                            <img class="media-image" src="https://static.boredpanda.com/blog/wp-content/uploads/2015/11/reflection-landscape-photography-jaewoon-u-fb.jpg" width="90" height="90"/>
                         </a>
                     </div>
                     
@@ -702,7 +731,7 @@ hexo s
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"><p>Modify the hotkey of Chinese-English language switching in Windows 10<br></p></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Modify the hotkey of Chinese-English language switching in Windows 10<br></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -712,7 +741,7 @@ hexo s
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2018/09/28/Install-customized-fonts-for-imagemagick/">
-                            <img class="media-image" src="https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=500" width="90" height="90">
+                            <img class="media-image" src="https://images.pexels.com/photos/7314/nature-sunset-flowers-silhouette.jpg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=500" width="90" height="90"/>
                         </a>
                     </div>
                     
@@ -727,7 +756,7 @@ hexo s
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"><p>Install customized fonts for imagemagick<br></p></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Install customized fonts for imagemagick<br></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -737,7 +766,7 @@ hexo s
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2019/01/22/Unblock-region-restriction-of-musics-videos/">
-                            <img class="media-image" src="https://store-images.s-microsoft.com/image/apps.6197.13569891971238701.dab36319-31db-42e5-b32b-edb97c11d8b7.b4ec6763-6d93-4369-87b7-81c25913395f?mode=scale&amp;q=90&amp;h=1080&amp;w=1920" width="90" height="90">
+                            <img class="media-image" src="https://store-images.s-microsoft.com/image/apps.6197.13569891971238701.dab36319-31db-42e5-b32b-edb97c11d8b7.b4ec6763-6d93-4369-87b7-81c25913395f?mode=scale&amp;q=90&amp;h=1080&amp;w=1920" width="90" height="90"/>
                         </a>
                     </div>
                     
@@ -752,7 +781,7 @@ hexo s
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"><p>List for unblock region restriction of musics/videos<br></p></div>
+                        <div class="media-content hide-xs font-merryweather"><p>List for unblock region restriction of musics/videos<br></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -762,7 +791,7 @@ hexo s
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2019/01/22/terminal-in-windows-sub-linux-system/">
-                            <img class="media-image" src="http://img.univs.cn/webfile/event/279/4585308/D5B18660-6B04-11E4-A4B4-E02212B11521/1415863236024_4585308.JPG" width="90" height="90">
+                            <img class="media-image" src="http://img.univs.cn/webfile/event/279/4585308/D5B18660-6B04-11E4-A4B4-E02212B11521/1415863236024_4585308.JPG" width="90" height="90"/>
                         </a>
                     </div>
                     
@@ -777,7 +806,7 @@ hexo s
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"><p>Windows 10下面最好的terminal (WSL)<br></p></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Windows 10下面最好的terminal (WSL)<br></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -787,7 +816,7 @@ hexo s
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2019/03/16/Bugs-when-using-the-tranquilpeak-hexo-theme/">
-                            <img class="media-image" src="https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg" width="90" height="90">
+                            <img class="media-image" src="https://static.photocdn.pt/images/articles/2017_1/iStock-545347988.jpg" width="90" height="90"/>
                         </a>
                     </div>
                     
@@ -802,7 +831,7 @@ hexo s
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"><p>Bugs when using the tranquilpeak hexo theme<br></p></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Bugs when using the tranquilpeak hexo theme<br></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -812,7 +841,7 @@ hexo s
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2019/03/22/How-to-install-v2ray-service-on-R7800/">
-                            <img class="media-image" src="https://images.pexels.com/photos/371633/pexels-photo-371633.jpeg?auto=compress&amp;cs=tinysrgb&amp;h=750&amp;w=1260" width="90" height="90">
+                            <img class="media-image" src="https://images.pexels.com/photos/371633/pexels-photo-371633.jpeg?auto=compress&amp;cs=tinysrgb&amp;h=750&amp;w=1260" width="90" height="90"/>
                         </a>
                     </div>
                     
@@ -827,7 +856,7 @@ hexo s
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"><p>如何在netgear R7800上面安装v2ray服务<br></p></div>
+                        <div class="media-content hide-xs font-merryweather"><p>如何在netgear R7800上面安装v2ray服务<br></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -837,7 +866,7 @@ hexo s
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="https://crotoc.github.io/2019/03/26/Tranquilpeak-Setup-algolia-search/">
-                            <img class="media-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYi7FGA5FfpekOBRLFsOSCep_sIqCw38lX0HgueXz6shmKqCdl" width="90" height="90">
+                            <img class="media-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYi7FGA5FfpekOBRLFsOSCep_sIqCw38lX0HgueXz6shmKqCdl" width="90" height="90"/>
                         </a>
                     </div>
                     
@@ -852,7 +881,7 @@ hexo s
                                 
                             </span>
                         </span>
-                        <div class="media-content hide-xs font-merryweather"><p>Tranquilpeak Setup algolia search<br></p></div>
+                        <div class="media-content hide-xs font-merryweather"><p>Tranquilpeak Setup algolia search<br></div>
                     </div>
                     <div style="clear:both;"></div>
                     <hr>
@@ -861,7 +890,10 @@ hexo s
             </div>
         </div>
         <div class="modal-footer">
-            <p class="results-count text-medium" data-message-zero="没有找到文章" data-message-one="找到 1 篇文章" data-message-other="找到 {n} 篇文章">
+            <p class="results-count text-medium"
+                data-message-zero="没有找到文章"
+                data-message-one="找到 1 篇文章"
+                data-message-other="找到 {n} 篇文章">
                 找到 12 篇文章
             </p>
         </div>
